@@ -274,9 +274,11 @@ const AuthPage = () => {
           
           <div className="mt-6 text-center">
             <Link href="/dashboard">
-              <Button variant="outline" className="w-full mt-4">
-                Continue as Guest
-              </Button>
+              <a>
+                <Button variant="outline" className="w-full mt-4">
+                  Continue as Guest
+                </Button>
+              </a>
             </Link>
           </div>
           

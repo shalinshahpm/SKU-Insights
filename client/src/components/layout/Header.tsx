@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Search, Menu, Bell, HelpCircle } from "lucide-react";
+import { Search, Menu, Bell, HelpCircle, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "wouter";
 
 interface HeaderProps {
   onOpenSidebar: () => void;
@@ -13,14 +14,25 @@ export function Header({ onOpenSidebar }: HeaderProps) {
 
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-800 border-b border-border">
-      <div className="flex items-center md:hidden">
+      <div className="flex items-center space-x-4">
         <Button
           variant="ghost"
           size="icon"
           onClick={onOpenSidebar}
           aria-label="Open sidebar"
+          className="md:hidden"
         >
           <Menu className="h-5 w-5" />
+        </Button>
+        
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="hidden md:flex items-center space-x-2"
+          onClick={() => window.location.href = '/'}
+        >
+          <Home className="h-4 w-4" />
+          <span>Back to Home</span>
         </Button>
       </div>
       
@@ -47,6 +59,16 @@ export function Header({ onOpenSidebar }: HeaderProps) {
           </Button>
           <Button variant="ghost" size="icon" className="ml-2">
             <HelpCircle className="h-5 w-5 text-muted-foreground" />
+          </Button>
+          
+          {/* Mobile back to home button */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="ml-2 md:hidden"
+            onClick={() => window.location.href = '/'}
+          >
+            <Home className="h-5 w-5 text-muted-foreground" />
           </Button>
         </div>
       </div>
