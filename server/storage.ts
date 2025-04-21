@@ -20,7 +20,9 @@ export interface IStorage {
   getSKUs(): Promise<SKU[]>;
   getSKUsByRegion(region: string): Promise<SKU[]>;
   getSKUsByMarket(market: string): Promise<SKU[]>;
+  getNewLaunchSKUs(): Promise<SKU[]>;
   createSKU(sku: InsertSKU): Promise<SKU>;
+  updateSKU(id: number, sku: Partial<InsertSKU>): Promise<SKU>;
   deleteSKU(id: number): Promise<boolean>;
 
   // Behavioral metrics methods
@@ -60,6 +62,46 @@ export interface IStorage {
   getQuestionTemplate(id: number): Promise<QuestionTemplate | undefined>;
   getQuestionTemplatesByCategory(category: string): Promise<QuestionTemplate[]>;
   createQuestionTemplate(template: InsertQuestionTemplate): Promise<QuestionTemplate>;
+
+  // Launch phase methods
+  getLaunchPhase(id: number): Promise<LaunchPhase | undefined>;
+  getLaunchPhases(): Promise<LaunchPhase[]>;
+  createLaunchPhase(phase: InsertLaunchPhase): Promise<LaunchPhase>;
+
+  // Success threshold methods
+  getSuccessThreshold(id: number): Promise<SuccessThreshold | undefined>;
+  getSuccessThresholdsBySkuId(skuId: number): Promise<SuccessThreshold[]>;
+  getSuccessThresholdsByPhaseId(phaseId: number): Promise<SuccessThreshold[]>;
+  createSuccessThreshold(threshold: InsertSuccessThreshold): Promise<SuccessThreshold>;
+  updateSuccessThreshold(id: number, threshold: Partial<SuccessThreshold>): Promise<SuccessThreshold>;
+
+  // Micro-survey methods
+  getMicroSurvey(id: number): Promise<MicroSurvey | undefined>;
+  getMicroSurveysBySkuId(skuId: number): Promise<MicroSurvey[]>;
+  getActiveMicroSurveys(): Promise<MicroSurvey[]>;
+  createMicroSurvey(survey: InsertMicroSurvey): Promise<MicroSurvey>;
+  updateMicroSurveyStatus(id: number, isActive: boolean): Promise<MicroSurvey>;
+
+  // Micro-survey response methods
+  getMicroSurveyResponses(surveyId: number): Promise<MicroSurveyResponse[]>;
+  createMicroSurveyResponse(response: InsertMicroSurveyResponse): Promise<MicroSurveyResponse>;
+
+  // Social listening methods
+  getSocialListeningData(id: number): Promise<SocialListeningData | undefined>;
+  getSocialListeningDataBySkuId(skuId: number): Promise<SocialListeningData[]>;
+  createSocialListeningData(data: InsertSocialListeningData): Promise<SocialListeningData>;
+
+  // Launch intervention methods
+  getLaunchIntervention(id: number): Promise<LaunchIntervention | undefined>;
+  getLaunchInterventions(): Promise<LaunchIntervention[]>;
+  getLaunchInterventionsByCategory(category: string): Promise<LaunchIntervention[]>;
+  createLaunchIntervention(intervention: InsertLaunchIntervention): Promise<LaunchIntervention>;
+
+  // Applied intervention methods
+  getAppliedIntervention(id: number): Promise<AppliedIntervention | undefined>;
+  getAppliedInterventionsBySkuId(skuId: number): Promise<AppliedIntervention[]>;
+  createAppliedIntervention(intervention: InsertAppliedIntervention): Promise<AppliedIntervention>;
+  updateAppliedInterventionStatus(id: number, status: string): Promise<AppliedIntervention>;
 }
 
 export class MemStorage implements IStorage {
@@ -71,6 +113,13 @@ export class MemStorage implements IStorage {
   private timelineEvents: Map<number, TimelineEvent>;
   private anomalySettings: Map<number, AnomalySetting>;
   private questionTemplates: Map<number, QuestionTemplate>;
+  private launchPhases: Map<number, LaunchPhase>;
+  private successThresholds: Map<number, SuccessThreshold>;
+  private microSurveys: Map<number, MicroSurvey>;
+  private microSurveyResponses: Map<number, MicroSurveyResponse>;
+  private socialListeningData: Map<number, SocialListeningData>;
+  private launchInterventions: Map<number, LaunchIntervention>;
+  private appliedInterventions: Map<number, AppliedIntervention>;
   
   private currentUserId: number;
   private currentSkuId: number;
@@ -80,6 +129,13 @@ export class MemStorage implements IStorage {
   private currentTimelineEventId: number;
   private currentAnomalySettingId: number;
   private currentQuestionTemplateId: number;
+  private currentLaunchPhaseId: number;
+  private currentSuccessThresholdId: number;
+  private currentMicroSurveyId: number;
+  private currentMicroSurveyResponseId: number;
+  private currentSocialListeningDataId: number;
+  private currentLaunchInterventionId: number;
+  private currentAppliedInterventionId: number;
 
   constructor() {
     this.users = new Map();

@@ -27,6 +27,9 @@ export const skus = pgTable("skus", {
   brand: text("brand").notNull(),
   region: text("region").notNull(),
   market: text("market").notNull(),
+  launchDate: timestamp("launch_date"),
+  isNewLaunch: boolean("is_new_launch").default(false),
+  category: text("category"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -35,6 +38,9 @@ export const insertSkuSchema = createInsertSchema(skus).pick({
   brand: true,
   region: true,
   market: true,
+  launchDate: true,
+  isNewLaunch: true,
+  category: true,
 });
 
 // Behavioral metrics model
@@ -150,6 +156,132 @@ export const insertQuestionTemplateSchema = createInsertSchema(questionTemplates
   options: true,
 });
 
+// Define launch tracking tables
+export const launchPhases = pgTable("launch_phases", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  daysFromStart: integer("days_from_start").notNull(),
+  daysToEnd: integer("days_to_end").notNull(),
+  description: text("description"),
+});
+
+export const insertLaunchPhaseSchema = createInsertSchema(launchPhases).pick({
+  name: true,
+  daysFromStart: true,
+  daysToEnd: true,
+  description: true,
+});
+
+export const successThresholds = pgTable("success_thresholds", {
+  id: serial("id").primaryKey(),
+  skuId: integer("sku_id").notNull(),
+  phaseId: integer("phase_id").notNull(),
+  metricType: text("metric_type").notNull(),
+  targetValue: real("target_value").notNull(),
+  minimumValue: real("minimum_value").notNull(),
+  idealValue: real("ideal_value").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertSuccessThresholdSchema = createInsertSchema(successThresholds).pick({
+  skuId: true,
+  phaseId: true,
+  metricType: true,
+  targetValue: true,
+  minimumValue: true,
+  idealValue: true,
+});
+
+export const microSurveys = pgTable("micro_surveys", {
+  id: serial("id").primaryKey(),
+  skuId: integer("sku_id").notNull(),
+  question: text("question").notNull(),
+  interactionPoint: text("interaction_point").notNull(),
+  responseOptions: json("response_options"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertMicroSurveySchema = createInsertSchema(microSurveys).pick({
+  skuId: true,
+  question: true,
+  interactionPoint: true,
+  responseOptions: true,
+  isActive: true,
+});
+
+export const microSurveyResponses = pgTable("micro_survey_responses", {
+  id: serial("id").primaryKey(),
+  surveyId: integer("survey_id").notNull(),
+  response: text("response").notNull(),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+export const insertMicroSurveyResponseSchema = createInsertSchema(microSurveyResponses).pick({
+  surveyId: true,
+  response: true,
+});
+
+export const socialListeningData = pgTable("social_listening_data", {
+  id: serial("id").primaryKey(),
+  skuId: integer("sku_id").notNull(),
+  platform: text("platform").notNull(),
+  content: text("content").notNull(),
+  sentiment: text("sentiment").notNull(),
+  engagementCount: integer("engagement_count"),
+  source: text("source"),
+  sourceUrl: text("source_url"),
+  timestamp: timestamp("timestamp").notNull().defaultNow(),
+});
+
+export const insertSocialListeningDataSchema = createInsertSchema(socialListeningData).pick({
+  skuId: true,
+  platform: true,
+  content: true,
+  sentiment: true,
+  engagementCount: true,
+  source: true,
+  sourceUrl: true,
+});
+
+export const launchInterventions = pgTable("launch_interventions", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  category: text("category").notNull(),
+  description: text("description").notNull(),
+  expectedImpact: text("expected_impact"),
+  implementationSteps: json("implementation_steps"),
+});
+
+export const insertLaunchInterventionSchema = createInsertSchema(launchInterventions).pick({
+  name: true,
+  category: true,
+  description: true,
+  expectedImpact: true,
+  implementationSteps: true,
+});
+
+export const appliedInterventions = pgTable("applied_interventions", {
+  id: serial("id").primaryKey(),
+  skuId: integer("sku_id").notNull(),
+  interventionId: integer("intervention_id").notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date"),
+  status: text("status").notNull(),
+  notes: text("notes"),
+  results: json("results"),
+});
+
+export const insertAppliedInterventionSchema = createInsertSchema(appliedInterventions).pick({
+  skuId: true,
+  interventionId: true,
+  startDate: true,
+  endDate: true,
+  status: true,
+  notes: true,
+  results: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -174,3 +306,24 @@ export type InsertAnomalySetting = z.infer<typeof insertAnomalySettingSchema>;
 
 export type QuestionTemplate = typeof questionTemplates.$inferSelect;
 export type InsertQuestionTemplate = z.infer<typeof insertQuestionTemplateSchema>;
+
+export type LaunchPhase = typeof launchPhases.$inferSelect;
+export type InsertLaunchPhase = z.infer<typeof insertLaunchPhaseSchema>;
+
+export type SuccessThreshold = typeof successThresholds.$inferSelect;
+export type InsertSuccessThreshold = z.infer<typeof insertSuccessThresholdSchema>;
+
+export type MicroSurvey = typeof microSurveys.$inferSelect;
+export type InsertMicroSurvey = z.infer<typeof insertMicroSurveySchema>;
+
+export type MicroSurveyResponse = typeof microSurveyResponses.$inferSelect;
+export type InsertMicroSurveyResponse = z.infer<typeof insertMicroSurveyResponseSchema>;
+
+export type SocialListeningData = typeof socialListeningData.$inferSelect;
+export type InsertSocialListeningData = z.infer<typeof insertSocialListeningDataSchema>;
+
+export type LaunchIntervention = typeof launchInterventions.$inferSelect;
+export type InsertLaunchIntervention = z.infer<typeof insertLaunchInterventionSchema>;
+
+export type AppliedIntervention = typeof appliedInterventions.$inferSelect;
+export type InsertAppliedIntervention = z.infer<typeof insertAppliedInterventionSchema>;
