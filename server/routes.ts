@@ -138,6 +138,135 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
     res.json({ message: "SKU deleted" });
   });
+  
+  app.get("/api/launch-radar", async (req: Request, res: Response) => {
+    try {
+      // Get all new launch SKUs
+      const newLaunchSKUs = await storage.getNewLaunchSKUs();
+      
+      // Build comprehensive data for each new launch SKU
+      const launchRadarData = await Promise.all(newLaunchSKUs.map(async (sku) => {
+        // Get behavioral metrics for the SKU
+        const metrics = await storage.getBehavioralMetricsBySkuId(sku.id);
+        
+        // Get success thresholds for the SKU
+        const thresholds = await storage.getSuccessThresholdsBySkuId(sku.id);
+        
+        // Get applied interventions for the SKU
+        const interventions = await storage.getAppliedInterventionsBySkuId(sku.id);
+        
+        // Get brand health metrics for the SKU
+        const brandHealthMetrics = await storage.getBrandHealthMetricsBySkuId(sku.id);
+        
+        // Get micro-surveys for the SKU
+        const microSurveys = await storage.getMicroSurveysBySkuId(sku.id);
+        
+        // Get social listening data for the SKU
+        const socialListeningData = await storage.getSocialListeningDataBySkuId(sku.id);
+        
+        // Get latest metrics if available
+        const latestMetrics = metrics.length > 0 
+          ? metrics.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0]
+          : null;
+        
+        // Get latest brand health metrics if available
+        const latestBrandHealth = brandHealthMetrics.length > 0
+          ? brandHealthMetrics.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0]
+          : null;
+        
+        // Calculate days since launch
+        const daysSinceLaunch = sku.launchDate 
+          ? Math.floor((new Date().getTime() - new Date(sku.launchDate).getTime()) / (1000 * 60 * 60 * 24))
+          : null;
+        
+        // Determine current launch phase based on days since launch
+        const launchPhases = await storage.getLaunchPhases();
+        let currentPhase = null;
+        
+        if (daysSinceLaunch !== null && launchPhases.length > 0) {
+          // Sort phases by order
+          const sortedPhases = [...launchPhases].sort((a, b) => a.order - b.order);
+          
+          // Find the phase that matches the current days since launch
+          for (let i = sortedPhases.length - 1; i >= 0; i--) {
+            if (daysSinceLaunch >= sortedPhases[i].daysFromLaunch) {
+              currentPhase = sortedPhases[i];
+              break;
+            }
+          }
+          
+          // If no phase was found and days since launch is negative, we're in pre-launch
+          if (!currentPhase && daysSinceLaunch < 0) {
+            currentPhase = sortedPhases.find(phase => phase.daysFromLaunch < 0);
+          }
+        }
+        
+        // Get thresholds for current phase if available
+        const currentPhaseThresholds = currentPhase
+          ? thresholds.filter(t => t.phaseId === currentPhase.id)
+          : [];
+        
+        // Calculate performance against thresholds
+        const thresholdPerformance = currentPhaseThresholds.map(threshold => {
+          let currentValue = null;
+          let status = "unknown";
+          
+          // Determine the current value based on metric type
+          if (latestMetrics) {
+            if (threshold.metricType === "page_views") {
+              currentValue = latestMetrics.pageViews;
+            } else if (threshold.metricType === "add_to_cart") {
+              currentValue = latestMetrics.addToCart;
+            } else if (threshold.metricType === "review_volume") {
+              currentValue = latestMetrics.reviewVolume;
+            } else if (threshold.metricType === "average_rating") {
+              currentValue = latestMetrics.averageRating;
+            }
+          }
+          
+          // Determine status based on threshold levels
+          if (currentValue !== null) {
+            if (currentValue >= threshold.targetValue) {
+              status = "above_target";
+            } else if (currentValue >= threshold.minimumAcceptable) {
+              status = "acceptable";
+            } else if (currentValue >= threshold.criticalThreshold) {
+              status = "below_minimum";
+            } else {
+              status = "critical";
+            }
+          }
+          
+          return {
+            ...threshold,
+            currentValue,
+            status,
+            percentageOfTarget: currentValue !== null 
+              ? parseFloat(((currentValue / threshold.targetValue) * 100).toFixed(1))
+              : null
+          };
+        });
+        
+        return {
+          sku,
+          daysSinceLaunch,
+          currentPhase,
+          latestMetrics,
+          latestBrandHealth,
+          thresholdPerformance,
+          interventions: interventions.sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime()),
+          microSurveys: microSurveys.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
+          socialListeningData: socialListeningData.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()),
+          hasWarningFlags: thresholdPerformance.some(t => t.status === "below_minimum" || t.status === "critical")
+        };
+      }));
+      
+      res.json(launchRadarData);
+    } catch (error) {
+      console.error("Error fetching launch radar data:", error);
+      res.status(500).json({ message: "Failed to fetch launch radar data" });
+    }
+  });
 
   // Behavioral metrics routes
   app.get("/api/behavioral-metrics", async (req: Request, res: Response) => {
