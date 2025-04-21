@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Real-time SKU launch intelligence for CPG brands. Powered by XENA and Kantar insights, SKU Pulse helps Chief Commercial Officers detect high-impact opportunities faster." />
+  <meta name="keywords" content="SKU, launch analytics, CPG brands, product performance, SKU Pulse, XENA, Kantar, CCO" />
+  <meta property="og:title" content="SKU Pulse - Real-Time Launch Intelligence for Commercial Leaders" />
+  <meta property="og:image" content="https://source.unsplash.com/1200x630/?data,analytics" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <title>SKU Pulse - Intelligence for CPG Commercial Leaders</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #0ea5e9, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtle-shadow {
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+    .button-hover {
+      transition: transform 0.2s ease-out;
+    }
+    .button-hover:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800">
+  <!-- Navigation -->
+  <header class="fixed top-0 w-full bg-white/90 backdrop-blur z-50 shadow-sm">
+    <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+      <a href="#" class="text-2xl font-bold gradient-text">SKU Pulse</a>
+      <nav class="hidden md:flex gap-10 text-sm font-medium">
+        <a href="#features" class="hover:text-blue-600">Features</a>
+        <a href="#how-it-works" class="hover:text-blue-600">How It Works</a>
+        <a href="#case-study" class="hover:text-blue-600">Success Stories</a>
+        <a href="#pricing" class="hover:text-blue-600">Pricing</a>
+      </nav>
+      <div class="flex items-center space-x-4 text-sm">
+        <a href="#" class="hover:text-blue-600">Sign In</a>
+        <a href="#" class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 button-hover">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="pt-32 pb-20 bg-gradient-to-b from-gray-50 to-white">
+      <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h1 class="text-5xl font-bold mb-6 leading-tight">Command launch performance before the market does</h1>
+          <p class="text-xl text-gray-600 mb-8">SKU Pulse empowers commercial leaders to identify launch risks and capitalize on demand signals in real time. Powered by XENA API sales tracking and Kantar market panels, SKU Pulse transforms scattered insight into confident decisions.</p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="#" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-sm font-medium button-hover">Start Free Trial</a>
+            <a href="#" class="bg-gray-100 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-200 text-sm font-medium button-hover">Watch Demo</a>
+          </div>
+          <p class="text-sm mt-6 text-gray-500 flex items-center gap-2">
+            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4"></path></svg>
+            No credit card · 14-day trial · Built for CPG Enterprises
+          </p>
+        </div>
+        <div class="relative">
+          <div class="absolute -top-6 -left-6 bg-blue-100 h-full w-full rounded-xl -z-10"></div>
+          <img src="https://source.unsplash.com/600x350/?dashboard,analytics" alt="Dashboard Preview" class="rounded-xl shadow-md" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Brands -->
+    <section class="py-12">
+      <div class="container mx-auto px-6 text-center">
+        <p class="text-gray-500 text-sm mb-6 uppercase">Trusted by global CPG leaders</p>
+        <div class="flex flex-wrap justify-center gap-8 items-center">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Coca-Cola_logo.svg" class="h-8 opacity-70 grayscale" alt="Coca-Cola">
+          <img src="https://upload.wikimedia.org/wikipedia/en/8/8a/Pepsi_logo_2014.svg" class="h-8 opacity-70 grayscale" alt="PepsiCo">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Unilever_Logo.svg" class="h-8 opacity-70 grayscale" alt="Unilever">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Nestle_textlogo.svg" class="h-8 opacity-70 grayscale" alt="Nestle">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Procter_%26_Gamble_logo.svg" class="h-8 opacity-70 grayscale" alt="Procter & Gamble">
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="py-24 bg-white">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-4">Built for Commercial Leaders</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">SKU Pulse integrates category-level sales intelligence from XENA and market sentiment from Kantar panels, arming you with a precise read on new product viability, trajectory, and intervention points—across every major channel.</p>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="py-24 bg-gray-50">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-4">How It Works</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">Define the signals that matter—velocity, sentiment, conversion—and SKU Pulse will continuously track deviations and triggers so your teams can act before reports arrive.</p>
+      </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section id="case-study" class="py-24 bg-white">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-4">Proven Impact</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">A leading CPG brand averted $1.2M in lost revenue when SKU Pulse flagged allergen-related sentiment spikes within 48 hours of launch. Messaging updates were deployed before market erosion could take hold.</p>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-24 bg-blue-50">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold mb-4">Ready to Launch Smarter?</h2>
+        <p class="text-gray-600 max-w-2xl mx-auto mb-6">Let’s talk about how SKU Pulse can deliver predictive commercial insight tailored to your portfolio. Our plans are custom-fit for scale and strategy.</p>
+        <a href="https://www.linkedin.com/in/shalinshah2/" target="_blank" rel="noopener noreferrer" class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-sm font-medium button-hover">Contact Us</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-gray-100 py-10 text-sm text-gray-500 text-center">
+    <div class="container mx-auto px-6">
+      <p>&copy; 2025 SKU Pulse. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+</html>

@@ -12,19 +12,30 @@ import BrandHealth from "@/pages/BrandHealth";
 import InsightsTimeline from "@/pages/InsightsTimeline";
 import UserManagement from "@/pages/UserManagement";
 import AccountSettings from "@/pages/AccountSettings";
+import AuthPage from "@/pages/auth-page";
+import IndexPage from "@/pages/index-page";
 import { ThemeProvider } from "next-themes";
+import { AuthProvider } from "@/hooks/use-auth";
+import { ProtectedRoute } from "@/lib/protected-route";
 
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Dashboard} />
-      <Route path="/sku-management" component={SKUManagement} />
-      <Route path="/behavioral" component={Behavioral} />
-      <Route path="/survey-builder" component={SurveyBuilder} />
-      <Route path="/brand-health" component={BrandHealth} />
-      <Route path="/insights-timeline" component={InsightsTimeline} />
-      <Route path="/user-management" component={UserManagement} />
-      <Route path="/account-settings" component={AccountSettings} />
+      {/* Public routes */}
+      <Route path="/" component={IndexPage} />
+      <Route path="/auth" component={AuthPage} />
+
+      {/* Protected routes */}
+      <ProtectedRoute path="/dashboard" component={Dashboard} />
+      <ProtectedRoute path="/sku-management" component={SKUManagement} />
+      <ProtectedRoute path="/behavioral" component={Behavioral} />
+      <ProtectedRoute path="/survey-builder" component={SurveyBuilder} />
+      <ProtectedRoute path="/brand-health" component={BrandHealth} />
+      <ProtectedRoute path="/insights-timeline" component={InsightsTimeline} />
+      <ProtectedRoute path="/user-management" component={UserManagement} />
+      <ProtectedRoute path="/account-settings" component={AccountSettings} />
+      
+      {/* 404 route */}
       <Route component={NotFound} />
     </Switch>
   );
@@ -34,10 +45,12 @@ function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="light">
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );
