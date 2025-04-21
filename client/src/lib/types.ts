@@ -11,6 +11,29 @@ export type BehavioralMetricsData = {
   status: "normal" | "anomaly" | "watch";
 }
 
+export type BehavioralMetricsResponse = {
+  metrics: BehavioralMetricsData[];
+  summary: {
+    timeframe: string;
+    totals: {
+      totalPageViews: number;
+      totalAddToCart: number;
+      totalReviewVolume: number;
+      averageRating: number;
+      anomalyCount: number;
+      watchStatusCount: number;
+      conversionRate: number;
+    };
+    trends: {
+      pageViewsTrend: number;
+      addToCartTrend: number;
+      reviewVolumeTrend: number;
+      ratingTrend: number;
+      conversionRateTrend: number;
+    };
+  } | null;
+}
+
 export type BrandHealthMetricsData = {
   id: number;
   skuId: number;

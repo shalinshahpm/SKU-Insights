@@ -143,6 +143,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/behavioral-metrics", async (req: Request, res: Response) => {
     const skuId = req.query.skuId ? parseInt(req.query.skuId as string) : undefined;
     const date = req.query.date ? new Date(req.query.date as string) : undefined;
+    const timeframe = req.query.timeframe as string || "30days"; // Default to 30 days
     
     let metrics: BehavioralMetric[] = [];
     if (skuId) {
@@ -158,8 +159,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
         metrics = []; // Return empty array if no SKUs exist
       }
     }
-    
-    res.json(metrics);
+
+    // Calculate aggregated data for better executive insights
+    if (metrics.length > 0) {
+      // Sort metrics by date (newest first)
+      metrics.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+      
+      // Apply timeframe filtering
+      let filteredMetrics = metrics;
+      if (timeframe) {
+        const today = new Date();
+        let cutoffDate = new Date();
+        
+        if (timeframe === "7days") {
+          cutoffDate.setDate(today.getDate() - 7);
+        } else if (timeframe === "30days") {
+          cutoffDate.setDate(today.getDate() - 30);
+        } else if (timeframe === "90days") {
+          cutoffDate.setDate(today.getDate() - 90);
+        }
+        
+        filteredMetrics = metrics.filter(m => new Date(m.date) >= cutoffDate);
+      }
+      
+      // Calculate totals and averages for the filtered period
+      const totals = {
+        totalPageViews: filteredMetrics.reduce((sum, m) => sum + m.pageViews, 0),
+        totalAddToCart: filteredMetrics.reduce((sum, m) => sum + m.addToCart, 0),
+        totalReviewVolume: filteredMetrics.reduce((sum, m) => sum + m.reviewVolume, 0),
+        averageRating: parseFloat((filteredMetrics.reduce((sum, m) => sum + m.averageRating, 0) / filteredMetrics.length).toFixed(1)),
+        anomalyCount: filteredMetrics.filter(m => m.status === "anomaly").length,
+        watchStatusCount: filteredMetrics.filter(m => m.status === "watch").length,
+        conversionRate: parseFloat(((filteredMetrics.reduce((sum, m) => sum + m.addToCart, 0) / 
+                         filteredMetrics.reduce((sum, m) => sum + m.pageViews, 0)) * 100).toFixed(1)),
+      };
+      
+      // Calculate trends (comparing first half with second half of the period)
+      const midpoint = Math.floor(filteredMetrics.length / 2);
+      const secondHalf = filteredMetrics.slice(0, midpoint);
+      const firstHalf = filteredMetrics.slice(midpoint);
+      
+      // Only calculate trends if we have enough data
+      const trends = {
+        pageViewsTrend: 0,
+        addToCartTrend: 0,
+        reviewVolumeTrend: 0,
+        ratingTrend: 0,
+        conversionRateTrend: 0
+      };
+      
+      if (firstHalf.length > 0 && secondHalf.length > 0) {
+        const firstHalfPageViews = firstHalf.reduce((sum, m) => sum + m.pageViews, 0);
+        const secondHalfPageViews = secondHalf.reduce((sum, m) => sum + m.pageViews, 0);
+        
+        const firstHalfAddToCart = firstHalf.reduce((sum, m) => sum + m.addToCart, 0);
+        const secondHalfAddToCart = secondHalf.reduce((sum, m) => sum + m.addToCart, 0);
+        
+        const firstHalfReviewVolume = firstHalf.reduce((sum, m) => sum + m.reviewVolume, 0);
+        const secondHalfReviewVolume = secondHalf.reduce((sum, m) => sum + m.reviewVolume, 0);
+        
+        const firstHalfRating = firstHalf.reduce((sum, m) => sum + m.averageRating, 0) / firstHalf.length;
+        const secondHalfRating = secondHalf.reduce((sum, m) => sum + m.averageRating, 0) / secondHalf.length;
+        
+        const firstHalfConversion = (firstHalfAddToCart / firstHalfPageViews) * 100;
+        const secondHalfConversion = (secondHalfAddToCart / secondHalfPageViews) * 100;
+        
+        trends.pageViewsTrend = firstHalfPageViews === 0 ? 0 : 
+          parseFloat(((secondHalfPageViews - firstHalfPageViews) / firstHalfPageViews * 100).toFixed(1));
+        
+        trends.addToCartTrend = firstHalfAddToCart === 0 ? 0 : 
+          parseFloat(((secondHalfAddToCart - firstHalfAddToCart) / firstHalfAddToCart * 100).toFixed(1));
+        
+        trends.reviewVolumeTrend = firstHalfReviewVolume === 0 ? 0 : 
+          parseFloat(((secondHalfReviewVolume - firstHalfReviewVolume) / firstHalfReviewVolume * 100).toFixed(1));
+        
+        trends.ratingTrend = firstHalfRating === 0 ? 0 : 
+          parseFloat(((secondHalfRating - firstHalfRating) / firstHalfRating * 100).toFixed(1));
+        
+        trends.conversionRateTrend = firstHalfConversion === 0 ? 0 : 
+          parseFloat(((secondHalfConversion - firstHalfConversion) / firstHalfConversion * 100).toFixed(1));
+      }
+      
+      // Return both raw metrics and the aggregated executive summary
+      res.json({
+        metrics: filteredMetrics,
+        summary: {
+          timeframe,
+          totals,
+          trends
+        }
+      });
+    } else {
+      res.json({ metrics: [], summary: null });
+    }
   });
 
   app.post("/api/behavioral-metrics", async (req: Request, res: Response) => {

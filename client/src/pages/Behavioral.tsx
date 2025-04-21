@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { useQuery } from "@tanstack/react-query";
-import { SKU, BehavioralMetricsData, FilterOptions } from "@/lib/types";
+import { SKU, BehavioralMetricsData, BehavioralMetricsResponse, FilterOptions } from "@/lib/types";
 import { SKUFilter } from "@/components/dashboard/SKUFilter";
 import { BehavioralChart } from "@/components/dashboard/BehavioralChart";
 import { useToast } from "@/hooks/use-toast";
@@ -52,13 +52,17 @@ export default function Behavioral() {
   const defaultSkuId = skus.length > 0 ? skus[0].id : null;
 
   // Fetch behavioral metrics for the selected SKU or all SKUs
-  const { data: behavioralMetrics = [], isLoading } = useQuery<BehavioralMetricsData[]>({
+  const { data: behavioralResponse, isLoading } = useQuery<BehavioralMetricsResponse>({
     queryKey: [
       "/api/behavioral-metrics",
-      `?skuId=${filters.selectedSku !== "all" ? filters.selectedSku : defaultSkuId}`,
+      `?skuId=${filters.selectedSku !== "all" ? filters.selectedSku : defaultSkuId}&timeframe=${timeRange}`,
     ],
     enabled: skus.length > 0, // Only run query when SKUs are loaded
   });
+  
+  // Extract metrics and summary from response
+  const behavioralMetrics = behavioralResponse?.metrics || [];
+  const metricsSummary = behavioralResponse?.summary;
 
   // Create filter options
   const filterOptions: FilterOptions = {
@@ -179,6 +183,46 @@ export default function Behavioral() {
         filterOptions={filterOptions} 
         onApplyFilters={handleApplyFilters} 
       />
+      
+      {/* Conversion Rate Banner */}
+      {metricsSummary?.totals?.conversionRate && (
+        <div className="bg-gradient-to-r from-primary/10 to-accent/10 rounded-lg p-4 mb-6 flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="mr-4 bg-primary/20 rounded-full p-2">
+              <TrendingUp className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold">Conversion Rate</h3>
+              <p className="text-sm text-muted-foreground">Add to cart / Page views</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-3xl font-bold">{(metricsSummary.totals.conversionRate * 100).toFixed(2)}%</div>
+            {metricsSummary.trends.conversionRateTrend && (
+              <div className="text-sm flex items-center justify-end">
+                {metricsSummary.trends.conversionRateTrend > 0 ? (
+                  <TrendingUp className="h-3 w-3 text-success mr-1" />
+                ) : metricsSummary.trends.conversionRateTrend < 0 ? (
+                  <TrendingDown className="h-3 w-3 text-destructive mr-1" />
+                ) : null}
+                <span
+                  className={
+                    metricsSummary.trends.conversionRateTrend > 0
+                      ? "text-success"
+                      : metricsSummary.trends.conversionRateTrend < 0
+                      ? "text-destructive"
+                      : ""
+                  }
+                >
+                  {metricsSummary.trends.conversionRateTrend > 0 ? "+" : ""}
+                  {metricsSummary.trends.conversionRateTrend.toFixed(2)}%
+                </span>
+                <span className="ml-1 text-muted-foreground">vs. previous period</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Summary Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -186,7 +230,31 @@ export default function Behavioral() {
           <CardContent className="p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Total Page Views</p>
-              <p className="text-3xl font-bold">{totalPageViews.toLocaleString()}</p>
+              <p className="text-3xl font-bold">
+                {metricsSummary?.totals.totalPageViews.toLocaleString() || totalPageViews.toLocaleString()}
+              </p>
+              {metricsSummary && (
+                <div className="text-xs flex items-center mt-2">
+                  {metricsSummary.trends.pageViewsTrend > 0 ? (
+                    <TrendingUp className="h-3 w-3 text-success mr-1" />
+                  ) : metricsSummary.trends.pageViewsTrend < 0 ? (
+                    <TrendingDown className="h-3 w-3 text-destructive mr-1" />
+                  ) : null}
+                  <span
+                    className={
+                      metricsSummary.trends.pageViewsTrend > 0
+                        ? "text-success"
+                        : metricsSummary.trends.pageViewsTrend < 0
+                        ? "text-destructive"
+                        : ""
+                    }
+                  >
+                    {metricsSummary.trends.pageViewsTrend > 0 ? "+" : ""}
+                    {metricsSummary.trends.pageViewsTrend.toFixed(1)}%
+                  </span>
+                  <span className="ml-1 text-muted-foreground">vs. previous period</span>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -194,7 +262,31 @@ export default function Behavioral() {
           <CardContent className="p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Total Add to Cart</p>
-              <p className="text-3xl font-bold">{totalAddToCart.toLocaleString()}</p>
+              <p className="text-3xl font-bold">
+                {metricsSummary?.totals.totalAddToCart.toLocaleString() || totalAddToCart.toLocaleString()}
+              </p>
+              {metricsSummary && (
+                <div className="text-xs flex items-center mt-2">
+                  {metricsSummary.trends.addToCartTrend > 0 ? (
+                    <TrendingUp className="h-3 w-3 text-success mr-1" />
+                  ) : metricsSummary.trends.addToCartTrend < 0 ? (
+                    <TrendingDown className="h-3 w-3 text-destructive mr-1" />
+                  ) : null}
+                  <span
+                    className={
+                      metricsSummary.trends.addToCartTrend > 0
+                        ? "text-success"
+                        : metricsSummary.trends.addToCartTrend < 0
+                        ? "text-destructive"
+                        : ""
+                    }
+                  >
+                    {metricsSummary.trends.addToCartTrend > 0 ? "+" : ""}
+                    {metricsSummary.trends.addToCartTrend.toFixed(1)}%
+                  </span>
+                  <span className="ml-1 text-muted-foreground">vs. previous period</span>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -202,7 +294,31 @@ export default function Behavioral() {
           <CardContent className="p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Total Reviews</p>
-              <p className="text-3xl font-bold">{totalReviewVolume.toLocaleString()}</p>
+              <p className="text-3xl font-bold">
+                {metricsSummary?.totals.totalReviewVolume.toLocaleString() || totalReviewVolume.toLocaleString()}
+              </p>
+              {metricsSummary && (
+                <div className="text-xs flex items-center mt-2">
+                  {metricsSummary.trends.reviewVolumeTrend > 0 ? (
+                    <TrendingUp className="h-3 w-3 text-success mr-1" />
+                  ) : metricsSummary.trends.reviewVolumeTrend < 0 ? (
+                    <TrendingDown className="h-3 w-3 text-destructive mr-1" />
+                  ) : null}
+                  <span
+                    className={
+                      metricsSummary.trends.reviewVolumeTrend > 0
+                        ? "text-success"
+                        : metricsSummary.trends.reviewVolumeTrend < 0
+                        ? "text-destructive"
+                        : ""
+                    }
+                  >
+                    {metricsSummary.trends.reviewVolumeTrend > 0 ? "+" : ""}
+                    {metricsSummary.trends.reviewVolumeTrend.toFixed(1)}%
+                  </span>
+                  <span className="ml-1 text-muted-foreground">vs. previous period</span>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -210,7 +326,31 @@ export default function Behavioral() {
           <CardContent className="p-6">
             <div className="space-y-2">
               <p className="text-sm font-medium text-muted-foreground">Average Rating</p>
-              <p className="text-3xl font-bold">{averageRating.toFixed(1)}</p>
+              <p className="text-3xl font-bold">
+                {metricsSummary?.totals.averageRating.toFixed(1) || averageRating.toFixed(1)}
+              </p>
+              {metricsSummary && (
+                <div className="text-xs flex items-center mt-2">
+                  {metricsSummary.trends.ratingTrend > 0 ? (
+                    <TrendingUp className="h-3 w-3 text-success mr-1" />
+                  ) : metricsSummary.trends.ratingTrend < 0 ? (
+                    <TrendingDown className="h-3 w-3 text-destructive mr-1" />
+                  ) : null}
+                  <span
+                    className={
+                      metricsSummary.trends.ratingTrend > 0
+                        ? "text-success"
+                        : metricsSummary.trends.ratingTrend < 0
+                        ? "text-destructive"
+                        : ""
+                    }
+                  >
+                    {metricsSummary.trends.ratingTrend > 0 ? "+" : ""}
+                    {metricsSummary.trends.ratingTrend.toFixed(1)}%
+                  </span>
+                  <span className="ml-1 text-muted-foreground">vs. previous period</span>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -221,6 +361,55 @@ export default function Behavioral() {
         <BehavioralChart data={behavioralMetrics} height={400} />
       </div>
 
+      {/* Anomaly Statistics */}
+      {metricsSummary?.totals?.anomalyCount > 0 && (
+        <div className="mb-6">
+          <Card className="border-destructive/30">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center text-destructive">
+                <AlertTriangle className="h-5 w-5 mr-2 text-destructive" />
+                Anomaly Detection
+              </CardTitle>
+              <CardDescription>
+                {metricsSummary.totals.anomalyCount} anomalies detected requiring attention
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-center p-3 rounded-md bg-destructive/5">
+                  <div className="mr-3 bg-destructive/10 rounded-full p-2">
+                    <AlertTriangle className="h-5 w-5 text-destructive" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium">Anomalies</div>
+                    <div className="text-2xl font-bold text-destructive">{metricsSummary.totals.anomalyCount}</div>
+                  </div>
+                </div>
+                <div className="flex items-center p-3 rounded-md bg-amber-500/5">
+                  <div className="mr-3 bg-amber-500/10 rounded-full p-2">
+                    <AlertTriangle className="h-5 w-5 text-amber-500" />
+                  </div>
+                  <div>
+                    <div className="text-sm font-medium">Watch Status</div>
+                    <div className="text-2xl font-bold text-amber-500">{metricsSummary.totals.watchStatusCount}</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-4">
+                <Button 
+                  variant="outline" 
+                  className="border-destructive/30 text-destructive hover:bg-destructive/5"
+                  onClick={handleDetectAnomalies}
+                >
+                  Re-run Anomaly Detection
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+      
       {/* Detailed Metrics Table */}
       <Card>
         <CardHeader>

@@ -15,7 +15,7 @@ import {
   Download,
   Calendar
 } from "lucide-react";
-import { FilterOptions, SKU, BehavioralMetricsData, TimelineEvent, BrandHealthMetricsData } from "@/lib/types";
+import { FilterOptions, SKU, BehavioralMetricsData, BehavioralMetricsResponse, TimelineEvent, BrandHealthMetricsData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { apiRequest } from "@/lib/queryClient";
@@ -40,13 +40,16 @@ export default function Dashboard() {
   const defaultSkuId = skus.length > 0 ? skus[0].id : null;
   
   // Fetch behavioral metrics for the selected SKU or default SKU
-  const { data: behavioralMetrics = [] } = useQuery<BehavioralMetricsData[]>({
+  const { data: behavioralResponse } = useQuery<BehavioralMetricsResponse>({
     queryKey: [
       "/api/behavioral-metrics", 
       `?skuId=${filters.selectedSku !== "all" ? filters.selectedSku : defaultSkuId}`
     ],
     enabled: skus.length > 0, // Only run query when SKUs are loaded
   });
+  
+  // Extract metrics from response
+  const behavioralMetrics = behavioralResponse?.metrics || [];
 
   // Fetch brand health metrics
   const { data: brandHealthMetrics = [] } = useQuery<BrandHealthMetricsData[]>({
@@ -87,7 +90,7 @@ export default function Dashboard() {
   };
 
   // Find anomaly data for the survey trigger
-  const anomalyData = behavioralMetrics.find(metric => metric.status === "anomaly");
+  const anomalyData = behavioralMetrics.find((metric: BehavioralMetricsData) => metric.status === "anomaly");
   const anomalySKU = anomalyData ? skus.find(sku => sku.id === anomalyData.skuId) : undefined;
 
   const handleApplyFilters = (newFilters: {

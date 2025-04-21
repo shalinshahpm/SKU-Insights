@@ -161,39 +161,128 @@ export class MemStorage implements IStorage {
 
     // Create default behavioral metrics
     for (const sku of [kitkat, nescafe, nesquik, pureLife]) {
-      // Create metrics for last 7 days
+      // Create metrics for last 30 days (to have more comprehensive data)
       const today = new Date();
       
-      for (let i = 6; i >= 0; i--) {
+      // Set up baseline metrics for each SKU with distinct patterns
+      const baselineMetrics = {
+        kitkat: {
+          pageViews: 25000,
+          addToCart: 3500,
+          reviewVolume: 850,
+          rating: 4.3,
+          // Create campaign spike periods
+          campaignSpikes: [
+            { startDay: 20, endDay: 24, pageViewsMultiplier: 1.45, addToCartMultiplier: 1.35 },
+            { startDay: 5, endDay: 9, pageViewsMultiplier: 1.30, addToCartMultiplier: 1.25 }
+          ],
+          // Create anomalies or watch points
+          anomalies: [
+            { day: 2, metric: "addToCart", multiplier: 0.675, status: "anomaly" },
+            { day: 0, metric: "rating", value: 3.9, status: "watch" }
+          ]
+        },
+        nescafe: {
+          pageViews: 18000,
+          addToCart: 2200,
+          reviewVolume: 600,
+          rating: 4.5,
+          campaignSpikes: [
+            { startDay: 15, endDay: 19, pageViewsMultiplier: 1.40, addToCartMultiplier: 1.25 }
+          ],
+          anomalies: [
+            { day: 8, metric: "reviewVolume", multiplier: 1.65, status: "watch" }
+          ]
+        },
+        nesquik: {
+          pageViews: 12000,
+          addToCart: 1500,
+          reviewVolume: 400,
+          rating: 4.1,
+          campaignSpikes: [
+            { startDay: 10, endDay: 14, pageViewsMultiplier: 1.35, addToCartMultiplier: 1.20 }
+          ],
+          anomalies: []
+        },
+        pureLife: {
+          pageViews: 8000,
+          addToCart: 1000,
+          reviewVolume: 200,
+          rating: 4.0,
+          campaignSpikes: [
+            { startDay: 25, endDay: 29, pageViewsMultiplier: 1.25, addToCartMultiplier: 1.15 }
+          ],
+          anomalies: []
+        }
+      };
+      
+      for (let i = 29; i >= 0; i--) {
         const date = new Date(today);
         date.setDate(date.getDate() - i);
         
-        // Generate random data with some patterns
-        const basePageViews = sku.id === kitkat.id ? 25000 : (sku.id === nescafe.id ? 18000 : (sku.id === nesquik.id ? 12000 : 8000));
-        const baseAddToCart = sku.id === kitkat.id ? 3500 : (sku.id === nescafe.id ? 2200 : (sku.id === nesquik.id ? 1500 : 1000));
-        const baseReviewVolume = sku.id === kitkat.id ? 850 : (sku.id === nescafe.id ? 600 : (sku.id === nesquik.id ? 400 : 200));
-        const baseRating = sku.id === kitkat.id ? 4.3 : (sku.id === nescafe.id ? 4.5 : (sku.id === nesquik.id ? 4.1 : 4.0));
+        // Get the appropriate baseline for this SKU
+        const baseline = sku.id === kitkat.id 
+          ? baselineMetrics.kitkat 
+          : (sku.id === nescafe.id 
+              ? baselineMetrics.nescafe 
+              : (sku.id === nesquik.id 
+                  ? baselineMetrics.nesquik 
+                  : baselineMetrics.pureLife));
         
-        // Add some random variation
-        const randomFactor = 0.9 + Math.random() * 0.2; // 0.9 to 1.1
-        
-        // Add dramatic drop for KitKat on the latest day
+        // Start with baseline values
+        let pageViews = baseline.pageViews;
+        let addToCart = baseline.addToCart;
+        let reviewVolume = baseline.reviewVolume;
+        let averageRating = baseline.rating;
         let status = "normal";
-        let pageViews = Math.round(basePageViews * randomFactor);
-        let addToCart = Math.round(baseAddToCart * randomFactor);
-        let reviewVolume = Math.round(baseReviewVolume * randomFactor);
-        let averageRating = baseRating * randomFactor;
         
-        // Create anomaly for KitKat's add-to-cart on the latest day
-        if (sku.id === kitkat.id && i === 0) {
-          addToCart = Math.round(baseAddToCart * 0.675); // 32.5% drop
-          status = "anomaly";
+        // Apply weekly pattern (weekend dips)
+        const dayOfWeek = date.getDay(); // 0 is Sunday, 6 is Saturday
+        if (dayOfWeek === 0 || dayOfWeek === 6) {
+          pageViews = Math.round(pageViews * 0.85);
+          addToCart = Math.round(addToCart * 0.80);
         }
         
-        // Watch status for rating drop
-        if (sku.id === kitkat.id && i === 0) {
-          averageRating = baseRating - 0.4;
-          status = averageRating < 4.0 ? "watch" : status;
+        // Apply slight upward trend over time (1% growth per week)
+        const weekMultiplier = 1 + ((29 - i) / 7) * 0.01;
+        pageViews = Math.round(pageViews * weekMultiplier);
+        addToCart = Math.round(addToCart * weekMultiplier);
+        reviewVolume = Math.round(reviewVolume * weekMultiplier);
+        
+        // Apply campaign spikes if applicable
+        const campaignSpike = baseline.campaignSpikes.find(
+          spike => i <= spike.endDay && i >= spike.startDay
+        );
+        
+        if (campaignSpike) {
+          pageViews = Math.round(pageViews * campaignSpike.pageViewsMultiplier);
+          addToCart = Math.round(addToCart * campaignSpike.addToCartMultiplier);
+        }
+        
+        // Apply day-to-day random variation
+        const randomFactor = 0.95 + Math.random() * 0.1; // 0.95 to 1.05
+        pageViews = Math.round(pageViews * randomFactor);
+        addToCart = Math.round(addToCart * randomFactor);
+        reviewVolume = Math.round(reviewVolume * randomFactor);
+        averageRating = Math.min(5, Math.max(1, averageRating * (0.98 + Math.random() * 0.04)));
+        
+        // Apply specific anomalies if applicable
+        const anomaly = baseline.anomalies.find(
+          a => a.day === i
+        );
+        
+        if (anomaly) {
+          if (anomaly.metric === "pageViews") {
+            pageViews = Math.round(pageViews * (anomaly.multiplier || 1));
+          } else if (anomaly.metric === "addToCart") {
+            addToCart = Math.round(addToCart * (anomaly.multiplier || 1));
+          } else if (anomaly.metric === "reviewVolume") {
+            reviewVolume = Math.round(reviewVolume * (anomaly.multiplier || 1));
+          } else if (anomaly.metric === "rating") {
+            averageRating = anomaly.value || averageRating;
+          }
+          
+          status = anomaly.status || status;
         }
         
         this.createBehavioralMetric({
