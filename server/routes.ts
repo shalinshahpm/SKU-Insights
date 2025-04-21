@@ -240,13 +240,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
           parseFloat(((secondHalfConversion - firstHalfConversion) / firstHalfConversion * 100).toFixed(1));
       }
       
-      // Return both raw metrics and the aggregated executive summary
+      // Add executive insights for C-suite level decision making
+      // Get today's metrics and yesterday's metrics for day-over-day comparison
+      const metricsToday = filteredMetrics.length > 0 ? filteredMetrics[0] : null;
+      const metricsYesterday = filteredMetrics.length > 1 ? filteredMetrics[1] : null;
+      
+      // Find metrics from 7 days ago for week-over-week comparison
+      const metrics7DaysAgo = filteredMetrics.find(m => {
+        if (!metricsToday) return false;
+        const metricDate = new Date(m.date);
+        const todayDate = new Date(metricsToday.date);
+        const diffTime = Math.abs(todayDate.getTime() - metricDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays >= 6 && diffDays <= 8; // Allow some flexibility
+      });
+      
+      // Calculate executive insights for day-over-day and week-over-week changes
+      const executiveInsights = {
+        dailyChange: !metricsToday || !metricsYesterday ? null : {
+          pageViews: {
+            value: metricsToday.pageViews - metricsYesterday.pageViews,
+            percentage: parseFloat((((metricsToday.pageViews - metricsYesterday.pageViews) / metricsYesterday.pageViews) * 100).toFixed(1))
+          },
+          addToCart: {
+            value: metricsToday.addToCart - metricsYesterday.addToCart,
+            percentage: parseFloat((((metricsToday.addToCart - metricsYesterday.addToCart) / metricsYesterday.addToCart) * 100).toFixed(1))
+          },
+          conversionRate: {
+            current: parseFloat(((metricsToday.addToCart / metricsToday.pageViews) * 100).toFixed(1)),
+            previous: parseFloat(((metricsYesterday.addToCart / metricsYesterday.pageViews) * 100).toFixed(1)),
+            change: parseFloat((((metricsToday.addToCart / metricsToday.pageViews) - 
+                              (metricsYesterday.addToCart / metricsYesterday.pageViews)) * 100).toFixed(1))
+          },
+          reviewVolume: {
+            value: metricsToday.reviewVolume - metricsYesterday.reviewVolume,
+            percentage: parseFloat((((metricsToday.reviewVolume - metricsYesterday.reviewVolume) / metricsYesterday.reviewVolume) * 100).toFixed(1))
+          },
+          rating: {
+            value: parseFloat((metricsToday.averageRating - metricsYesterday.averageRating).toFixed(1)),
+            percentage: parseFloat((((metricsToday.averageRating - metricsYesterday.averageRating) / metricsYesterday.averageRating) * 100).toFixed(1))
+          }
+        },
+        weeklyChange: !metricsToday || !metrics7DaysAgo ? null : {
+          pageViews: {
+            value: metricsToday.pageViews - metrics7DaysAgo.pageViews,
+            percentage: parseFloat((((metricsToday.pageViews - metrics7DaysAgo.pageViews) / metrics7DaysAgo.pageViews) * 100).toFixed(1))
+          },
+          addToCart: {
+            value: metricsToday.addToCart - metrics7DaysAgo.addToCart,
+            percentage: parseFloat((((metricsToday.addToCart - metrics7DaysAgo.addToCart) / metrics7DaysAgo.addToCart) * 100).toFixed(1))
+          },
+          conversionRate: {
+            current: parseFloat(((metricsToday.addToCart / metricsToday.pageViews) * 100).toFixed(1)),
+            previous: parseFloat(((metrics7DaysAgo.addToCart / metrics7DaysAgo.pageViews) * 100).toFixed(1)),
+            change: parseFloat((((metricsToday.addToCart / metricsToday.pageViews) - 
+                              (metrics7DaysAgo.addToCart / metrics7DaysAgo.pageViews)) * 100).toFixed(1))
+          },
+          reviewVolume: {
+            value: metricsToday.reviewVolume - metrics7DaysAgo.reviewVolume,
+            percentage: parseFloat((((metricsToday.reviewVolume - metrics7DaysAgo.reviewVolume) / metrics7DaysAgo.reviewVolume) * 100).toFixed(1))
+          },
+          rating: {
+            value: parseFloat((metricsToday.averageRating - metrics7DaysAgo.averageRating).toFixed(1)),
+            percentage: parseFloat((((metricsToday.averageRating - metrics7DaysAgo.averageRating) / metrics7DaysAgo.averageRating) * 100).toFixed(1))
+          }
+        },
+        // Find peak performance days
+        peakPerformance: {
+          pageViews: {
+            value: Math.max(...filteredMetrics.map(m => m.pageViews)),
+            date: new Date(filteredMetrics.find(m => m.pageViews === Math.max(...filteredMetrics.map(m => m.pageViews)))?.date || '')
+          },
+          addToCart: {
+            value: Math.max(...filteredMetrics.map(m => m.addToCart)),
+            date: new Date(filteredMetrics.find(m => m.addToCart === Math.max(...filteredMetrics.map(m => m.addToCart)))?.date || '')
+          },
+          conversionRate: (() => {
+            const conversionRates = filteredMetrics.map(m => (m.addToCart / m.pageViews) * 100);
+            const maxRate = Math.max(...conversionRates);
+            const maxRateIndex = conversionRates.findIndex(rate => rate === maxRate);
+            return {
+              value: parseFloat(maxRate.toFixed(1)),
+              date: maxRateIndex >= 0 ? new Date(filteredMetrics[maxRateIndex].date) : new Date()
+            };
+          })()
+        },
+        // Summary of anomalies for quick executive review
+        anomalyHighlights: filteredMetrics
+          .filter(m => m.status === "anomaly")
+          .map(m => ({
+            date: new Date(m.date),
+            metrics: {
+              pageViews: m.pageViews,
+              addToCart: m.addToCart,
+              reviewVolume: m.reviewVolume,
+              rating: m.averageRating
+            },
+            // Calculate percentage difference from 7-day average before the anomaly
+            deviation: (() => {
+              const anomalyDate = new Date(m.date);
+              const weekBeforeMetrics = filteredMetrics.filter(fm => {
+                const fmDate = new Date(fm.date);
+                const diffTime = anomalyDate.getTime() - fmDate.getTime();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return diffDays > 0 && diffDays <= 7;
+              });
+              
+              if (weekBeforeMetrics.length === 0) return null;
+              
+              const avgPageViews = weekBeforeMetrics.reduce((sum, wm) => sum + wm.pageViews, 0) / weekBeforeMetrics.length;
+              const avgAddToCart = weekBeforeMetrics.reduce((sum, wm) => sum + wm.addToCart, 0) / weekBeforeMetrics.length;
+              const avgReviewVolume = weekBeforeMetrics.reduce((sum, wm) => sum + wm.reviewVolume, 0) / weekBeforeMetrics.length;
+              const avgRating = weekBeforeMetrics.reduce((sum, wm) => sum + wm.averageRating, 0) / weekBeforeMetrics.length;
+              
+              return {
+                pageViews: parseFloat((((m.pageViews - avgPageViews) / avgPageViews) * 100).toFixed(1)),
+                addToCart: parseFloat((((m.addToCart - avgAddToCart) / avgAddToCart) * 100).toFixed(1)),
+                reviewVolume: parseFloat((((m.reviewVolume - avgReviewVolume) / avgReviewVolume) * 100).toFixed(1)),
+                rating: parseFloat((((m.averageRating - avgRating) / avgRating) * 100).toFixed(1))
+              };
+            })()
+          }))
+      };
+      
+      // Return both raw metrics and the enhanced executive summary
       res.json({
         metrics: filteredMetrics,
         summary: {
           timeframe,
           totals,
-          trends
+          trends,
+          executiveInsights
         }
       });
     } else {
