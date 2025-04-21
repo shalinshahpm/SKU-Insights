@@ -3,23 +3,27 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription }
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { MoreHorizontal, AlertTriangle } from "lucide-react";
-import { BehavioralMetricsData, BehavioralTableData } from "@/lib/types";
+import { MoreHorizontal, AlertTriangle, Calendar, TrendingUp, TrendingDown, BarChart } from "lucide-react";
+import { BehavioralMetricsData, BehavioralMetricsResponse, BehavioralTableData } from "@/lib/types";
 import { BehavioralChart } from "./BehavioralChart";
+import { format } from "date-fns";
 
 interface BehavioralIntelligenceProps {
   behavioralData: BehavioralMetricsData[];
+  behavioralSummary?: BehavioralMetricsResponse['summary'];
   onViewAllMetrics: () => void;
   onInvestigate: (metric: string) => void;
 }
 
 export function BehavioralIntelligence({
   behavioralData,
+  behavioralSummary,
   onViewAllMetrics,
   onInvestigate,
 }: BehavioralIntelligenceProps) {
   const [anomalyCount] = useState(() => {
-    return behavioralData.filter(metric => metric.status === "anomaly").length;
+    return behavioralSummary?.totals?.anomalyCount || 
+      behavioralData.filter(metric => metric.status === "anomaly").length;
   });
 
   // Create table data from the most recent metrics
@@ -34,7 +38,54 @@ export function BehavioralIntelligence({
   // Calculate daily changes
   const tableData: BehavioralTableData[] = [];
   
-  if (latestMetrics && previousDayMetrics) {
+  // Use executive insights if available, otherwise calculate from raw data
+  if (behavioralSummary?.executiveInsights?.dailyChange && latestMetrics) {
+    const { dailyChange } = behavioralSummary.executiveInsights;
+    
+    // Page Views with executive insights
+    tableData.push({
+      metric: "Page Views",
+      current: latestMetrics.pageViews.toLocaleString(),
+      dailyChange: dailyChange.pageViews?.percentage || 0,
+      status: latestMetrics.status
+    });
+
+    // Add to Cart with executive insights
+    tableData.push({
+      metric: "Add-to-Cart",
+      current: latestMetrics.addToCart.toLocaleString(),
+      dailyChange: dailyChange.addToCart?.percentage || 0, 
+      status: latestMetrics.status === "anomaly" ? "anomaly" : "normal"
+    });
+
+    // Add Conversion Rate as an executive metric
+    if (dailyChange.conversionRate) {
+      tableData.push({
+        metric: "Conversion Rate",
+        current: `${dailyChange.conversionRate.current.toFixed(1)}%`,
+        dailyChange: dailyChange.conversionRate.change,
+        status: Math.abs(dailyChange.conversionRate.change) > 5 ? "watch" : "normal"
+      });
+    }
+
+    // Review Volume with executive insights
+    tableData.push({
+      metric: "Review Volume",
+      current: latestMetrics.reviewVolume.toLocaleString(),
+      dailyChange: dailyChange.reviewVolume?.percentage || 0,
+      status: "normal"
+    });
+
+    // Average Rating with executive insights
+    tableData.push({
+      metric: "Average Rating",
+      current: `${latestMetrics.averageRating.toFixed(1)} / 5`,
+      dailyChange: dailyChange.rating?.percentage || 0,
+      status: Math.abs(dailyChange.rating?.value || 0) >= 0.3 ? "watch" : "normal"
+    });
+  } else if (latestMetrics && previousDayMetrics) {
+    // Fallback to manual calculation if executive insights aren't available
+    
     // Page Views
     const pageViewsChange = ((latestMetrics.pageViews - previousDayMetrics.pageViews) / previousDayMetrics.pageViews) * 100;
     tableData.push({
@@ -51,6 +102,18 @@ export function BehavioralIntelligence({
       current: latestMetrics.addToCart.toLocaleString(),
       dailyChange: addToCartChange,
       status: latestMetrics.status === "anomaly" && Math.abs(addToCartChange) > 30 ? "anomaly" : "normal"
+    });
+
+    // Calculate conversion rate
+    const currentConversion = (latestMetrics.addToCart / latestMetrics.pageViews) * 100;
+    const previousConversion = (previousDayMetrics.addToCart / previousDayMetrics.pageViews) * 100;
+    const conversionChange = currentConversion - previousConversion;
+    
+    tableData.push({
+      metric: "Conversion Rate",
+      current: `${currentConversion.toFixed(1)}%`,
+      dailyChange: (conversionChange / previousConversion) * 100,
+      status: Math.abs(conversionChange) > 1 ? "watch" : "normal"
     });
 
     // Review Volume
@@ -158,7 +221,8 @@ export function BehavioralIntelligence({
       
       <CardFooter className="bg-muted/10 py-3 border-t justify-end">
         <Button 
-          variant="primary" 
+          variant="default" 
+          className="bg-primary hover:bg-primary/90 text-white"
           onClick={onViewAllMetrics}
         >
           View All Metrics

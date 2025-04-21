@@ -246,6 +246,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <BehavioralIntelligence
           behavioralData={behavioralMetrics}
+          behavioralSummary={behavioralResponse?.summary}
           onViewAllMetrics={handleViewAllMetrics}
           onInvestigate={handleInvestigateMetric}
         />

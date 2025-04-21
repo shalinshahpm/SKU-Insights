@@ -31,6 +31,42 @@ export type BehavioralMetricsResponse = {
       ratingTrend: number;
       conversionRateTrend: number;
     };
+    executiveInsights?: {
+      dailyChange: {
+        pageViews: { value: number; percentage: number } | null;
+        addToCart: { value: number; percentage: number } | null;
+        conversionRate: { current: number; previous: number; change: number } | null;
+        reviewVolume: { value: number; percentage: number } | null;
+        rating: { value: number; percentage: number } | null;
+      } | null;
+      weeklyChange: {
+        pageViews: { value: number; percentage: number } | null;
+        addToCart: { value: number; percentage: number } | null;
+        conversionRate: { current: number; previous: number; change: number } | null;
+        reviewVolume: { value: number; percentage: number } | null;
+        rating: { value: number; percentage: number } | null;
+      } | null;
+      peakPerformance: {
+        pageViews: { value: number; date: Date };
+        addToCart: { value: number; date: Date };
+        conversionRate: { value: number; date: Date };
+      };
+      anomalyHighlights: Array<{
+        date: Date;
+        metrics: {
+          pageViews: number;
+          addToCart: number;
+          reviewVolume: number;
+          rating: number;
+        };
+        deviation: {
+          pageViews: number;
+          addToCart: number;
+          reviewVolume: number;
+          rating: number;
+        } | null;
+      }>;
+    };
   } | null;
 }
 
