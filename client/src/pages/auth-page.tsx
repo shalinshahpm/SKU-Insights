@@ -273,13 +273,13 @@ const AuthPage = () => {
           </Tabs>
           
           <div className="mt-6 text-center">
-            <Link href="/dashboard">
-              <a>
-                <Button variant="outline" className="w-full mt-4">
-                  Continue as Guest
-                </Button>
-              </a>
-            </Link>
+            <Button 
+              variant="outline" 
+              className="w-full mt-4"
+              onClick={() => window.location.href = '/dashboard'}
+            >
+              Continue as Guest
+            </Button>
           </div>
           
           <div className="text-center mt-6">

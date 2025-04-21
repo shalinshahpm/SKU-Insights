@@ -19,7 +19,7 @@ const IndexPage = () => {
           </nav>
           <div className="flex items-center gap-4">
             <Link href="/auth">
-              <a className="text-sm hover:text-blue-600">Sign In</a>
+              <Button variant="link" className="text-sm p-0 m-0 h-auto">Sign In</Button>
             </Link>
             <a href="#contact" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Talk to Us</a>
           </div>
@@ -39,9 +39,13 @@ const IndexPage = () => {
               </ul>
               <div className="flex flex-col sm:flex-row gap-4">
                 <a href="#contact" className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 text-sm">Schedule Call</a>
-                <Link href="/auth">
-                  <Button variant="outline" className="px-6 py-3">See Sample Dashboard</Button>
-                </Link>
+                <Button 
+                  variant="outline" 
+                  className="px-6 py-3"
+                  onClick={() => window.location.href = '/auth'}
+                >
+                  See Sample Dashboard
+                </Button>
               </div>
             </div>
             <div className="relative">
@@ -166,9 +170,12 @@ const IndexPage = () => {
             <p className="text-gray-600 max-w-xl mx-auto mb-6">Talk with our team to tailor SKU Pulse to your commercial playbook.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a href="https://www.linkedin.com/in/shalinshah2/" target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 text-sm font-medium">Book Strategy Call</a>
-              <Link href="/auth">
-                <Button className="px-6 py-3">Sign In</Button>
-              </Link>
+              <Button 
+                className="px-6 py-3"
+                onClick={() => window.location.href = '/auth'}
+              >
+                Sign In
+              </Button>
             </div>
           </div>
         </section>
