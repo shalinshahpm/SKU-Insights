@@ -143,7 +143,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } else if (date) {
       metrics = await storage.getBehavioralMetricsForDate(date);
     } else {
-      return res.status(400).json({ message: "Either skuId or date must be provided" });
+      // Get all behavioral metrics for the first SKU if none specified
+      const allSkus = await storage.getSKUs();
+      if (allSkus.length > 0) {
+        metrics = await storage.getBehavioralMetricsBySkuId(allSkus[0].id);
+      } else {
+        metrics = []; // Return empty array if no SKUs exist
+      }
     }
     
     res.json(metrics);

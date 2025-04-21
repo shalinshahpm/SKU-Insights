@@ -66,11 +66,11 @@ export default function Behavioral() {
       value: sku.id.toString(),
       label: `${sku.name} (${sku.region})`,
     })),
-    markets: [...new Set(skus.map((sku) => sku.market))].map((market) => ({
+    markets: Array.from(new Set(skus.map((sku) => sku.market))).map((market) => ({
       value: market,
       label: market,
     })),
-    regions: [...new Set(skus.map((sku) => sku.region))].map((region) => ({
+    regions: Array.from(new Set(skus.map((sku) => sku.region))).map((region) => ({
       value: region,
       label: region,
     })),
