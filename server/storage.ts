@@ -5,7 +5,14 @@ import {
   type BrandHealthMetric, type InsertBrandHealthMetric,
   type TimelineEvent, type InsertTimelineEvent,
   type AnomalySetting, type InsertAnomalySetting,
-  type QuestionTemplate, type InsertQuestionTemplate
+  type QuestionTemplate, type InsertQuestionTemplate,
+  type LaunchPhase, type InsertLaunchPhase,
+  type SuccessThreshold, type InsertSuccessThreshold,
+  type MicroSurvey, type InsertMicroSurvey,
+  type MicroSurveyResponse, type InsertMicroSurveyResponse,
+  type SocialListeningData, type InsertSocialListeningData,
+  type LaunchIntervention, type InsertLaunchIntervention,
+  type AppliedIntervention, type InsertAppliedIntervention
 } from "@shared/schema";
 
 export interface IStorage {
@@ -146,6 +153,13 @@ export class MemStorage implements IStorage {
     this.timelineEvents = new Map();
     this.anomalySettings = new Map();
     this.questionTemplates = new Map();
+    this.launchPhases = new Map();
+    this.successThresholds = new Map();
+    this.microSurveys = new Map();
+    this.microSurveyResponses = new Map();
+    this.socialListeningData = new Map();
+    this.launchInterventions = new Map();
+    this.appliedInterventions = new Map();
     
     this.currentUserId = 1;
     this.currentSkuId = 1;
@@ -155,19 +169,84 @@ export class MemStorage implements IStorage {
     this.currentTimelineEventId = 1;
     this.currentAnomalySettingId = 1;
     this.currentQuestionTemplateId = 1;
+    this.currentLaunchPhaseId = 1;
+    this.currentSuccessThresholdId = 1;
+    this.currentMicroSurveyId = 1;
+    this.currentMicroSurveyResponseId = 1;
+    this.currentSocialListeningDataId = 1;
+    this.currentLaunchInterventionId = 1;
+    this.currentAppliedInterventionId = 1;
     
     // Initialize with some data
     this.initializeData();
   }
 
   private initializeData() {
+    // Create default launch phases
+    const phasePre = this.createLaunchPhase({
+      name: "Pre-Launch",
+      description: "30 days before launch - preparation and anticipation",
+      daysFromLaunch: -30,
+      order: 1
+    });
+    
+    const phaseWeek1 = this.createLaunchPhase({
+      name: "Week 1",
+      description: "1-7 days after launch - initial reception and visibility",
+      daysFromLaunch: 1,
+      order: 2
+    });
+    
+    const phaseWeek2 = this.createLaunchPhase({
+      name: "Week 2-4",
+      description: "8-30 days after launch - early adoption and momentum building",
+      daysFromLaunch: 8,
+      order: 3
+    });
+    
+    const phaseMonth2 = this.createLaunchPhase({
+      name: "Month 2-3",
+      description: "31-90 days after launch - sustained growth and market establishment",
+      daysFromLaunch: 31,
+      order: 4
+    });
+    
+    // Create default launch interventions
+    this.createLaunchIntervention({
+      name: "Price Promotion",
+      description: "Temporary price reduction to stimulate trial and purchase",
+      category: "pricing",
+      interventionType: "discount",
+      targetMetrics: ["add_to_cart", "page_views"],
+      implementationSteps: [
+        "Set promotional price in retail systems",
+        "Update product detail pages to highlight discount",
+        "Add promotional banners to relevant pages"
+      ],
+      expectedImpact: "20-30% increase in add-to-cart rate, 10-15% increase in page views"
+    });
+    
+    this.createLaunchIntervention({
+      name: "Enhanced Product Visibility",
+      description: "Increase product visibility through category placement and featured spots",
+      category: "merchandising",
+      interventionType: "visibility",
+      targetMetrics: ["page_views"],
+      implementationSteps: [
+        "Secure premium shelf placement",
+        "Negotiate featured spot on retailer homepage",
+        "Add end-cap displays in physical retail"
+      ],
+      expectedImpact: "25-40% increase in page views, 15-25% increase in overall sales"
+    });
+    
     // Create default users
     this.createUser({
       username: "brand_manager",
       password: "password123",
       fullName: "Sam Johnson",
       role: "brand_manager",
-      avatar: undefined
+      avatar: null
     });
 
     this.createUser({
@@ -175,7 +254,7 @@ export class MemStorage implements IStorage {
       password: "password123",
       fullName: "Emily Wilson",
       role: "regional_insights",
-      avatar: undefined
+      avatar: null
     });
 
     this.createUser({
@@ -183,7 +262,7 @@ export class MemStorage implements IStorage {
       password: "password123",
       fullName: "Alex Chen",
       role: "global_marketing",
-      avatar: undefined
+      avatar: null
     });
 
     // Create default SKUs
@@ -566,11 +645,18 @@ export class MemStorage implements IStorage {
     return Array.from(this.skus.values()).filter(sku => sku.market === market);
   }
 
+  async getNewLaunchSKUs(): Promise<SKU[]> {
+    return Array.from(this.skus.values()).filter(sku => sku.isNewLaunch === true);
+  }
+
   async createSKU(insertSKU: InsertSKU): Promise<SKU> {
     const id = this.currentSkuId++;
     const sku: SKU = { 
       ...insertSKU, 
       id, 
+      launchDate: insertSKU.launchDate || null,
+      isNewLaunch: insertSKU.isNewLaunch || false,
+      category: insertSKU.category || null,
       createdAt: new Date() 
     };
     this.skus.set(id, sku);
@@ -587,6 +673,24 @@ export class MemStorage implements IStorage {
     });
 
     return sku;
+  }
+
+  async updateSKU(id: number, updateData: Partial<InsertSKU>): Promise<SKU> {
+    const existingSKU = await this.getSKU(id);
+    
+    if (!existingSKU) {
+      throw new Error(`SKU with ID ${id} not found`);
+    }
+    
+    const updatedSKU: SKU = {
+      ...existingSKU,
+      ...updateData,
+      id: existingSKU.id,
+      createdAt: existingSKU.createdAt
+    };
+    
+    this.skus.set(id, updatedSKU);
+    return updatedSKU;
   }
 
   async deleteSKU(id: number): Promise<boolean> {
@@ -867,6 +971,274 @@ export class MemStorage implements IStorage {
     const template: QuestionTemplate = { ...insertTemplate, id };
     this.questionTemplates.set(id, template);
     return template;
+  }
+  
+  // Launch phase methods
+  async getLaunchPhase(id: number): Promise<LaunchPhase | undefined> {
+    return this.launchPhases.get(id);
+  }
+  
+  async getLaunchPhases(): Promise<LaunchPhase[]> {
+    return Array.from(this.launchPhases.values());
+  }
+  
+  async createLaunchPhase(insertPhase: InsertLaunchPhase): Promise<LaunchPhase> {
+    const id = this.currentLaunchPhaseId++;
+    const phase: LaunchPhase = { ...insertPhase, id };
+    this.launchPhases.set(id, phase);
+    return phase;
+  }
+  
+  // Success threshold methods
+  async getSuccessThreshold(id: number): Promise<SuccessThreshold | undefined> {
+    return this.successThresholds.get(id);
+  }
+  
+  async getSuccessThresholdsBySkuId(skuId: number): Promise<SuccessThreshold[]> {
+    return Array.from(this.successThresholds.values()).filter(threshold => threshold.skuId === skuId);
+  }
+  
+  async getSuccessThresholdsByPhaseId(phaseId: number): Promise<SuccessThreshold[]> {
+    return Array.from(this.successThresholds.values()).filter(threshold => threshold.phaseId === phaseId);
+  }
+  
+  async createSuccessThreshold(insertThreshold: InsertSuccessThreshold): Promise<SuccessThreshold> {
+    const id = this.currentSuccessThresholdId++;
+    const threshold: SuccessThreshold = { ...insertThreshold, id };
+    this.successThresholds.set(id, threshold);
+    return threshold;
+  }
+  
+  async updateSuccessThreshold(id: number, thresholdData: Partial<SuccessThreshold>): Promise<SuccessThreshold> {
+    const existingThreshold = await this.getSuccessThreshold(id);
+    
+    if (!existingThreshold) {
+      throw new Error(`Success threshold with ID ${id} not found`);
+    }
+    
+    const updatedThreshold: SuccessThreshold = {
+      ...existingThreshold,
+      ...thresholdData,
+      id: existingThreshold.id
+    };
+    
+    this.successThresholds.set(id, updatedThreshold);
+    return updatedThreshold;
+  }
+  
+  // Micro-survey methods
+  async getMicroSurvey(id: number): Promise<MicroSurvey | undefined> {
+    return this.microSurveys.get(id);
+  }
+  
+  async getMicroSurveysBySkuId(skuId: number): Promise<MicroSurvey[]> {
+    return Array.from(this.microSurveys.values()).filter(survey => survey.skuId === skuId);
+  }
+  
+  async getActiveMicroSurveys(): Promise<MicroSurvey[]> {
+    return Array.from(this.microSurveys.values()).filter(survey => survey.isActive === true);
+  }
+  
+  async createMicroSurvey(insertSurvey: InsertMicroSurvey): Promise<MicroSurvey> {
+    const id = this.currentMicroSurveyId++;
+    const survey: MicroSurvey = { 
+      ...insertSurvey, 
+      id,
+      createdAt: new Date()
+    };
+    this.microSurveys.set(id, survey);
+    
+    // Create a timeline event for the new micro-survey
+    const sku = this.skus.get(insertSurvey.skuId);
+    if (sku) {
+      this.createTimelineEvent({
+        skuId: insertSurvey.skuId,
+        type: "micro_survey_created",
+        title: "Micro-Survey Deployed",
+        description: `${sku.name} (${sku.region}) - ${insertSurvey.question}`,
+        data: {
+          details: `Micro-survey deployed for ${sku.name}. Targeting: ${insertSurvey.target}.`,
+          microSurveyId: id
+        }
+      });
+    }
+    
+    return survey;
+  }
+  
+  async updateMicroSurveyStatus(id: number, isActive: boolean): Promise<MicroSurvey> {
+    const survey = this.microSurveys.get(id);
+    if (!survey) {
+      throw new Error(`Micro-survey with id ${id} not found`);
+    }
+    
+    const updatedSurvey = { ...survey, isActive };
+    this.microSurveys.set(id, updatedSurvey);
+    
+    // Create a timeline event if the survey was deactivated
+    if (!isActive && survey.isActive) {
+      const sku = this.skus.get(survey.skuId);
+      if (sku) {
+        this.createTimelineEvent({
+          skuId: survey.skuId,
+          type: "micro_survey_completed",
+          title: "Micro-Survey Completed",
+          description: `${sku.name} (${sku.region}) - ${survey.question}`,
+          data: {
+            details: "Micro-survey has been completed. Results are now available for analysis.",
+            microSurveyId: id
+          }
+        });
+      }
+    }
+    
+    return updatedSurvey;
+  }
+  
+  // Micro-survey response methods
+  async getMicroSurveyResponses(surveyId: number): Promise<MicroSurveyResponse[]> {
+    return Array.from(this.microSurveyResponses.values())
+      .filter(response => response.surveyId === surveyId);
+  }
+  
+  async createMicroSurveyResponse(insertResponse: InsertMicroSurveyResponse): Promise<MicroSurveyResponse> {
+    const id = this.currentMicroSurveyResponseId++;
+    const response: MicroSurveyResponse = { 
+      ...insertResponse, 
+      id,
+      timestamp: new Date() 
+    };
+    this.microSurveyResponses.set(id, response);
+    return response;
+  }
+  
+  // Social listening methods
+  async getSocialListeningData(id: number): Promise<SocialListeningData | undefined> {
+    return this.socialListeningData.get(id);
+  }
+  
+  async getSocialListeningDataBySkuId(skuId: number): Promise<SocialListeningData[]> {
+    return Array.from(this.socialListeningData.values())
+      .filter(data => data.skuId === skuId)
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+  }
+  
+  async createSocialListeningData(insertData: InsertSocialListeningData): Promise<SocialListeningData> {
+    const id = this.currentSocialListeningDataId++;
+    const data: SocialListeningData = { 
+      ...insertData, 
+      id,
+      timestamp: new Date() 
+    };
+    this.socialListeningData.set(id, data);
+    
+    // Create a timeline event if sentiment is significantly negative
+    if (data.sentiment < -25) {
+      const sku = this.skus.get(data.skuId);
+      if (sku) {
+        this.createTimelineEvent({
+          skuId: data.skuId,
+          type: "negative_sentiment",
+          title: "Negative Social Sentiment Alert",
+          description: `${sku.name} (${sku.region}) - Social Listening Alert`,
+          data: {
+            details: `Significant negative sentiment detected in social media conversations about ${sku.name}. Source: ${data.source}. Sentiment score: ${data.sentiment}.`,
+            socialListeningDataId: id
+          }
+        });
+      }
+    }
+    
+    return data;
+  }
+  
+  // Launch intervention methods
+  async getLaunchIntervention(id: number): Promise<LaunchIntervention | undefined> {
+    return this.launchInterventions.get(id);
+  }
+  
+  async getLaunchInterventions(): Promise<LaunchIntervention[]> {
+    return Array.from(this.launchInterventions.values());
+  }
+  
+  async getLaunchInterventionsByCategory(category: string): Promise<LaunchIntervention[]> {
+    return Array.from(this.launchInterventions.values())
+      .filter(intervention => intervention.category === category);
+  }
+  
+  async createLaunchIntervention(insertIntervention: InsertLaunchIntervention): Promise<LaunchIntervention> {
+    const id = this.currentLaunchInterventionId++;
+    const intervention: LaunchIntervention = { ...insertIntervention, id };
+    this.launchInterventions.set(id, intervention);
+    return intervention;
+  }
+  
+  // Applied intervention methods
+  async getAppliedIntervention(id: number): Promise<AppliedIntervention | undefined> {
+    return this.appliedInterventions.get(id);
+  }
+  
+  async getAppliedInterventionsBySkuId(skuId: number): Promise<AppliedIntervention[]> {
+    return Array.from(this.appliedInterventions.values())
+      .filter(intervention => intervention.skuId === skuId)
+      .sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime());
+  }
+  
+  async createAppliedIntervention(insertIntervention: InsertAppliedIntervention): Promise<AppliedIntervention> {
+    const id = this.currentAppliedInterventionId++;
+    const intervention: AppliedIntervention = { 
+      ...insertIntervention, 
+      id,
+      appliedDate: new Date(),
+      status: "pending"
+    };
+    this.appliedInterventions.set(id, intervention);
+    
+    // Create a timeline event for the new intervention
+    const sku = this.skus.get(insertIntervention.skuId);
+    if (sku) {
+      this.createTimelineEvent({
+        skuId: insertIntervention.skuId,
+        type: "intervention_applied",
+        title: "Launch Intervention Applied",
+        description: `${sku.name} (${sku.region}) - ${insertIntervention.name}`,
+        data: {
+          details: `Intervention has been applied to address issues with ${sku.name}. Type: ${insertIntervention.interventionType}. Expected impact: ${insertIntervention.expectedImpact}.`,
+          appliedInterventionId: id
+        }
+      });
+    }
+    
+    return intervention;
+  }
+  
+  async updateAppliedInterventionStatus(id: number, status: string): Promise<AppliedIntervention> {
+    const intervention = this.appliedInterventions.get(id);
+    if (!intervention) {
+      throw new Error(`Applied intervention with id ${id} not found`);
+    }
+    
+    const updatedIntervention = { ...intervention, status };
+    this.appliedInterventions.set(id, updatedIntervention);
+    
+    // Create a timeline event if the intervention was completed
+    if (status === "completed" && intervention.status !== "completed") {
+      const sku = this.skus.get(intervention.skuId);
+      if (sku) {
+        this.createTimelineEvent({
+          skuId: intervention.skuId,
+          type: "intervention_completed",
+          title: "Intervention Results Available",
+          description: `${sku.name} (${sku.region}) - ${intervention.name}`,
+          data: {
+            details: "Intervention has been completed. Results are now available for analysis.",
+            appliedInterventionId: id
+          }
+        });
+      }
+    }
+    
+    return updatedIntervention;
   }
 }
 
