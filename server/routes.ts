@@ -9,14 +9,27 @@ import {
   insertBrandHealthMetricSchema, 
   insertTimelineEventSchema,
   insertAnomalySettingSchema,
-  insertQuestionTemplateSchema
+  insertQuestionTemplateSchema,
+  insertLaunchPhaseSchema,
+  insertSuccessThresholdSchema,
+  insertMicroSurveySchema,
+  insertMicroSurveyResponseSchema,
+  insertSocialListeningDataSchema,
+  insertLaunchInterventionSchema,
+  insertAppliedInterventionSchema
 } from "@shared/schema";
 import type {
   BehavioralMetric,
   Survey,
   TimelineEvent,
   AnomalySetting,
-  QuestionTemplate
+  QuestionTemplate,
+  LaunchPhase,
+  SuccessThreshold,
+  MicroSurvey,
+  SocialListeningData,
+  LaunchIntervention,
+  AppliedIntervention
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -913,6 +926,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     res.json(templates);
   });
+  
+  // Launch phase routes
+  app.get("/api/launch-phases", async (req: Request, res: Response) => {
+    try {
+      const phases = await storage.getLaunchPhases();
+      res.json(phases);
+    } catch (error) {
+      console.error("Error fetching launch phases:", error);
+      res.status(500).json({ message: "Failed to fetch launch phases" });
+    }
+  });
+  
+  app.post("/api/launch-phases", async (req: Request, res: Response) => {
+    try {
+      const result = insertLaunchPhaseSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid launch phase data", errors: result.error.format() });
+      }
+      
+      const phase = await storage.createLaunchPhase(result.data);
+      res.status(201).json(phase);
+    } catch (error) {
+      console.error("Error creating launch phase:", error);
+      res.status(500).json({ message: "Failed to create launch phase" });
+    }
+  });
+  
+  app.get("/api/launch-phases/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const phase = await storage.getLaunchPhase(id);
+      if (!phase) {
+        return res.status(404).json({ message: "Launch phase not found" });
+      }
+      
+      res.json(phase);
+    } catch (error) {
+      console.error("Error fetching launch phase:", error);
+      res.status(500).json({ message: "Failed to fetch launch phase" });
+    }
+  });
+  
+  // Success threshold routes
+  app.get("/api/success-thresholds", async (req: Request, res: Response) => {
+    try {
+      const { skuId, phaseId } = req.query;
+      
+      let thresholds;
+      if (skuId && typeof skuId === 'string') {
+        thresholds = await storage.getSuccessThresholdsBySkuId(parseInt(skuId));
+      } else if (phaseId && typeof phaseId === 'string') {
+        thresholds = await storage.getSuccessThresholdsByPhaseId(parseInt(phaseId));
+      } else {
+        const skus = await storage.getSKUs();
+        if (skus.length > 0) {
+          thresholds = await storage.getSuccessThresholdsBySkuId(skus[0].id);
+        } else {
+          thresholds = []; 
+        }
+      }
+      
+      res.json(thresholds);
+    } catch (error) {
+      console.error("Error fetching success thresholds:", error);
+      res.status(500).json({ message: "Failed to fetch success thresholds" });
+    }
+  });
+  
+  app.post("/api/success-thresholds", async (req: Request, res: Response) => {
+    try {
+      const result = insertSuccessThresholdSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid success threshold data", errors: result.error.format() });
+      }
+      
+      const threshold = await storage.createSuccessThreshold(result.data);
+      res.status(201).json(threshold);
+    } catch (error) {
+      console.error("Error creating success threshold:", error);
+      res.status(500).json({ message: "Failed to create success threshold" });
+    }
+  });
+  
+  app.get("/api/success-thresholds/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const threshold = await storage.getSuccessThreshold(id);
+      if (!threshold) {
+        return res.status(404).json({ message: "Success threshold not found" });
+      }
+      
+      res.json(threshold);
+    } catch (error) {
+      console.error("Error fetching success threshold:", error);
+      res.status(500).json({ message: "Failed to fetch success threshold" });
+    }
+  });
+  
+  app.patch("/api/success-thresholds/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const existingThreshold = await storage.getSuccessThreshold(id);
+      if (!existingThreshold) {
+        return res.status(404).json({ message: "Success threshold not found" });
+      }
+      
+      const result = insertSuccessThresholdSchema.partial().safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid success threshold data", errors: result.error.format() });
+      }
+      
+      const updatedThreshold = await storage.updateSuccessThreshold(id, result.data);
+      res.json(updatedThreshold);
+    } catch (error) {
+      console.error("Error updating success threshold:", error);
+      res.status(500).json({ message: "Failed to update success threshold" });
+    }
+  });
 
   app.post("/api/question-templates", async (req: Request, res: Response) => {
     try {
@@ -924,6 +1070,282 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid template data", errors: error.errors });
       }
       res.status(500).json({ message: "Failed to create question template" });
+    }
+  });
+  
+  // Micro-survey routes
+  app.get("/api/micro-surveys", async (req: Request, res: Response) => {
+    try {
+      const { skuId, active } = req.query;
+      
+      let surveys: MicroSurvey[] = [];
+      if (skuId && typeof skuId === 'string') {
+        surveys = await storage.getMicroSurveysBySkuId(parseInt(skuId));
+      } else if (active === 'true') {
+        surveys = await storage.getActiveMicroSurveys();
+      } else {
+        const skus = await storage.getSKUs();
+        if (skus.length > 0) {
+          surveys = await storage.getMicroSurveysBySkuId(skus[0].id);
+        }
+      }
+      
+      res.json(surveys);
+    } catch (error) {
+      console.error("Error fetching micro-surveys:", error);
+      res.status(500).json({ message: "Failed to fetch micro-surveys" });
+    }
+  });
+  
+  app.post("/api/micro-surveys", async (req: Request, res: Response) => {
+    try {
+      const result = insertMicroSurveySchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid micro-survey data", errors: result.error.format() });
+      }
+      
+      const survey = await storage.createMicroSurvey(result.data);
+      res.status(201).json(survey);
+    } catch (error) {
+      console.error("Error creating micro-survey:", error);
+      res.status(500).json({ message: "Failed to create micro-survey" });
+    }
+  });
+  
+  app.patch("/api/micro-surveys/:id/status", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const survey = await storage.getMicroSurvey(id);
+      if (!survey) {
+        return res.status(404).json({ message: "Micro-survey not found" });
+      }
+      
+      const statusSchema = z.object({
+        isActive: z.boolean()
+      });
+      
+      const result = statusSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid status data", errors: result.error.format() });
+      }
+      
+      const updatedSurvey = await storage.updateMicroSurveyStatus(id, result.data.isActive);
+      res.json(updatedSurvey);
+    } catch (error) {
+      console.error("Error updating micro-survey status:", error);
+      res.status(500).json({ message: "Failed to update micro-survey status" });
+    }
+  });
+  
+  app.get("/api/micro-surveys/:id/responses", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const responses = await storage.getMicroSurveyResponses(id);
+      res.json(responses);
+    } catch (error) {
+      console.error("Error fetching micro-survey responses:", error);
+      res.status(500).json({ message: "Failed to fetch micro-survey responses" });
+    }
+  });
+  
+  app.post("/api/micro-surveys/:id/responses", async (req: Request, res: Response) => {
+    try {
+      const surveyId = parseInt(req.params.id);
+      if (isNaN(surveyId)) {
+        return res.status(400).json({ message: "Invalid survey ID" });
+      }
+      
+      const survey = await storage.getMicroSurvey(surveyId);
+      if (!survey) {
+        return res.status(404).json({ message: "Micro-survey not found" });
+      }
+      
+      const responseSchema = z.object({
+        response: z.string()
+      });
+      
+      const result = responseSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid response data", errors: result.error.format() });
+      }
+      
+      const response = await storage.createMicroSurveyResponse({
+        surveyId,
+        response: result.data.response
+      });
+      
+      res.status(201).json(response);
+    } catch (error) {
+      console.error("Error creating micro-survey response:", error);
+      res.status(500).json({ message: "Failed to create micro-survey response" });
+    }
+  });
+  
+  // Social listening data routes
+  app.get("/api/social-listening", async (req: Request, res: Response) => {
+    try {
+      const { skuId } = req.query;
+      
+      let data: SocialListeningData[] = [];
+      if (skuId && typeof skuId === 'string') {
+        data = await storage.getSocialListeningDataBySkuId(parseInt(skuId));
+      } else {
+        const skus = await storage.getSKUs();
+        if (skus.length > 0) {
+          data = await storage.getSocialListeningDataBySkuId(skus[0].id);
+        }
+      }
+      
+      res.json(data);
+    } catch (error) {
+      console.error("Error fetching social listening data:", error);
+      res.status(500).json({ message: "Failed to fetch social listening data" });
+    }
+  });
+  
+  app.post("/api/social-listening", async (req: Request, res: Response) => {
+    try {
+      const result = insertSocialListeningDataSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid social listening data", errors: result.error.format() });
+      }
+      
+      const data = await storage.createSocialListeningData(result.data);
+      res.status(201).json(data);
+    } catch (error) {
+      console.error("Error creating social listening data:", error);
+      res.status(500).json({ message: "Failed to create social listening data" });
+    }
+  });
+  
+  // Launch intervention routes
+  app.get("/api/launch-interventions", async (req: Request, res: Response) => {
+    try {
+      const { category } = req.query;
+      
+      let interventions: LaunchIntervention[] = [];
+      if (category && typeof category === 'string') {
+        interventions = await storage.getLaunchInterventionsByCategory(category);
+      } else {
+        interventions = await storage.getLaunchInterventions();
+      }
+      
+      res.json(interventions);
+    } catch (error) {
+      console.error("Error fetching launch interventions:", error);
+      res.status(500).json({ message: "Failed to fetch launch interventions" });
+    }
+  });
+  
+  app.post("/api/launch-interventions", async (req: Request, res: Response) => {
+    try {
+      const result = insertLaunchInterventionSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid launch intervention data", errors: result.error.format() });
+      }
+      
+      const intervention = await storage.createLaunchIntervention(result.data);
+      res.status(201).json(intervention);
+    } catch (error) {
+      console.error("Error creating launch intervention:", error);
+      res.status(500).json({ message: "Failed to create launch intervention" });
+    }
+  });
+  
+  app.get("/api/launch-interventions/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const intervention = await storage.getLaunchIntervention(id);
+      if (!intervention) {
+        return res.status(404).json({ message: "Launch intervention not found" });
+      }
+      
+      res.json(intervention);
+    } catch (error) {
+      console.error("Error fetching launch intervention:", error);
+      res.status(500).json({ message: "Failed to fetch launch intervention" });
+    }
+  });
+  
+  // Applied intervention routes
+  app.get("/api/applied-interventions", async (req: Request, res: Response) => {
+    try {
+      const { skuId } = req.query;
+      
+      let interventions: AppliedIntervention[] = [];
+      if (skuId && typeof skuId === 'string') {
+        interventions = await storage.getAppliedInterventionsBySkuId(parseInt(skuId));
+      } else {
+        const skus = await storage.getSKUs();
+        if (skus.length > 0) {
+          interventions = await storage.getAppliedInterventionsBySkuId(skus[0].id);
+        }
+      }
+      
+      res.json(interventions);
+    } catch (error) {
+      console.error("Error fetching applied interventions:", error);
+      res.status(500).json({ message: "Failed to fetch applied interventions" });
+    }
+  });
+  
+  app.post("/api/applied-interventions", async (req: Request, res: Response) => {
+    try {
+      const result = insertAppliedInterventionSchema.safeParse(req.body);
+      
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid applied intervention data", errors: result.error.format() });
+      }
+      
+      const intervention = await storage.createAppliedIntervention(result.data);
+      res.status(201).json(intervention);
+    } catch (error) {
+      console.error("Error creating applied intervention:", error);
+      res.status(500).json({ message: "Failed to create applied intervention" });
+    }
+  });
+  
+  app.patch("/api/applied-interventions/:id/status", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const intervention = await storage.getAppliedIntervention(id);
+      if (!intervention) {
+        return res.status(404).json({ message: "Applied intervention not found" });
+      }
+      
+      const statusSchema = z.object({
+        status: z.string()
+      });
+      
+      const result = statusSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid status data", errors: result.error.format() });
+      }
+      
+      const updatedIntervention = await storage.updateAppliedInterventionStatus(id, result.data.status);
+      res.json(updatedIntervention);
+    } catch (error) {
+      console.error("Error updating applied intervention status:", error);
+      res.status(500).json({ message: "Failed to update applied intervention status" });
     }
   });
 
