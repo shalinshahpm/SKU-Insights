@@ -301,6 +301,166 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to detect anomalies" });
     }
   });
+  
+  // Helper endpoint to generate sample data for demo purposes
+  app.post("/api/generate-sample-data", async (req: Request, res: Response) => {
+    try {
+      // Clear existing behavioral metrics first
+      // We can't directly clear it, but we'll create a way to access it
+      // @ts-ignore - Accessing private property
+      const behavioralMetrics = storage.behavioralMetrics;
+      if (behavioralMetrics && behavioralMetrics.clear) {
+        behavioralMetrics.clear();
+      }
+      
+      // Get all SKUs
+      const skus = await storage.getSKUs();
+      
+      // For each SKU, generate 30 days of behavioral metrics
+      const today = new Date();
+      const metricsGenerated = [];
+      
+      for (const sku of skus) {
+        // Set up baseline metrics for each SKU with distinct patterns
+        const baselineMetrics = {
+          pageViews: sku.id === 1 ? 25000 : (sku.id === 2 ? 18000 : (sku.id === 3 ? 12000 : 8000)),
+          addToCart: sku.id === 1 ? 3500 : (sku.id === 2 ? 2200 : (sku.id === 3 ? 1500 : 1000)),
+          reviewVolume: sku.id === 1 ? 850 : (sku.id === 2 ? 600 : (sku.id === 3 ? 400 : 200)),
+          rating: sku.id === 1 ? 4.3 : (sku.id === 2 ? 4.5 : (sku.id === 3 ? 4.1 : 4.0)),
+        };
+        
+        // Create campaign spike periods
+        const campaignSpikes = [];
+        if (sku.id === 1) {
+          campaignSpikes.push(
+            { startDay: 20, endDay: 24, pageViewsMultiplier: 1.45, addToCartMultiplier: 1.35 },
+            { startDay: 5, endDay: 9, pageViewsMultiplier: 1.30, addToCartMultiplier: 1.25 }
+          );
+        } else if (sku.id === 2) {
+          campaignSpikes.push(
+            { startDay: 15, endDay: 19, pageViewsMultiplier: 1.40, addToCartMultiplier: 1.25 }
+          );
+        } else if (sku.id === 3) {
+          campaignSpikes.push(
+            { startDay: 10, endDay: 14, pageViewsMultiplier: 1.35, addToCartMultiplier: 1.20 }
+          );
+        } else {
+          campaignSpikes.push(
+            { startDay: 25, endDay: 29, pageViewsMultiplier: 1.25, addToCartMultiplier: 1.15 }
+          );
+        }
+        
+        // Create anomalies or watch points
+        const anomalies = [];
+        if (sku.id === 1) {
+          anomalies.push(
+            { day: 2, metric: "addToCart", multiplier: 0.675, status: "anomaly" },
+            { day: 0, metric: "rating", value: 3.9, status: "watch" },
+            { day: 4, metric: "pageViews", multiplier: 0.55, status: "anomaly" },
+            { day: 5, metric: "reviewVolume", multiplier: 2.1, status: "watch" }
+          );
+        } else if (sku.id === 2) {
+          anomalies.push(
+            { day: 8, metric: "reviewVolume", multiplier: 1.65, status: "watch" },
+            { day: 3, metric: "addToCart", multiplier: 0.62, status: "anomaly" },
+            { day: 6, metric: "pageViews", multiplier: 0.78, status: "watch" }
+          );
+        } else if (sku.id === 3) {
+          anomalies.push(
+            { day: 7, metric: "pageViews", multiplier: 0.6, status: "anomaly" },
+            { day: 9, metric: "addToCart", multiplier: 0.7, status: "watch" }
+          );
+        } else {
+          anomalies.push(
+            { day: 6, metric: "rating", value: 2.8, status: "anomaly" },
+            { day: 3, metric: "reviewVolume", multiplier: 0.5, status: "anomaly" }
+          );
+        }
+        
+        for (let i = 29; i >= 0; i--) {
+          const date = new Date(today);
+          date.setDate(date.getDate() - i);
+          
+          // Start with baseline values
+          let pageViews = baselineMetrics.pageViews;
+          let addToCart = baselineMetrics.addToCart;
+          let reviewVolume = baselineMetrics.reviewVolume;
+          let averageRating = baselineMetrics.rating;
+          let status = "normal";
+          
+          // Apply weekly pattern (weekend dips)
+          const dayOfWeek = date.getDay(); // 0 is Sunday, 6 is Saturday
+          if (dayOfWeek === 0 || dayOfWeek === 6) {
+            pageViews = Math.round(pageViews * 0.85);
+            addToCart = Math.round(addToCart * 0.80);
+          }
+          
+          // Apply slight upward trend over time (1% growth per week)
+          const weekMultiplier = 1 + ((29 - i) / 7) * 0.01;
+          pageViews = Math.round(pageViews * weekMultiplier);
+          addToCart = Math.round(addToCart * weekMultiplier);
+          reviewVolume = Math.round(reviewVolume * weekMultiplier);
+          
+          // Apply campaign spikes if applicable
+          const campaignSpike = campaignSpikes.find(
+            spike => i <= spike.endDay && i >= spike.startDay
+          );
+          
+          if (campaignSpike) {
+            pageViews = Math.round(pageViews * campaignSpike.pageViewsMultiplier);
+            addToCart = Math.round(addToCart * campaignSpike.addToCartMultiplier);
+          }
+          
+          // Apply day-to-day random variation
+          const randomFactor = 0.95 + Math.random() * 0.1; // 0.95 to 1.05
+          pageViews = Math.round(pageViews * randomFactor);
+          addToCart = Math.round(addToCart * randomFactor);
+          reviewVolume = Math.round(reviewVolume * randomFactor);
+          averageRating = Math.min(5, Math.max(1, averageRating * (0.98 + Math.random() * 0.04)));
+          
+          // Apply specific anomalies if applicable
+          const anomaly = anomalies.find(
+            a => a.day === i
+          );
+          
+          if (anomaly) {
+            if (anomaly.metric === "pageViews") {
+              pageViews = Math.round(pageViews * (anomaly.multiplier || 1));
+            } else if (anomaly.metric === "addToCart") {
+              addToCart = Math.round(addToCart * (anomaly.multiplier || 1));
+            } else if (anomaly.metric === "reviewVolume") {
+              reviewVolume = Math.round(reviewVolume * (anomaly.multiplier || 1));
+            } else if (anomaly.metric === "rating") {
+              averageRating = anomaly.value || averageRating;
+            }
+            
+            status = anomaly.status || status;
+          }
+          
+          const metric = await storage.createBehavioralMetric({
+            skuId: sku.id,
+            date: date,
+            pageViews: pageViews,
+            addToCart: addToCart,
+            reviewVolume: reviewVolume,
+            averageRating: Math.min(5, Math.max(1, Number(averageRating.toFixed(1)))),
+            status: status
+          });
+          
+          metricsGenerated.push(metric);
+        }
+      }
+      
+      res.json({ 
+        message: "Sample data generated successfully", 
+        count: metricsGenerated.length,
+        skuCount: skus.length
+      });
+    } catch (error) {
+      console.error("Error generating sample data:", error);
+      res.status(500).json({ message: "Failed to generate sample data" });
+    }
+  });
 
   // Survey routes
   app.get("/api/surveys", async (req: Request, res: Response) => {
