@@ -9,7 +9,9 @@ import {
   insertBrandHealthMetricSchema, 
   insertTimelineEventSchema,
   insertAnomalySettingSchema,
-  insertQuestionTemplateSchema,
+  insertQuestionTemplateSchema
+} from "@shared/schema";
+import type {
   BehavioralMetric,
   Survey,
   TimelineEvent,
@@ -213,14 +215,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const skuId = req.query.skuId ? parseInt(req.query.skuId as string) : undefined;
     const active = req.query.active === 'true';
     
-    let surveys;
+    let surveys: Survey[] = [];
     if (skuId) {
       surveys = await storage.getSurveysBySkuId(skuId);
     } else if (active) {
       surveys = await storage.getActiveSurveys();
     } else {
       // Return all surveys if no filter is provided
-      const allSurveys = [];
+      const allSurveys: Survey[] = [];
       const skus = await storage.getSKUs();
       for (const sku of skus) {
         const skuSurveys = await storage.getSurveysBySkuId(sku.id);
@@ -309,7 +311,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const skuId = req.query.skuId ? parseInt(req.query.skuId as string) : undefined;
     const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
     
-    let events;
+    let events: TimelineEvent[] = [];
     if (skuId) {
       events = await storage.getTimelineEventsBySkuId(skuId);
     } else {
@@ -336,7 +338,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/anomaly-settings", async (req: Request, res: Response) => {
     const metricType = req.query.metricType as string | undefined;
     
-    let settings;
+    let settings: AnomalySetting[] = [];
     if (metricType) {
       const setting = await storage.getAnomalySettingByMetricType(metricType);
       if (!setting) {
@@ -390,17 +392,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/question-templates", async (req: Request, res: Response) => {
     const category = req.query.category as string | undefined;
     
-    let templates;
+    let templates: QuestionTemplate[] = [];
     if (category) {
       templates = await storage.getQuestionTemplatesByCategory(category);
     } else {
       // Get all templates
-      templates = [];
+      const allTemplates: QuestionTemplate[] = [];
       const categories = ["awareness", "message_recall", "purchase_intent", "friction_point"];
       for (const cat of categories) {
         const categoryTemplates = await storage.getQuestionTemplatesByCategory(cat);
-        templates.push(...categoryTemplates);
+        allTemplates.push(...categoryTemplates);
       }
+      templates = allTemplates;
     }
     
     res.json(templates);
