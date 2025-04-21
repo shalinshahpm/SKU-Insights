@@ -293,8 +293,146 @@ export class MemStorage implements IStorage {
       region: "US",
       market: "Walmart"
     });
+    
+    // Create new launch SKUs with launch dates
+    const today = new Date();
+    const twoWeeksAgo = new Date(today);
+    twoWeeksAgo.setDate(today.getDate() - 14);
+    
+    const kitkatCaramel = this.createSKU({
+      name: "KitKat Caramel",
+      brand: "Nestlé",
+      region: "UK",
+      market: "Amazon",
+      launchDate: twoWeeksAgo,
+      isNewLaunch: true,
+      category: "Confectionery"
+    });
+    
+    const nesquikStrawberry = this.createSKU({
+      name: "Nesquik Strawberry",
+      brand: "Nestlé",
+      region: "US",
+      market: "Walmart",
+      launchDate: twoWeeksAgo,
+      isNewLaunch: true,
+      category: "Beverages"
+    });
+    
+    // Recently launched 
+    const threeDaysAgo = new Date(today);
+    threeDaysAgo.setDate(today.getDate() - 3);
+    
+    const nescafeMatcha = this.createSKU({
+      name: "Nescafé Matcha Latte",
+      brand: "Nestlé",
+      region: "Japan",
+      market: "Amazon",
+      launchDate: threeDaysAgo,
+      isNewLaunch: true,
+      category: "Coffee"
+    });
 
-    // Create default behavioral metrics
+    // Create behavioral metrics data for the new launch products
+    this.createBehavioralMetric({
+      skuId: kitkatCaramel.id,
+      date: twoWeeksAgo,
+      pageViews: 12500,
+      addToCart: 1800,
+      reviewVolume: 120,
+      averageRating: 4.2,
+      status: "normal"
+    });
+    
+    const oneWeekAgo = new Date(today);
+    oneWeekAgo.setDate(today.getDate() - 7);
+    
+    this.createBehavioralMetric({
+      skuId: kitkatCaramel.id,
+      date: oneWeekAgo,
+      pageViews: 18700,
+      addToCart: 2400,
+      reviewVolume: 280,
+      averageRating: 4.3,
+      status: "normal"
+    });
+    
+    this.createBehavioralMetric({
+      skuId: kitkatCaramel.id,
+      date: today,
+      pageViews: 22300,
+      addToCart: 3200,
+      reviewVolume: 320,
+      averageRating: 4.4,
+      status: "normal"
+    });
+    
+    // Add metrics for the Nesquik Strawberry
+    this.createBehavioralMetric({
+      skuId: nesquikStrawberry.id,
+      date: twoWeeksAgo,
+      pageViews: 8300,
+      addToCart: 950,
+      reviewVolume: 65,
+      averageRating: 3.9,
+      status: "watch"
+    });
+    
+    this.createBehavioralMetric({
+      skuId: nesquikStrawberry.id,
+      date: oneWeekAgo,
+      pageViews: 10200,
+      addToCart: 1250,
+      reviewVolume: 130,
+      averageRating: 4.1,
+      status: "normal"
+    });
+    
+    this.createBehavioralMetric({
+      skuId: nesquikStrawberry.id,
+      date: today,
+      pageViews: 11800,
+      addToCart: 1580,
+      reviewVolume: 185,
+      averageRating: 4.2,
+      status: "normal"
+    });
+    
+    // Add metrics for recently launched Nescafe Matcha Latte
+    this.createBehavioralMetric({
+      skuId: nescafeMatcha.id,
+      date: threeDaysAgo,
+      pageViews: 15600,
+      addToCart: 1350,
+      reviewVolume: 45,
+      averageRating: 4.0,
+      status: "normal"
+    });
+    
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    
+    this.createBehavioralMetric({
+      skuId: nescafeMatcha.id,
+      date: yesterday,
+      pageViews: 12400,
+      addToCart: 980,
+      reviewVolume: 85,
+      averageRating: 3.8,
+      status: "watch"
+    });
+    
+    this.createBehavioralMetric({
+      skuId: nescafeMatcha.id,
+      date: today,
+      pageViews: 10800,
+      addToCart: 820,
+      reviewVolume: 110,
+      averageRating: 3.7,
+      status: "anomaly"
+    });
+    
+    // Create default behavioral metrics for the existing SKUs
     for (const sku of [kitkat, nescafe, nesquik, pureLife]) {
       // Create metrics for last 30 days (to have more comprehensive data)
       const today = new Date();
@@ -436,7 +574,114 @@ export class MemStorage implements IStorage {
       }
     }
 
-    // Create default brand health metrics
+    // Add success thresholds for the new products
+    // KitKat Caramel thresholds for Week 2-4 phase
+    const week2to4Phase = this.launchPhases.get(3);
+    if (week2to4Phase) {
+      this.createSuccessThreshold({
+        skuId: kitkatCaramel.id,
+        phaseId: week2to4Phase.id,
+        metricType: "page_views",
+        targetValue: 20000,
+        minimumValue: 15000,
+        idealValue: 25000
+      });
+      
+      this.createSuccessThreshold({
+        skuId: kitkatCaramel.id,
+        phaseId: week2to4Phase.id,
+        metricType: "add_to_cart",
+        targetValue: 3000,
+        minimumValue: 2200,
+        idealValue: 3800
+      });
+      
+      this.createSuccessThreshold({
+        skuId: kitkatCaramel.id,
+        phaseId: week2to4Phase.id,
+        metricType: "average_rating",
+        targetValue: 4.2,
+        minimumValue: 3.8,
+        idealValue: 4.5
+      });
+    }
+    
+    // Nesquik Strawberry thresholds
+    this.createSuccessThreshold({
+      skuId: nesquikStrawberry.id,
+      phaseId: week2to4Phase ? week2to4Phase.id : 3,
+      metricType: "page_views",
+      targetValue: 15000,
+      minimumValue: 10000,
+      idealValue: 18000
+    });
+    
+    this.createSuccessThreshold({
+      skuId: nesquikStrawberry.id,
+      phaseId: week2to4Phase ? week2to4Phase.id : 3,
+      metricType: "add_to_cart",
+      targetValue: 1800,
+      minimumValue: 1200,
+      idealValue: 2200
+    });
+    
+    // Nescafe Matcha Latte thresholds for Week 1
+    const week1Phase = this.launchPhases.get(2);
+    if (week1Phase) {
+      this.createSuccessThreshold({
+        skuId: nescafeMatcha.id,
+        phaseId: week1Phase.id,
+        metricType: "page_views",
+        targetValue: 18000,
+        minimumValue: 12000,
+        idealValue: 22000
+      });
+      
+      this.createSuccessThreshold({
+        skuId: nescafeMatcha.id,
+        phaseId: week1Phase.id,
+        metricType: "add_to_cart",
+        targetValue: 1500,
+        minimumValue: 1000,
+        idealValue: 2000
+      });
+      
+      this.createSuccessThreshold({
+        skuId: nescafeMatcha.id,
+        phaseId: week1Phase.id,
+        metricType: "average_rating",
+        targetValue: 4.2,
+        minimumValue: 3.9,
+        idealValue: 4.5
+      });
+    }
+    
+    // Add brand health metrics for new products
+    this.createBrandHealthMetric({
+      skuId: kitkatCaramel.id,
+      date: today,
+      brandLiftScore: 68.5,
+      purchaseIntent: 59.2,
+      netSentiment: 38
+    });
+    
+    this.createBrandHealthMetric({
+      skuId: nesquikStrawberry.id,
+      date: today,
+      brandLiftScore: 62.3,
+      purchaseIntent: 54.8,
+      netSentiment: 32
+    });
+    
+    this.createBrandHealthMetric({
+      skuId: nescafeMatcha.id,
+      date: today,
+      brandLiftScore: 57.9,
+      purchaseIntent: 52.4,
+      netSentiment: 25
+    });
+    
+    // Create default brand health metrics for existing products
     for (const sku of [kitkat, nescafe, nesquik, pureLife]) {
       const today = new Date();
       
@@ -603,6 +848,107 @@ export class MemStorage implements IStorage {
         details: "UK launch outperforming Brazil by 23% in terms of conversion rate.",
         reportUrl: "/reports/kitkat-market-comparison"
       }
+    });
+    
+    // Add timeline events for new launch products
+    this.createTimelineEvent({
+      skuId: kitkatCaramel.id,
+      type: "product_launched",
+      title: "Product Launch",
+      description: "KitKat Caramel launched in UK",
+      data: {
+        details: "Official launch on Amazon UK platform. Initial metrics show strong consumer interest."
+      }
+    });
+    
+    this.createTimelineEvent({
+      skuId: kitkatCaramel.id,
+      type: "forecast_update",
+      title: "Forecast Updated",
+      description: "KitKat Caramel - Forecast Update",
+      data: {
+        details: "First week performance indicates 120% achievement vs launch targets.",
+        reportUrl: "/reports/kitkat-caramel-forecast"
+      }
+    });
+    
+    this.createTimelineEvent({
+      skuId: nesquikStrawberry.id,
+      type: "product_launched",
+      title: "Product Launch",
+      description: "Nesquik Strawberry launched in US",
+      data: {
+        details: "Official launch on Walmart US platform. Initial performance meeting expectations."
+      }
+    });
+    
+    this.createTimelineEvent({
+      skuId: nesquikStrawberry.id,
+      type: "anomaly_detected",
+      title: "Anomaly Detected - Low Rating",
+      description: "Nesquik Strawberry - Initial Rating Below Target",
+      data: {
+        details: "Initial product ratings are below threshold at 3.9 stars. Monitoring required.",
+        metricId: 9
+      }
+    });
+    
+    this.createTimelineEvent({
+      skuId: nescafeMatcha.id,
+      type: "product_launched",
+      title: "Product Launch",
+      description: "Nescafé Matcha Latte launched in Japan",
+      data: {
+        details: "Official launch on Amazon Japan platform. Targeting specialty coffee consumers."
+      }
+    });
+    
+    this.createTimelineEvent({
+      skuId: nescafeMatcha.id,
+      type: "anomaly_detected",
+      title: "Anomaly Detected - Performance Drop",
+      description: "Nescafé Matcha Latte - Performance Drop",
+      data: {
+        details: "26% drop in page views and 18% drop in add-to-cart rate in the last 24 hours.",
+        metricId: 12
+      }
+    });
+    
+    // Create applied interventions for the new launch products with issues
+    this.createAppliedIntervention({
+      skuId: nesquikStrawberry.id,
+      interventionId: 1, // Price Promotion
+      status: "active",
+      startDate: oneWeekAgo,
+      endDate: null,
+      notes: "10% discount applied to increase trial rate and improve initial ratings",
+      results: {
+        impactMetrics: {
+          beforePeriod: {
+            pageViews: 8300,
+            addToCart: 950
+          },
+          afterPeriod: {
+            pageViews: 10200,
+            addToCart: 1250
+          },
+          percentChange: {
+            pageViews: 22.9,
+            addToCart: 31.6
+          }
+        }
+      }
+    });
+    
+    // Create an intervention recommendation for the product with anomaly
+    this.createAppliedIntervention({
+      skuId: nescafeMatcha.id,
+      interventionId: 2, // Enhanced Product Visibility
+      status: "recommended",
+      startDate: today,
+      endDate: null,
+      notes: "Recommended to improve visibility due to sudden drop in performance metrics",
+      results: null
     });
   }
 
