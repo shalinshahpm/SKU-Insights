@@ -168,20 +168,23 @@ export default function Dashboard() {
         </div>
         
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-3">
-          <Select value={timeRange} onValueChange={setTimeRange}>
-            <SelectTrigger className="w-full sm:w-auto">
-              <SelectValue placeholder="Select time range" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7days">Last 7 days</SelectItem>
-              <SelectItem value="30days">Last 30 days</SelectItem>
-              <SelectItem value="quarter">Last quarter</SelectItem>
-              <SelectItem value="ytd">Year to date</SelectItem>
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2 bg-muted/30 p-2 rounded-md">
+            <span className="text-sm font-medium text-muted-foreground">Quick view:</span>
+            <Select value={timeRange} onValueChange={setTimeRange}>
+              <SelectTrigger className="w-full sm:w-auto border-0 bg-transparent shadow-none h-8 px-2">
+                <SelectValue placeholder="Select time range" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7days">Last 7 days</SelectItem>
+                <SelectItem value="30days">Last 30 days</SelectItem>
+                <SelectItem value="quarter">Last quarter</SelectItem>
+                <SelectItem value="ytd">Year to date</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           
           <Button 
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-primary/90 hover:bg-primary"
             onClick={handleExportReport}
           >
             <Download className="h-4 w-4" />

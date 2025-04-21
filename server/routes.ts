@@ -9,7 +9,12 @@ import {
   insertBrandHealthMetricSchema, 
   insertTimelineEventSchema,
   insertAnomalySettingSchema,
-  insertQuestionTemplateSchema
+  insertQuestionTemplateSchema,
+  BehavioralMetric,
+  Survey,
+  TimelineEvent,
+  AnomalySetting,
+  QuestionTemplate
 } from "@shared/schema";
 import { z } from "zod";
 
@@ -137,7 +142,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     const skuId = req.query.skuId ? parseInt(req.query.skuId as string) : undefined;
     const date = req.query.date ? new Date(req.query.date as string) : undefined;
     
-    let metrics;
+    let metrics: BehavioralMetric[] = [];
     if (skuId) {
       metrics = await storage.getBehavioralMetricsBySkuId(skuId);
     } else if (date) {
