@@ -179,7 +179,9 @@ export class MemStorage implements IStorage {
           // Create anomalies or watch points
           anomalies: [
             { day: 2, metric: "addToCart", multiplier: 0.675, status: "anomaly" },
-            { day: 0, metric: "rating", value: 3.9, status: "watch" }
+            { day: 0, metric: "rating", value: 3.9, status: "watch" },
+            { day: 4, metric: "pageViews", multiplier: 0.55, status: "anomaly" },
+            { day: 5, metric: "reviewVolume", multiplier: 2.1, status: "watch" }
           ]
         },
         nescafe: {
@@ -191,7 +193,9 @@ export class MemStorage implements IStorage {
             { startDay: 15, endDay: 19, pageViewsMultiplier: 1.40, addToCartMultiplier: 1.25 }
           ],
           anomalies: [
-            { day: 8, metric: "reviewVolume", multiplier: 1.65, status: "watch" }
+            { day: 8, metric: "reviewVolume", multiplier: 1.65, status: "watch" },
+            { day: 3, metric: "addToCart", multiplier: 0.62, status: "anomaly" },
+            { day: 6, metric: "pageViews", multiplier: 0.78, status: "watch" }
           ]
         },
         nesquik: {
