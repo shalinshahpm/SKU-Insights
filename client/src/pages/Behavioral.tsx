@@ -48,12 +48,16 @@ export default function Behavioral() {
     queryKey: ["/api/skus"],
   });
 
+  // Get default SKU ID for API calls
+  const defaultSkuId = skus.length > 0 ? skus[0].id : null;
+
   // Fetch behavioral metrics for the selected SKU or all SKUs
   const { data: behavioralMetrics = [], isLoading } = useQuery<BehavioralMetricsData[]>({
     queryKey: [
       "/api/behavioral-metrics",
-      filters.selectedSku !== "all" ? `?skuId=${filters.selectedSku}` : "",
+      `?skuId=${filters.selectedSku !== "all" ? filters.selectedSku : defaultSkuId}`,
     ],
+    enabled: skus.length > 0, // Only run query when SKUs are loaded
   });
 
   // Create filter options
