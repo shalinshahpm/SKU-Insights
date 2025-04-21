@@ -1,0 +1,73 @@
+Designed for fast decision-making by brand managers, regional leads, and marketing executives. Think of this like a live war room for SKU performance.
+
+🧩 Core Metrics (Quantitative)
+
+Metric	Description
+Awareness	% of target consumers aware of the product
+Consideration	% who would consider purchasing
+Purchase Intent	Likelihood to buy within 30/60 days
+Net Sentiment Score	Aggregated positive – negative mentions (if social/ratings included)
+Share of Preference	% who would choose this SKU vs. competitor (if tested)
+Brand Equity Lift	Change in perception vs. pre-launch benchmarks
+🎯 Campaign Attribution Layer
+Visual timeline of campaigns by region/platform (media sync idea)
+
+Overlay behavior spikes and survey results to infer lift attribution
+
+Tag campaigns as "above-the-line" (TV, OOH) or "below-the-line" (eComm, coupons)
+
+📍 Region & Channel Filters
+Country filter (e.g., India, Brazil, France)
+
+Platform filter (Amazon, Walmart, DTC site)
+
+Time filter (last 7 days, 14 days, since launch)
+
+🔍 Drill-Down Insights
+Friction Points: Text summaries from open-ends (coded or via AI sentiment)
+
+Feature Impact: What attributes are driving/hurting conversion? (e.g., price, taste, packaging)
+
+Panel Demographics: Who is responding well (or not)?
+
+⏱ Insights Timeline – Enterprise Upgrade
+This turns SKU Pulse from a data tool to an operational asset for GTM teams.
+
+🧠 Events Feed (Examples)
+
+Timestamp	Event
+Apr 1	SKU “KitKat Ruby” added to dashboard (India)
+Apr 2	Baseline survey sent to 500 chocolate buyers
+Apr 4	Spike in Amazon cart adds (+48%)
+Apr 5	Consumer survey triggered (Kantar Profiles)
+Apr 7	Insights Report Available
+Apr 8	Marketing team uploaded new ad flight (Media Sync)
+Apr 9	Competitive SKU “Cadbury Bliss” drops price by 10% (Competitor Monitor)
+⏰ Timeline Capabilities
+Color-coded categories: Launch actions, media triggers, survey deployments, insights drops
+
+Tag stakeholders on actions (e.g., @Rohan for survey approval)
+
+Flag delays, anomalies (e.g., “Survey delayed due to quota miss”)
+
+💥 Bonus Ideas for Competitive & Campaign Layers
+📡 Competitive SKU Tracker
+Upload list of competitor SKUs per category
+
+Monitor their pricing, reviews, and ratings weekly
+
+Get alerts if they:
+
+Drop price
+
+Launch promo
+
+See a spike in reviews/sentiment
+
+📆 Media Activity Sync
+Upload ad calendar (CSV or via campaign management API)
+
+Auto-tag SKU behavior spikes to media bursts
+
+AI summary: “60% of behavioral lift in Week 2 correlated with Amazon banner campaign”
+
