@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { CollapsibleSidebar } from "@/components/layout/CollapsibleSidebar";
 import { useQuery } from "@tanstack/react-query";
 import { SKU, BehavioralMetricsData, BrandHealthMetricsData, FilterOptions } from "@/lib/types";
 import { SKUFilter } from "@/components/dashboard/SKUFilter";

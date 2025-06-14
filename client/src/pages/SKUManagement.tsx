@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { CollapsibleSidebar } from "@/components/layout/CollapsibleSidebar";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { SKU } from "@/lib/types";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -72,6 +72,7 @@ export default function SKUManagement() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedSKU, setSelectedSKU] = useState<SKU | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { toast } = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -154,10 +155,24 @@ export default function SKUManagement() {
   };
 
   return (
-    <MainLayout
-      pageTitle="SKU Management"
-      pageDescription="Manage all your tracked SKUs across regions and markets"
-    >
+    <div className="min-h-screen bg-background flex">
+      {/* Left Sidebar */}
+      <CollapsibleSidebar 
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+      />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 overflow-auto">
+          <div className="container mx-auto px-4 lg:px-6 py-4 lg:py-6 space-y-4 lg:space-y-6 max-w-7xl">
+            {/* Page Header */}
+            <div className="flex flex-col gap-2">
+              <h1 className="text-xl lg:text-2xl font-bold">SKU Management</h1>
+              <p className="text-sm lg:text-base text-muted-foreground">
+                Manage all your tracked SKUs across regions and markets
+              </p>
+            </div>
       {/* SKU Upload Section */}
       <div className="mb-6">
         <SKUUploader />
@@ -416,6 +431,9 @@ export default function SKUManagement() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </MainLayout>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
