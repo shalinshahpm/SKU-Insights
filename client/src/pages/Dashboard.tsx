@@ -9,6 +9,8 @@ import { SurveyTrigger } from "@/components/dashboard/SurveyTrigger";
 import { InsightsTimeline } from "@/components/dashboard/InsightsTimeline";
 import { SimplifiedDashboard } from "@/components/dashboard/SimplifiedDashboard";
 import { CollapsibleSidebar } from "@/components/layout/CollapsibleSidebar";
+import { WelcomeBanner } from "@/components/onboarding/WelcomeBanner";
+import { SimplifiedHeader } from "@/components/layout/SimplifiedHeader";
 import { useToast } from "@/hooks/use-toast";
 import { 
   LineChart, 
@@ -33,6 +35,7 @@ export default function Dashboard() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showSimplifiedView, setShowSimplifiedView] = useState(true);
   const [isNewUser, setIsNewUser] = useState(true); // In real app, would check user profile
+  const [showWelcomeBanner, setShowWelcomeBanner] = useState(true);
   const [filters, setFilters] = useState({
     selectedSku: "all",
     selectedRetailers: [] as string[],
