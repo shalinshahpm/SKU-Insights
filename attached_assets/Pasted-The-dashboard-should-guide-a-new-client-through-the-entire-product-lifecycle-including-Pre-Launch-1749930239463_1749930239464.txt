@@ -1,0 +1,118 @@
+The dashboard should guide a new client through the entire product lifecycle, including:
+
+Pre-Launch Validation (Concept Testing)
+
+Launch Execution (Real-Time SKU Monitoring)
+
+Post-Launch Optimization (Feedback Loop)
+
+Unified Executive Dashboard (Cross-phase summary)
+
+The experience should be workflow-first, helping brand managers move step-by-step, with clear visual cues, actionable insights, and structured outputs at every stage.
+
+🎯 Required Modules & Pages
+1️⃣ Pre-Launch Validation (Concept Testing)
+Goal: Validate product ideas, pricing, and packaging before launch.
+
+Required Features:
+
+Concept Test Builder
+
+Upload text/images/videos
+
+Define audience (region, age, gender, etc.)
+
+Support A/B and monadic tests
+
+Survey Template Engine
+
+Auto-load question flows (Concept Test, MaxDiff, Price Sensitivity)
+
+Panel Integration
+
+Connect to panel providers (simulate CINT, Dynata)
+
+Scoring & Benchmarking
+
+Calculate Appeal, Uniqueness, Purchase Intent, Price Tolerance
+
+Show industry/internal benchmark comparison
+
+Exportable Output
+
+Auto-generate “Go / No-Go” PDF deck
+
+2️⃣ Launch Execution (Real-Time SKU Monitoring)
+Goal: Track SKU performance post-launch and detect issues early.
+
+Required Features:
+
+SKU Onboarding Module
+
+Fields: SKU ID, Name, Platform, Launch Date, Region
+
+Bulk CSV upload
+
+Live Data Integration
+
+Simulate data from POS/eCom platforms (Amazon, Walmart)
+
+Metrics: Add-to-cart %, Conversion Rate, Sell-through
+
+Smart Triggers
+
+Define rules (e.g., >15% abandonment triggers survey)
+
+Trigger automatic follow-up surveys
+
+3️⃣ Post-Launch Optimization (Feedback Loop)
+Goal: Close the loop with real customer feedback to iterate quickly.
+
+Required Features:
+
+Trigger-Based Micro Surveys
+
+Target user segments (e.g., cart abandoners)
+
+Use templated question sets
+
+Feedback Dashboard
+
+Visualize responses alongside SKU data
+
+Sentiment analysis, keyword clouds, charts
+
+Alert System
+
+Email/Slack/Teams alerts for issues (e.g., 20% drop in Northeast)
+
+4️⃣ Unified Dashboard
+Goal: Provide an executive overview of SKU performance and decision history.
+
+Required Features:
+
+Pre-Launch Validation Summary
+
+Live SKU Performance View
+
+Feedback Integration
+
+Recommendations + Change Logs
+
+Filters: Brand, Region, Launch Phase
+
+🧩 Layout & Navigation Requirements
+Sticky Workflow Header:
+Always shows: Step 1 → Step 2 → Step 3 → Step 4
+
+Sidebar Navigation:
+SKU Selector, Alerts Feed, Recent Actions
+
+Main Panel by Step:
+Each phase should be grouped visually and functionally, with “Next Step” CTA buttons.
+
+Demo Mode:
+Optional switch to show sample SKUs, mock data, and survey results for first-time users.
+
+Progress Widget:
+Tracks completion of each step (e.g., “3 of 4 steps complete for 5 SKUs”)

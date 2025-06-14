@@ -1,129 +1,174 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { 
-  Upload, 
-  Activity, 
-  Target, 
-  AlertTriangle, 
   CheckCircle, 
-  RotateCcw 
-} from 'lucide-react';
+  Circle, 
+  ArrowRight, 
+  ExternalLink,
+  TestTube,
+  Rocket,
+  RefreshCw,
+  BarChart3
+} from "lucide-react";
+import { useLocation } from "wouter";
 
-interface WorkflowStep {
-  id: number;
+export type WorkflowPhase = "pre-launch" | "launch" | "post-launch" | "executive";
+
+export interface WorkflowStep {
+  id: WorkflowPhase;
   title: string;
-  icon: React.ReactNode;
-  status: 'completed' | 'active' | 'pending';
   description: string;
+  icon: React.ReactNode;
+  path: string;
+  isComplete: boolean;
+  isActive: boolean;
+  isExternal?: boolean;
+  externalUrl?: string;
 }
 
-export function WorkflowHeader() {
-  const steps: WorkflowStep[] = [
+interface WorkflowHeaderProps {
+  currentPhase: WorkflowPhase;
+  completedSteps: number;
+  totalSteps: number;
+  skuName?: string;
+}
+
+export function WorkflowHeader({ 
+  currentPhase, 
+  completedSteps, 
+  totalSteps, 
+  skuName = "All SKUs" 
+}: WorkflowHeaderProps) {
+  const [, navigate] = useLocation();
+
+  const workflowSteps: WorkflowStep[] = [
     {
-      id: 1,
-      title: 'Upload SKUs',
-      icon: <Upload className="h-4 w-4" />,
-      status: 'completed',
-      description: 'Import product data'
+      id: "pre-launch",
+      title: "Pre-Launch Validation",
+      description: "Concept testing & validation",
+      icon: <TestTube className="h-4 w-4" />,
+      path: "/pre-launch",
+      isComplete: currentPhase !== "pre-launch",
+      isActive: currentPhase === "pre-launch",
+      isExternal: true,
+      externalUrl: "https://survfast.xyz/"
     },
     {
-      id: 2,
-      title: 'Pulse Check',
-      icon: <Activity className="h-4 w-4" />,
-      status: 'active',
-      description: 'Monitor velocity & reviews'
+      id: "launch",
+      title: "Launch Execution",
+      description: "Real-time SKU monitoring",
+      icon: <Rocket className="h-4 w-4" />,
+      path: "/launch-execution",
+      isComplete: ["post-launch", "executive"].includes(currentPhase),
+      isActive: currentPhase === "launch"
     },
     {
-      id: 3,
-      title: 'Sentiment Analysis',
-      icon: <Target className="h-4 w-4" />,
-      status: 'pending',
-      description: 'Consumer sentiment tracking'
+      id: "post-launch",
+      title: "Post-Launch Optimization",
+      description: "Feedback loop & optimization",
+      icon: <RefreshCw className="h-4 w-4" />,
+      path: "/post-launch",
+      isComplete: currentPhase === "executive",
+      isActive: currentPhase === "post-launch"
     },
     {
-      id: 4,
-      title: 'Benchmarks',
-      icon: <CheckCircle className="h-4 w-4" />,
-      status: 'pending',
-      description: 'Category comparison'
-    },
-    {
-      id: 5,
-      title: 'Actions & Alerts',
-      icon: <AlertTriangle className="h-4 w-4" />,
-      status: 'pending',
-      description: 'Intervention recommendations'
-    },
-    {
-      id: 6,
-      title: 'Learning Loop',
-      icon: <RotateCcw className="h-4 w-4" />,
-      status: 'pending',
-      description: 'Outcome tracking'
+      id: "executive",
+      title: "Executive Dashboard",
+      description: "Cross-phase summary",
+      icon: <BarChart3 className="h-4 w-4" />,
+      path: "/executive-summary",
+      isComplete: false,
+      isActive: currentPhase === "executive"
     }
   ];
 
-  const getStepColor = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800 border-green-200';
-      case 'active':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
-      default:
-        return 'bg-gray-100 text-gray-600 border-gray-200';
+  const progressPercentage = (completedSteps / totalSteps) * 100;
+
+  const handleStepClick = (step: WorkflowStep) => {
+    if (step.isExternal && step.externalUrl) {
+      window.open(step.externalUrl, '_blank');
+    } else {
+      navigate(step.path);
     }
   };
 
-  const getConnectorColor = (currentStatus: string, nextStatus: string) => {
-    if (currentStatus === 'completed') return 'bg-green-300';
-    if (currentStatus === 'active' && nextStatus === 'pending') return 'bg-blue-300';
-    return 'bg-gray-300';
-  };
-
   return (
-    <Card className="mb-6">
-      <CardContent className="p-6">
-        <div className="mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">SKU Launch Flywheel</h2>
-          <p className="text-sm text-gray-600">6-step workflow for successful product launches</p>
-        </div>
-        
-        <div className="relative">
-          <div className="flex items-center justify-between">
-            {steps.map((step, index) => (
-              <div key={step.id} className="flex items-center">
-                {/* Step */}
-                <div className="flex flex-col items-center">
-                  <div className={`
-                    relative z-10 flex items-center justify-center w-12 h-12 rounded-full border-2 
-                    ${getStepColor(step.status)}
-                  `}>
-                    {step.icon}
-                  </div>
-                  <div className="mt-2 text-center">
-                    <p className="text-xs font-medium text-gray-900">{step.title}</p>
-                    <p className="text-xs text-gray-500 max-w-20">{step.description}</p>
-                    <Badge 
-                      variant="outline" 
-                      className={`mt-1 text-xs ${getStepColor(step.status)}`}
-                    >
-                      {step.status}
-                    </Badge>
-                  </div>
-                </div>
-                
-                {/* Connector line */}
-                {index < steps.length - 1 && (
-                  <div className={`
-                    flex-1 h-0.5 mx-4 
-                    ${getConnectorColor(step.status, steps[index + 1].status)}
-                  `} />
-                )}
-              </div>
-            ))}
+    <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+      <div className="container mx-auto px-4 py-3">
+        {/* Header Info */}
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-semibold">Product Lifecycle Workflow</h2>
+            <p className="text-sm text-muted-foreground">
+              Managing: <span className="font-medium">{skuName}</span>
+            </p>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-medium">
+              {completedSteps} of {totalSteps} steps complete
+            </div>
+            <Progress value={progressPercentage} className="w-32 h-2 mt-1" />
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Workflow Steps */}
+        <div className="flex items-center justify-between">
+          {workflowSteps.map((step, index) => (
+            <div key={step.id} className="flex items-center">
+              {/* Step Button */}
+              <Button
+                variant={step.isActive ? "default" : step.isComplete ? "secondary" : "outline"}
+                className={`
+                  flex items-center gap-2 px-4 py-2 h-auto
+                  ${step.isActive ? "bg-primary text-primary-foreground" : ""}
+                  ${step.isComplete ? "bg-green-50 text-green-700 border-green-200" : ""}
+                  hover:scale-105 transition-transform
+                `}
+                onClick={() => handleStepClick(step)}
+              >
+                <div className="flex items-center gap-2">
+                  {step.isComplete ? (
+                    <CheckCircle className="h-4 w-4" />
+                  ) : step.isActive ? (
+                    <Circle className="h-4 w-4 fill-current" />
+                  ) : (
+                    <Circle className="h-4 w-4" />
+                  )}
+                  
+                  <div className="flex items-center gap-1">
+                    {step.icon}
+                    <span className="hidden sm:inline text-sm font-medium">
+                      {step.title}
+                    </span>
+                    {step.isExternal && (
+                      <ExternalLink className="h-3 w-3 opacity-60" />
+                    )}
+                  </div>
+                </div>
+              </Button>
+
+              {/* Arrow between steps */}
+              {index < workflowSteps.length - 1 && (
+                <ArrowRight className="mx-3 h-4 w-4 text-muted-foreground" />
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Current Step Description */}
+        <div className="mt-3 p-3 bg-muted/30 rounded-lg">
+          <div className="flex items-center gap-2">
+            {workflowSteps.find(s => s.isActive)?.icon}
+            <span className="font-medium text-sm">
+              Current Phase: {workflowSteps.find(s => s.isActive)?.title}
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {workflowSteps.find(s => s.isActive)?.description}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
