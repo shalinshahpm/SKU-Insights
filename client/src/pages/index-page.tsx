@@ -20,7 +20,7 @@ const IndexPage = () => {
       {/* Navigation */}
       <header className="fixed top-0 w-full bg-white/90 backdrop-blur z-50 shadow-sm">
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-          <span className="text-2xl font-bold gradient-text">SKU Pulse</span>
+          <span className="text-2xl font-bold gradient-text">SKU Insights</span>
           <nav className="hidden md:flex gap-10 text-sm font-medium">
             <a href="#features" className="hover:text-blue-600">Features</a>
             <a href="#audiences" className="hover:text-blue-600">Teams</a>
@@ -35,7 +35,7 @@ const IndexPage = () => {
             >
               Sign In
             </Button>
-            <a href="#contact" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Talk to Us</a>
+            <a href="https://www.linkedin.com/in/shalinshah2/" target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">Talk to Us</a>
           </div>
         </div>
       </header>
@@ -52,7 +52,7 @@ const IndexPage = () => {
               The real-time growth command center for brand managers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <a href="#contact" className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 text-lg font-medium">
+              <a href="https://www.linkedin.com/in/shalinshah2/" target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 text-lg font-medium">
                 Schedule Call
               </a>
               <Button 
@@ -279,7 +279,7 @@ const IndexPage = () => {
                   </div>
                 </div>
                 <blockquote className="text-lg italic text-gray-700">
-                  "SKU Pulse detected a trending issue 3 weeks before our traditional analytics would have caught it. We pivoted our launch strategy and saved $2.3M in marketing spend."
+                  "SKU Insights detected a trending issue 3 weeks before our traditional analytics would have caught it. We pivoted our launch strategy and saved $2.3M in marketing spend."
                 </blockquote>
               </div>
 
@@ -306,7 +306,7 @@ const IndexPage = () => {
           <div className="container mx-auto px-6 text-center">
             <h2 className="text-4xl font-bold mb-6">Ready to Validate, Launch & Grow Winning SKUs?</h2>
             <p className="text-xl text-blue-100 max-w-2xl mx-auto mb-12">
-              Join the brands using SKU Pulse to turn launch uncertainty into predictable growth
+              Join the brands using SKU Insights to turn launch uncertainty into predictable growth
             </p>
             
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -345,7 +345,7 @@ const IndexPage = () => {
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-8">
             <div>
-              <h3 className="text-xl font-bold text-white mb-4">SKU Pulse</h3>
+              <h3 className="text-xl font-bold text-white mb-4">SKU Insights</h3>
               <p className="text-sm">The Bloomberg of CPG intelligence</p>
             </div>
             <div>
@@ -374,7 +374,7 @@ const IndexPage = () => {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-12 pt-8 text-center text-sm">
-            <p>&copy; 2025 SKU Pulse. All rights reserved.</p>
+            <p>&copy; 2025 SKU Insights. All rights reserved.</p>
           </div>
         </div>
       </footer>

@@ -67,7 +67,7 @@ const AuthPage = () => {
       {/* Hero Section */}
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-500 to-indigo-700 p-12 flex-col justify-between text-white">
         <div>
-          <h1 className="text-4xl font-bold mb-6">SKU Pulse</h1>
+          <h1 className="text-4xl font-bold mb-6">SKU Insights</h1>
           <h2 className="text-2xl font-semibold mb-4">Intelligence for CPG Commercial Leaders</h2>
           <p className="text-lg opacity-90 mb-8">
             Command launch performance before the market does. SKU Pulse empowers commercial leaders
