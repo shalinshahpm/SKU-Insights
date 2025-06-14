@@ -7,6 +7,7 @@ import { MetricCard } from "@/components/dashboard/MetricCard";
 import { BehavioralIntelligence } from "@/components/dashboard/BehavioralIntelligence";
 import { SurveyTrigger } from "@/components/dashboard/SurveyTrigger";
 import { InsightsTimeline } from "@/components/dashboard/InsightsTimeline";
+import { Sidebar } from "@/components/layout/Sidebar";
 import { useToast } from "@/hooks/use-toast";
 import { 
   LineChart, 
@@ -48,102 +49,57 @@ export default function Dashboard() {
       "/api/behavioral-metrics", 
       `?skuId=${filters.selectedSku !== "all" ? filters.selectedSku : defaultSkuId}`
     ],
-    enabled: skus.length > 0, // Only run query when SKUs are loaded
-  });
-  
-  // Extract metrics from response
-  const behavioralMetrics = behavioralResponse?.metrics || [];
-
-  // Fetch brand health metrics
-  const { data: brandHealthMetrics = [] } = useQuery<BrandHealthMetricsData[]>({
-    queryKey: [
-      "/api/brand-health-metrics", 
-      `?skuId=${filters.selectedSku !== "all" ? filters.selectedSku : defaultSkuId}`
-    ],
-    enabled: skus.length > 0 && false // Disable this query since we don't have a specific SKU in the mock data
+    enabled: !!defaultSkuId
   });
 
   // Fetch timeline events
-  const { data: timelineEvents = [] } = useQuery<TimelineEvent[]>({
-    queryKey: ["/api/timeline-events?limit=4"],
+  const { data: timelineEvents = [] } = useQuery<TimelineEvent[]>({ 
+    queryKey: ["/api/timeline-events"] 
   });
 
-  // Get latest brand health metrics (normally would come from the query)
-  const brandHealthData = {
-    brandLiftScore: 78.4,
-    purchaseIntent: 64.2,
-    netSentiment: 42,
-    activeSurveys: 4
-  };
+  // Fetch brand health metrics (mock data structure for now)
+  const { data: brandHealthData = {
+    brandLiftScore: 73,
+    purchaseIntent: 68,
+    netSentiment: 82,
+    activeSurveys: 3
+  } } = useQuery<BrandHealthMetricsData>({
+    queryKey: ["/api/brand-health-metrics"],
+    enabled: false // Disable until we have real API
+  });
 
-  // Create filter options
-  const filterOptions: FilterOptions = {
-    skus: skus.map(sku => ({ 
-      value: sku.id.toString(), 
-      label: `${sku.name} (${sku.region})` 
-    })),
-    markets: Array.from(new Set(skus.map(sku => sku.market))).map(market => ({
-      value: market,
-      label: market
-    })),
-    regions: Array.from(new Set(skus.map(sku => sku.region))).map(region => ({
-      value: region,
-      label: region
-    }))
-  };
+  const behavioralData = behavioralResponse?.metrics || [];
+  const summaryData = behavioralResponse?.summary;
 
-  // Find anomaly data for the survey trigger
-  const anomalyData = behavioralMetrics.find((metric: BehavioralMetricsData) => metric.status === "anomaly");
-  const anomalySKU = anomalyData ? skus.find(sku => sku.id === anomalyData.skuId) : undefined;
-
-  const handleApplyFilters = (newFilters: {
-    selectedSku: string;
-    selectedRetailers: string[];
-    selectedRegion: string;
-  }) => {
-    setFilters(newFilters);
-  };
-
-  const handleExportReport = () => {
+  const handleExportReport = async () => {
     toast({
       title: "Export Started",
       description: "Your report is being prepared for download.",
     });
   };
 
-  const handleViewAllMetrics = () => {
-    navigate("/behavioral");
+  const handleApplyFilters = (newFilters: FilterOptions) => {
+    setFilters(newFilters);
+    setShowFilters(false);
   };
 
-  const handleInvestigateMetric = (metric: string) => {
-    toast({
-      title: `Investigating ${metric}`,
-      description: "Detailed analysis tools would open here.",
+  const handleResetFilters = () => {
+    setFilters({
+      selectedSku: "all",
+      selectedRetailers: [],
+      selectedRegion: "all"
     });
-    navigate("/behavioral");
   };
 
-  const handleLaunchSurvey = async (surveyConfig: {
-    skuId: number;
-    audience: string;
-    surveyType: string;
-  }) => {
+  const handleCreateSurvey = async (surveyType: string, targetAudience?: string) => {
     try {
-      const sku = skus.find(s => s.id === surveyConfig.skuId);
-      
-      if (!sku) {
-        throw new Error("SKU not found");
-      }
-
-      // Create a survey
       const response = await apiRequest("POST", "/api/surveys", {
-        skuId: surveyConfig.skuId,
-        title: `${sku.name} - ${surveyConfig.surveyType.replace('_', ' ')} Survey`,
-        type: surveyConfig.surveyType,
-        audience: surveyConfig.audience,
-        status: "draft",
-        sampleSize: 300,
-        questions: [] // Will be populated in the survey builder
+        name: `${surveyType} Survey - ${new Date().toLocaleDateString()}`,
+        description: `Automated ${surveyType.toLowerCase()} survey created from dashboard`,
+        questions: [],
+        targetAudience: targetAudience || "general",
+        skuId: filters.selectedSku !== "all" ? parseInt(filters.selectedSku) : defaultSkuId,
+        status: "draft"
       });
 
       if (response.ok) {
@@ -167,175 +123,145 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <WorkflowHeader 
-        currentPhase="launch"
-        completedSteps={0}
-        totalSteps={4}
-        skuName={filters.selectedSku === "all" ? "All SKUs" : skus.find(s => s.id.toString() === filters.selectedSku)?.name}
-      />
+    <div className="min-h-screen bg-background flex">
+      <Sidebar />
       
-      <div className="container mx-auto px-4 py-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-          <div className="flex-1">
-            <h1 className="text-2xl font-bold tracking-tight mb-1">SKU Performance Dashboard</h1>
-            <p className="text-muted-foreground">Monitor your product portfolio and identify optimization opportunities</p>
-          </div>
+      <div className="flex-1 flex flex-col">
+        <WorkflowHeader 
+          currentPhase="launch"
+          completedSteps={0}
+          totalSteps={4}
+          skuName={filters.selectedSku === "all" ? "All SKUs" : skus.find(s => s.id.toString() === filters.selectedSku)?.name}
+        />
         
-        <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-3">
-          <div className="flex items-center gap-2 bg-muted/30 p-2 rounded-md">
-            <span className="text-sm font-medium text-muted-foreground">Quick view:</span>
-            <Select value={timeRange} onValueChange={setTimeRange}>
-              <SelectTrigger className="w-full sm:w-auto border-0 bg-transparent shadow-none h-8 px-2">
-                <SelectValue placeholder="Select time range" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="7days">Last 7 days</SelectItem>
-                <SelectItem value="30days">Last 30 days</SelectItem>
-                <SelectItem value="quarter">Last quarter</SelectItem>
-                <SelectItem value="ytd">Year to date</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <Button 
-            className="flex items-center gap-2 bg-primary/90 hover:bg-primary"
-            onClick={handleExportReport}
-          >
-            <Download className="h-4 w-4" />
-            Export Report
-          </Button>
-        </div>
-      </div>
-
-      {/* Primary Action Section */}
-      <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 mb-6">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-          <div className="mb-4 md:mb-0">
-            <h2 className="text-xl font-semibold mb-1">SKU Performance Overview</h2>
-            <p className="text-muted-foreground">Monitor your product portfolio and identify optimization opportunities</p>
-          </div>
-          <div className="flex gap-3">
-            <Button 
-              variant="outline" 
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2"
-            >
-              <Filter className="h-4 w-4" />
-              {showFilters ? "Hide Filters" : "Filter Data"}
-            </Button>
-            <Button onClick={() => navigate("/sku-management")}>
-              <Plus className="h-4 w-4 mr-2" />
-              Add SKU
-            </Button>
-          </div>
-        </div>
-        
-        {/* Collapsible Filters */}
-        {showFilters && (
-          <div className="mt-6 pt-6 border-t border-border/50">
-            <div className="bg-white/50 rounded-lg p-4">
-              <SKUFilter
-                filterOptions={filterOptions}
-                onApplyFilters={handleApplyFilters}
-              />
+        <div className="flex-1 container mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+            <div className="flex-1">
+              <h1 className="text-2xl font-bold tracking-tight mb-1">SKU Performance Dashboard</h1>
+              <p className="text-muted-foreground">Monitor your product portfolio and identify optimization opportunities</p>
+            </div>
+            
+            <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-3">
+              <div className="flex items-center gap-2 bg-muted/30 p-2 rounded-md">
+                <span className="text-sm font-medium text-muted-foreground">Quick view:</span>
+                <Select value={timeRange} onValueChange={setTimeRange}>
+                  <SelectTrigger className="w-full sm:w-auto border-0 bg-transparent shadow-none h-8 px-2">
+                    <SelectValue placeholder="Select time range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="7days">Last 7 days</SelectItem>
+                    <SelectItem value="30days">Last 30 days</SelectItem>
+                    <SelectItem value="quarter">Last quarter</SelectItem>
+                    <SelectItem value="ytd">Year to date</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <Button 
+                className="flex items-center gap-2 bg-primary/90 hover:bg-primary"
+                onClick={handleExportReport}
+              >
+                <Download className="h-4 w-4" />
+                Export Report
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2"
+                onClick={() => setShowFilters(!showFilters)}
+              >
+                <Filter className="h-4 w-4" />
+                Filters
+              </Button>
             </div>
           </div>
-        )}
-      </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <MetricCard
-          title="Brand Lift Score"
-          value={brandHealthData.brandLiftScore.toFixed(1)}
-          change={3.2}
-          icon={<LineChart className="h-5 w-5 text-primary" />}
-          iconBgColor="bg-primary/10"
-          iconTextColor="text-primary"
-          detailsLink="/brand-health"
-          tooltip="Measures the percentage increase in brand awareness attributed to marketing campaigns. Higher scores indicate stronger campaign effectiveness and brand recognition."
-          performanceLevel={brandHealthData.brandLiftScore >= 75 ? "excellent" : brandHealthData.brandLiftScore >= 65 ? "good" : brandHealthData.brandLiftScore >= 50 ? "average" : "poor"}
-          benchmark="Industry avg: 65.2"
-          actionHint={brandHealthData.brandLiftScore >= 75 ? "Maintain current strategy" : brandHealthData.brandLiftScore >= 65 ? "Consider A/B testing new campaigns" : "Review campaign targeting and messaging"}
-          quickAction={brandHealthData.brandLiftScore < 65 ? {
-            label: "Launch Brand Survey",
-            action: () => handleLaunchSurvey({
-              skuId: defaultSkuId || 1,
-              audience: "target_consumers",
-              surveyType: "awareness"
-            }),
-            variant: "default"
-          } : undefined}
-        />
-        
-        <MetricCard
-          title="Purchase Intent"
-          value={`${brandHealthData.purchaseIntent.toFixed(1)}%`}
-          change={-1.8}
-          icon={<ShoppingCart className="h-5 w-5 text-secondary" />}
-          iconBgColor="bg-secondary/10"
-          iconTextColor="text-secondary"
-          detailsLink="/brand-health"
-          tooltip="The percentage of consumers who indicate they are likely to purchase your product in the next 6 months. Based on survey responses and behavioral data analysis."
-          performanceLevel={brandHealthData.purchaseIntent >= 70 ? "excellent" : brandHealthData.purchaseIntent >= 60 ? "good" : brandHealthData.purchaseIntent >= 45 ? "average" : "poor"}
-          benchmark="Category avg: 58.4%"
-          actionHint={brandHealthData.purchaseIntent >= 70 ? "Excellent conversion potential" : brandHealthData.purchaseIntent >= 60 ? "Launch targeted promotions" : "Focus on product benefits messaging"}
-          quickAction={brandHealthData.purchaseIntent < 60 ? {
-            label: "Survey Purchase Barriers",
-            action: () => handleLaunchSurvey({
-              skuId: defaultSkuId || 1,
-              audience: "potential_customers",
-              surveyType: "purchase_intent"
-            }),
-            variant: "secondary"
-          } : undefined}
-        />
-        
-        <MetricCard
-          title="Net Sentiment"
-          value={`+${brandHealthData.netSentiment}`}
-          change={5}
-          icon={<SmilePlus className="h-5 w-5 text-accent" />}
-          iconBgColor="bg-accent/10"
-          iconTextColor="text-accent"
-          detailsLink="/brand-health"
-          tooltip="Net difference between positive and negative mentions across social media, reviews, and surveys. Positive scores indicate favorable consumer perception."
-          performanceLevel={brandHealthData.netSentiment >= 40 ? "excellent" : brandHealthData.netSentiment >= 25 ? "good" : brandHealthData.netSentiment >= 10 ? "average" : "poor"}
-          benchmark="Market avg: +28"
-          actionHint={brandHealthData.netSentiment >= 40 ? "Strong brand perception" : brandHealthData.netSentiment >= 25 ? "Monitor and maintain positivity" : "Address negative feedback sources"}
-          quickAction={brandHealthData.netSentiment < 25 ? {
-            label: "Investigate Sentiment",
-            action: () => handleLaunchSurvey({
-              skuId: defaultSkuId || 1,
-              audience: "recent_customers",
-              surveyType: "friction_point"
-            }),
-            variant: "outline"
-          } : undefined}
-        />
-        
-        <MetricCard
-          title="Active Surveys"
-          value={brandHealthData.activeSurveys}
-          subtext="of 5 planned"
-          icon={<FileText className="h-5 w-5 text-success" />}
-          iconBgColor="bg-success/10"
-          iconTextColor="text-success"
-          detailsLink="/survey-builder"
-          performanceLevel={brandHealthData.activeSurveys >= 4 ? "excellent" : brandHealthData.activeSurveys >= 3 ? "good" : brandHealthData.activeSurveys >= 2 ? "average" : "poor"}
-          benchmark="Target: 4-5 active"
-          actionHint={brandHealthData.activeSurveys >= 4 ? "Good survey coverage" : "Launch additional surveys for better insights"}
-          quickAction={brandHealthData.activeSurveys < 3 ? {
-            label: "Create Survey",
-            action: () => navigate("/survey-builder"),
-            variant: "default"
-          } : undefined}
-        />
+          {/* Filters Section */}
+          {showFilters && (
+            <div className="mb-6">
+              <SKUFilter
+                skus={skus}
+                filters={filters}
+                onApplyFilters={handleApplyFilters}
+                onResetFilters={handleResetFilters}
+              />
+            </div>
+          )}
+
+          {/* Key Metrics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <MetricCard
+              title="Brand Lift Score"
+              value={brandHealthData.brandLiftScore}
+              unit="%"
+              trend={brandHealthData.brandLiftScore >= 70 ? "up" : "down"}
+              trendValue={brandHealthData.brandLiftScore >= 70 ? 8 : -5}
+              icon={<LineChart className="h-4 w-4" />}
+              performanceLevel={brandHealthData.brandLiftScore >= 80 ? "excellent" : brandHealthData.brandLiftScore >= 70 ? "good" : brandHealthData.brandLiftScore >= 50 ? "average" : "poor"}
+              benchmark="Industry avg: 65%"
+              actionHint={brandHealthData.brandLiftScore >= 70 ? "Strong brand performance" : "Consider brand awareness campaigns"}
+              quickAction={brandHealthData.brandLiftScore < 60 ? {
+                label: "Launch Brand Survey",
+                action: () => handleCreateSurvey("Brand Awareness", "brand-focused"),
+                variant: "default"
+              } : undefined}
+            />
+
+            <MetricCard
+              title="Purchase Intent"
+              value={brandHealthData.purchaseIntent}
+              unit="%"
+              trend={brandHealthData.purchaseIntent >= 65 ? "up" : "down"}
+              trendValue={brandHealthData.purchaseIntent >= 65 ? 12 : -8}
+              icon={<ShoppingCart className="h-4 w-4" />}
+              performanceLevel={brandHealthData.purchaseIntent >= 75 ? "excellent" : brandHealthData.purchaseIntent >= 65 ? "good" : brandHealthData.purchaseIntent >= 45 ? "average" : "poor"}
+              benchmark="Target: 70%+"
+              actionHint={brandHealthData.purchaseIntent >= 65 ? "Good conversion potential" : "Focus on value proposition messaging"}
+              quickAction={brandHealthData.purchaseIntent < 50 ? {
+                label: "Create Intent Survey",
+                action: () => handleCreateSurvey("Purchase Intent", "conversion-focused"),
+                variant: "default"
+              } : undefined}
+            />
+
+            <MetricCard
+              title="Net Sentiment"
+              value={brandHealthData.netSentiment}
+              unit="%"
+              trend={brandHealthData.netSentiment >= 75 ? "up" : "down"}
+              trendValue={brandHealthData.netSentiment >= 75 ? 6 : -12}
+              icon={<SmilePlus className="h-4 w-4" />}
+              performanceLevel={brandHealthData.netSentiment >= 85 ? "excellent" : brandHealthData.netSentiment >= 75 ? "good" : brandHealthData.netSentiment >= 60 ? "average" : "poor"}
+              benchmark="Healthy: 75%+"
+              actionHint={brandHealthData.netSentiment >= 75 ? "Positive consumer sentiment" : "Address negative feedback themes"}
+              quickAction={brandHealthData.netSentiment < 60 ? {
+                label: "Sentiment Analysis",
+                action: () => navigate("/brand-health"),
+                variant: "outline"
+              } : undefined}
+            />
+
+            <MetricCard
+              title="Active Surveys"
+              value={brandHealthData.activeSurveys}
+              unit="surveys"
+              trend="stable"
+              trendValue={0}
+              icon={<FileText className="h-4 w-4" />}
+              performanceLevel={brandHealthData.activeSurveys >= 4 ? "excellent" : brandHealthData.activeSurveys >= 3 ? "good" : brandHealthData.activeSurveys >= 2 ? "average" : "poor"}
+              benchmark="Target: 4-5 active"
+              actionHint={brandHealthData.activeSurveys >= 4 ? "Good survey coverage" : "Launch additional surveys for better insights"}
+              quickAction={brandHealthData.activeSurveys < 3 ? {
+                label: "Create Survey",
+                action: () => navigate("/survey-builder"),
+                variant: "default"
+              } : undefined}
+            />
+          </div>
+
+          {/* Main Dashboard Content */}
+          <WorkflowDashboard />
         </div>
-
-        {/* Main Dashboard Content */}
-        <WorkflowDashboard />
       </div>
     </div>
   );
