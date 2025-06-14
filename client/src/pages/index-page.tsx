@@ -470,36 +470,120 @@ const IndexPage = () => {
           </div>
         </section>
 
-        {/* CTA FOOTER */}
-        <section id="contact" className="py-24 bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
+        {/* ROI CALCULATION CTA */}
+        <section className="py-24 bg-gradient-to-br from-emerald-600 to-blue-600 text-white">
+          <div className="container mx-auto px-6">
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h2 className="text-4xl font-bold mb-6">Calculate Your ROI in 2 Minutes</h2>
+                <p className="text-xl text-emerald-100 mb-8">
+                  See exactly how much SKU Insights can save your company in failed launch costs and accelerate time-to-profitability.
+                </p>
+                
+                <div className="bg-white/10 rounded-lg p-6 mb-8">
+                  <h3 className="text-lg font-semibold mb-4">Typical ROI Within 12 Months:</h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between">
+                      <span>Avoided failed launch costs</span>
+                      <span className="font-bold">$1.6M - $4.2M</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Faster time-to-profitability</span>
+                      <span className="font-bold">$800K - $2.1M</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Reduced manual coordination</span>
+                      <span className="font-bold">$400K - $800K</span>
+                    </div>
+                    <hr className="border-white/20" />
+                    <div className="flex justify-between text-lg font-bold">
+                      <span>Total Potential Savings</span>
+                      <span>$2.8M - $7.1M</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <a 
+                  href="https://www.linkedin.com/in/shalinshah2/" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="bg-white text-emerald-600 px-8 py-4 rounded-lg hover:bg-gray-100 text-lg font-medium inline-flex items-center gap-2 mr-4"
+                >
+                  Get Custom ROI Report
+                </a>
+                
+                <Button 
+                  variant="outline" 
+                  className="px-8 py-4 text-lg border-white text-white hover:bg-white hover:text-emerald-600"
+                  onClick={() => window.location.href = '/auth'}
+                >
+                  <Play className="h-5 w-5 mr-2" />
+                  Try Live Demo
+                </Button>
+              </div>
+              
+              <div className="bg-white/10 rounded-2xl p-8">
+                <h3 className="text-2xl font-bold mb-6 text-center">Ready to Start?</h3>
+                <div className="space-y-4">
+                  <div className="bg-white/20 rounded-lg p-4">
+                    <div className="flex items-center mb-2">
+                      <div className="w-6 h-6 bg-emerald-400 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-emerald-900 text-sm font-bold">1</span>
+                      </div>
+                      <span className="font-semibold">15-min Discovery Call</span>
+                    </div>
+                    <p className="text-sm text-emerald-100 ml-9">Understand your current launch challenges</p>
+                  </div>
+                  
+                  <div className="bg-white/20 rounded-lg p-4">
+                    <div className="flex items-center mb-2">
+                      <div className="w-6 h-6 bg-emerald-400 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-emerald-900 text-sm font-bold">2</span>
+                      </div>
+                      <span className="font-semibold">Custom ROI Analysis</span>
+                    </div>
+                    <p className="text-sm text-emerald-100 ml-9">Calculate specific savings for your portfolio</p>
+                  </div>
+                  
+                  <div className="bg-white/20 rounded-lg p-4">
+                    <div className="flex items-center mb-2">
+                      <div className="w-6 h-6 bg-emerald-400 rounded-full flex items-center justify-center mr-3">
+                        <span className="text-emerald-900 text-sm font-bold">3</span>
+                      </div>
+                      <span className="font-semibold">Live Demo with Your Data</span>
+                    </div>
+                    <p className="text-sm text-emerald-100 ml-9">See actual insights from your SKU portfolio</p>
+                  </div>
+                </div>
+                
+                <div className="mt-6 pt-6 border-t border-white/20 text-center">
+                  <p className="text-sm text-emerald-100">Average time to first insights: <strong>48 hours</strong></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* FINAL CTA */}
+        <section id="contact" className="py-16 bg-gray-900 text-white">
           <div className="container mx-auto px-6 text-center">
-            <h2 className="text-4xl font-bold mb-6">Ready to Validate, Launch & Grow Winning SKUs?</h2>
-            <p className="text-xl text-blue-100 max-w-2xl mx-auto mb-12">
-              Join the brands using SKU Insights to turn launch uncertainty into predictable growth
+            <h2 className="text-3xl font-bold mb-4">Stop Launching Blind. Start Winning Predictably.</h2>
+            <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-8">
+              Join 200+ brand managers using SKU Insights to eliminate launch guesswork
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a 
                 href="https://www.linkedin.com/in/shalinshah2/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="bg-white text-blue-600 px-8 py-4 rounded-lg hover:bg-gray-100 text-lg font-medium flex items-center justify-center gap-2"
+                className="bg-emerald-600 text-white px-8 py-4 rounded-lg hover:bg-emerald-700 text-lg font-medium"
               >
-                <Calendar className="h-5 w-5" />
-                Schedule Call
+                Schedule ROI Call
               </a>
               
               <Button 
-                variant="outline" 
-                className="px-8 py-4 text-lg border-white text-white hover:bg-white hover:text-blue-600"
-                onClick={() => {/* Add download functionality */}}
-              >
-                <Download className="h-5 w-5 mr-2" />
-                Download One-Pager
-              </Button>
-              
-              <Button 
-                className="bg-green-500 hover:bg-green-600 px-8 py-4 text-lg"
+                className="bg-blue-600 hover:bg-blue-700 px-8 py-4 text-lg"
                 onClick={() => window.location.href = '/auth'}
               >
                 <Play className="h-5 w-5 mr-2" />
