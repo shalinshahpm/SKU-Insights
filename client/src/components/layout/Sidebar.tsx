@@ -78,36 +78,12 @@ export function Sidebar({
 }: SidebarProps) {
   const [location] = useLocation();
 
-  const mainItems: SidebarItem[] = [
+  const overviewItems: SidebarItem[] = [
     {
       title: "Dashboard",
       icon: <LayoutDashboard className="mr-3 h-5 w-5" />,
-      path: "/",
-      isActive: location === "/"
-    },
-    {
-      title: "SKU Management",
-      icon: <Store className="mr-3 h-5 w-5" />,
-      path: "/sku-management",
-      isActive: location === "/sku-management"
-    },
-    {
-      title: "Behavioral Intelligence",
-      icon: <Activity className="mr-3 h-5 w-5" />,
-      path: "/behavioral",
-      isActive: location === "/behavioral"
-    },
-    {
-      title: "Survey Builder",
-      icon: <FileText className="mr-3 h-5 w-5" />,
-      path: "/survey-builder",
-      isActive: location === "/survey-builder"
-    },
-    {
-      title: "Brand Health",
-      icon: <Heart className="mr-3 h-5 w-5" />,
-      path: "/brand-health",
-      isActive: location === "/brand-health"
+      path: "/dashboard",
+      isActive: location === "/dashboard"
     },
     {
       title: "Insights Timeline",
@@ -117,13 +93,43 @@ export function Sidebar({
     }
   ];
 
-  const settingsItems: SidebarItem[] = [
+  const analyticsItems: SidebarItem[] = [
+    {
+      title: "Behavioral Intelligence",
+      icon: <Activity className="mr-3 h-5 w-5" />,
+      path: "/behavioral",
+      isActive: location === "/behavioral"
+    },
+    {
+      title: "Brand Health",
+      icon: <Heart className="mr-3 h-5 w-5" />,
+      path: "/brand-health",
+      isActive: location === "/brand-health"
+    }
+  ];
+
+  const managementItems: SidebarItem[] = [
+    {
+      title: "SKU Management",
+      icon: <Store className="mr-3 h-5 w-5" />,
+      path: "/sku-management",
+      isActive: location === "/sku-management"
+    },
+    {
+      title: "Survey Builder",
+      icon: <FileText className="mr-3 h-5 w-5" />,
+      path: "/survey-builder",
+      isActive: location === "/survey-builder"
+    },
     {
       title: "User Management",
       icon: <UserCog className="mr-3 h-5 w-5" />,
       path: "/user-management",
       isActive: location === "/user-management"
-    },
+    }
+  ];
+
+  const settingsItems: SidebarItem[] = [
     {
       title: "Account Settings",
       icon: <Settings className="mr-3 h-5 w-5" />,
@@ -158,7 +164,9 @@ export function Sidebar({
         </div>
         
         <div className="flex-1 overflow-y-auto scrollbar-hide">
-          <SidebarSection title="Main" items={mainItems} />
+          <SidebarSection title="Overview" items={overviewItems} />
+          <SidebarSection title="Analytics" items={analyticsItems} />
+          <SidebarSection title="Management" items={managementItems} />
           <SidebarSection title="Settings" items={settingsItems} />
         </div>
         

@@ -29,10 +29,10 @@ export function Header({ onOpenSidebar }: HeaderProps) {
           variant="outline" 
           size="sm" 
           className="hidden md:flex items-center space-x-2"
-          onClick={() => window.location.href = '/'}
+          onClick={() => window.location.href = '/dashboard'}
         >
           <Home className="h-4 w-4" />
-          <span>Back to Home</span>
+          <span>Dashboard</span>
         </Button>
       </div>
       
