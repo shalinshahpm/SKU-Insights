@@ -21,40 +21,50 @@ export function WelcomeBanner({ onDismiss, userName = "there" }: WelcomeBannerPr
   const onboardingSteps = [
     {
       title: "Welcome to SKU Insights",
-      description: "Your CPG product launch management platform",
-      content: "We'll guide you through setting up your first product and understanding key features.",
-      action: "Get Started",
+      description: "Your complete CPG product lifecycle platform",
+      content: "We'll guide you through the 5-step process from concept validation to outcome tracking.",
+      action: "Start Tour",
       nextStep: 1
     },
     {
-      title: "Step 1: Add Your Products",
-      description: "Upload your SKU data to begin tracking performance",
-      content: "Start by adding your products in SKU Management. You can upload via CSV or add them individually.",
+      title: "Step 1: Upload Your SKUs & Concepts",
+      description: "Get started by uploading your products and early ideas",
+      content: "Start here by uploading the SKUs or concepts you want to validate, monitor, or optimize. Upload via CSV, connect APIs, or add concept descriptions and images.",
       action: "Go to SKU Management",
       path: "/sku-management",
       nextStep: 2
     },
     {
-      title: "Step 2: Monitor Performance",
-      description: "Track brand health and consumer behavior",
-      content: "Once you have SKUs, monitor key metrics like Brand Lift Score, Purchase Intent, and sentiment data.",
-      action: "View Analytics",
-      path: "/behavioral",
+      title: "Step 2: Run Pre-Launch Validation",
+      description: "Evaluate product appeal, uniqueness, and pricing before launch",
+      content: "Test how real consumers respond to your product ideas before investing in a full launch. Launch A/B tests, concept tests, and price sensitivity studies.",
+      action: "Start Validation",
+      path: "https://survfast.xyz/",
+      external: true,
       nextStep: 3
     },
     {
-      title: "Step 3: Create Surveys",
-      description: "Gather consumer insights with targeted surveys",
-      content: "Build custom surveys to understand consumer preferences and optimize your product strategy.",
-      action: "Build Survey",
-      path: "/survey-builder",
+      title: "Step 3: Monitor SKU Performance in Market",
+      description: "See how your SKUs are performing post-launch in real time",
+      content: "After launch, monitor performance live to catch issues or scale winners quickly. Track sell-through, add-to-cart rates, and abandonment across platforms.",
+      action: "View Performance",
+      path: "/launch-execution",
       nextStep: 4
     },
     {
-      title: "You're All Set!",
-      description: "Your workspace is ready for product success",
-      content: "Explore the platform and use the workflow navigation to guide your product launch journey.",
-      action: "Start Exploring",
+      title: "Step 4: Trigger Feedback & Optimization",
+      description: "Collect targeted feedback and take rapid actions based on live data",
+      content: "Trigger feedback automatically when signals dip, and improve with real insights. Set up smart triggers and launch follow-up surveys based on performance.",
+      action: "Set Up Triggers",
+      path: "/post-launch-optimization",
+      nextStep: 5
+    },
+    {
+      title: "Step 5: Review Recommendations & Outcomes",
+      description: "Understand what worked, what didn't, and how to move forward",
+      content: "Get a complete picture of each SKU from concept to outcome with export-ready summaries. View unified insights and recommendations for future launches.",
+      action: "View Executive Summary",
+      path: "/executive-summary",
       nextStep: -1
     }
   ];
@@ -67,7 +77,13 @@ export function WelcomeBanner({ onDismiss, userName = "there" }: WelcomeBannerPr
       if (currentStepData.nextStep !== -1) {
         setCurrentStep(currentStepData.nextStep);
       }
-      navigate(currentStepData.path);
+      
+      // Handle external links
+      if (currentStepData.external) {
+        window.open(currentStepData.path, '_blank');
+      } else {
+        navigate(currentStepData.path);
+      }
     } else if (currentStepData.nextStep === -1) {
       onDismiss();
     } else {
