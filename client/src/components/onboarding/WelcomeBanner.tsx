@@ -63,9 +63,20 @@ export function WelcomeBanner({ onDismiss, userName = "there" }: WelcomeBannerPr
 
   const handleAction = () => {
     if (currentStepData.path) {
+      // Advance to next step before navigating
+      if (currentStepData.nextStep !== -1) {
+        setCurrentStep(currentStepData.nextStep);
+      }
       navigate(currentStepData.path);
-      onDismiss();
     } else if (currentStepData.nextStep === -1) {
+      onDismiss();
+    } else {
+      setCurrentStep(currentStepData.nextStep);
+    }
+  };
+
+  const handleNextStep = () => {
+    if (currentStepData.nextStep === -1) {
       onDismiss();
     } else {
       setCurrentStep(currentStepData.nextStep);
@@ -101,6 +112,17 @@ export function WelcomeBanner({ onDismiss, userName = "there" }: WelcomeBannerPr
               {currentStepData.action}
               <ArrowRight className="h-4 w-4 ml-1" />
             </Button>
+            
+            {currentStep > 0 && currentStep < onboardingSteps.length - 1 && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleNextStep}
+                className="text-blue-600 border-blue-600"
+              >
+                Next Step
+              </Button>
+            )}
             
             {currentStep < onboardingSteps.length - 1 && (
               <Button 
