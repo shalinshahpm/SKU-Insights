@@ -145,6 +145,24 @@ export default function Dashboard() {
         />
         
         <div className="flex-1 container mx-auto px-4 py-6">
+          {/* Welcome Banner for new users */}
+          {showWelcomeBanner && isNewUser && (
+            <WelcomeBanner 
+              onDismiss={() => setShowWelcomeBanner(false)}
+              userName="Brand Manager"
+            />
+          )}
+
+          {/* Simplified Header */}
+          <SimplifiedHeader 
+            timeRange={timeRange}
+            onTimeRangeChange={setTimeRange}
+            onShowFilters={() => setShowFilters(!showFilters)}
+            onExport={() => toast({ title: "Export started", description: "Your data export is being prepared." })}
+            onRefresh={() => window.location.reload()}
+            showFilters={showFilters}
+          />
+
           {showSimplifiedView ? (
             <div className="space-y-6">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">

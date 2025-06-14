@@ -94,6 +94,16 @@ SKU Insights is a comprehensive Consumer Packaged Goods (CPG) product launch man
 
 ## Recent Changes
 
+- June 14, 2025: Advanced UX Improvements Implementation
+  - Added guided onboarding flow with welcome banner for first-time users
+  - Implemented contextual tooltips explaining key concepts throughout platform
+  - Created simplified header with secondary menu for advanced controls (Export, Filters)
+  - Enhanced smart prioritization with color coding and urgent metric highlighting
+  - Improved information architecture with progressive disclosure and clear section headers
+  - Added WelcomeBanner component with step-by-step product setup guidance
+  - Created SimplifiedHeader component with time range selector and dropdown menu for advanced functions
+  - Integrated TooltipHelp component for contextual assistance across dashboard elements
+  - Reorganized SKU Upload center from dashboard to SKU Management page for better workflow alignment
 - June 14, 2025: Complete Workflow-First Architecture Implementation
   - Restructured platform from feature-based to sequential workflow-based navigation (Pre-Launch → Launch → Post-Launch → Executive)
   - Implemented sticky workflow header with progress tracking across all 4 phases
