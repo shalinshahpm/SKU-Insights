@@ -31,7 +31,7 @@ function Router() {
       {/* Protected routes - Workflow-based */}
       <ProtectedRoute path="/dashboard" component={Dashboard} />
       <ProtectedRoute path="/launch-execution" component={LaunchExecution} />
-      <ProtectedRoute path="/post-launch" component={PostLaunchOptimization} />
+      <ProtectedRoute path="/post-launch-optimization" component={PostLaunchOptimization} />
       <ProtectedRoute path="/executive-summary" component={ExecutiveSummary} />
       
       {/* Protected routes - Feature-based (legacy) */}
