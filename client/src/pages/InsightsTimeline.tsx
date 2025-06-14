@@ -3,6 +3,7 @@ import { MainLayout } from "@/components/layout/MainLayout";
 import { useQuery } from "@tanstack/react-query";
 import { TimelineEvent, SKU } from "@/lib/types";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 import {
   Card,
   CardContent,
@@ -50,6 +51,7 @@ import { format, formatDistanceToNow, isToday, isYesterday, isThisWeek, isThisMo
 
 export default function InsightsTimeline() {
   const { toast } = useToast();
+  const [, navigate] = useLocation();
   const [selectedSKU, setSelectedSKU] = useState<string>("all");
   const [filterType, setFilterType] = useState<string>("all");
   const [timeRange, setTimeRange] = useState<string>("30days");
@@ -474,14 +476,61 @@ export default function InsightsTimeline() {
                                         )}
                                         
                                         {event.type === "anomaly_detected" && (
+                                          <>
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              className="h-7 text-xs bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
+                                              onClick={() => handleInvestigate(event)}
+                                            >
+                                              <Activity className="h-3 w-3 mr-1" />
+                                              Investigate
+                                            </Button>
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              className="h-7 text-xs"
+                                              onClick={() => navigate("/survey-builder")}
+                                            >
+                                              <FileText className="h-3 w-3 mr-1" />
+                                              Launch Survey
+                                            </Button>
+                                          </>
+                                        )}
+                                        
+                                        {event.type === "survey_completed" && (
                                           <Button
                                             variant="outline"
                                             size="sm"
-                                            className="h-7 text-xs bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
-                                            onClick={() => handleInvestigate(event)}
+                                            className="h-7 text-xs bg-green-50 text-green-600 border-green-200 hover:bg-green-100"
+                                            onClick={() => navigate("/behavioral")}
                                           >
-                                            <Activity className="h-3 w-3 mr-1" />
-                                            Investigate
+                                            <BarChart className="h-3 w-3 mr-1" />
+                                            Analyze Results
+                                          </Button>
+                                        )}
+                                        
+                                        {event.type === "sku_added" && (
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-7 text-xs bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
+                                            onClick={() => navigate("/brand-health")}
+                                          >
+                                            <MonitorCheck className="h-3 w-3 mr-1" />
+                                            Monitor Performance
+                                          </Button>
+                                        )}
+                                        
+                                        {event.type === "report_generated" && (
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="h-7 text-xs bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100"
+                                            onClick={() => navigate("/insights-timeline")}
+                                          >
+                                            <PieChart className="h-3 w-3 mr-1" />
+                                            View Insights
                                           </Button>
                                         )}
                                       </div>

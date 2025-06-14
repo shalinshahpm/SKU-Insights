@@ -94,6 +94,14 @@ SKU Insights is a comprehensive Consumer Packaged Goods (CPG) product launch man
 
 ## Recent Changes
 
+- June 14, 2025: Connected User Flows and Role-Based Navigation Implementation
+  - Implemented role-based navigation that adapts to user types (Brand Manager, Regional Insights Lead, Global Marketing Operations)
+  - Added connected user flows linking problem identification to specific actions
+  - Enhanced metric cards with quick action buttons that trigger relevant workflows
+  - Timeline events now include actionable next steps connecting each event to relevant tools
+  - Survey Builder includes contextual banners explaining connection to performance issues
+  - Fixed authentication type compatibility issues across components
+  - Created seamless paths from "seeing a problem" to "taking action" throughout the platform
 - June 14, 2025: Dashboard UX improvements and content hierarchy fixes
   - Removed dual dashboard views (Workflow vs Analytics) to eliminate decision paralysis
   - Created single focused dashboard with primary action section and collapsible filters

@@ -82,8 +82,9 @@ export type BrandHealthMetricsData = {
 export type User = {
   id: number;
   username: string;
-  fullName: string;
-  role: "brand_manager" | "regional_insights" | "global_marketing";
+  fullName?: string;
+  email?: string;
+  role?: string;
   avatar?: string;
 }
 
