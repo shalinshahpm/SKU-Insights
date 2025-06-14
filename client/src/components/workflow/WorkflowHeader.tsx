@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { useLocation } from "wouter";
 
-export type WorkflowPhase = "pre-launch" | "launch" | "post-launch" | "executive";
+export type WorkflowPhase = "upload" | "pre-launch" | "launch" | "post-launch" | "executive";
 
 export interface WorkflowStep {
   id: WorkflowPhase;
@@ -45,20 +45,29 @@ export function WorkflowHeader({
 
   const workflowSteps: WorkflowStep[] = [
     {
+      id: "upload",
+      title: "Upload SKUs & Concepts",
+      description: "Upload products and early ideas via CSV or API",
+      icon: <TestTube className="h-4 w-4" />,
+      path: "/sku-management",
+      isComplete: currentPhase !== "upload",
+      isActive: currentPhase === "upload"
+    },
+    {
       id: "pre-launch",
       title: "Pre-Launch Validation",
-      description: "Concept testing & validation",
+      description: "Evaluate appeal, uniqueness, and pricing before launch",
       icon: <TestTube className="h-4 w-4" />,
       path: "/pre-launch",
-      isComplete: currentPhase !== "pre-launch",
+      isComplete: !["upload", "pre-launch"].includes(currentPhase),
       isActive: currentPhase === "pre-launch",
       isExternal: true,
       externalUrl: "https://survfast.xyz/"
     },
     {
       id: "launch",
-      title: "Launch Execution",
-      description: "Real-time SKU monitoring",
+      title: "Monitor Performance",
+      description: "Real-time SKU performance across platforms",
       icon: <Rocket className="h-4 w-4" />,
       path: "/launch-execution",
       isComplete: ["post-launch", "executive"].includes(currentPhase),
@@ -66,17 +75,17 @@ export function WorkflowHeader({
     },
     {
       id: "post-launch",
-      title: "Post-Launch Optimization",
-      description: "Feedback loop & optimization",
+      title: "Trigger Feedback & Optimization",
+      description: "Automated triggers and targeted feedback collection",
       icon: <RefreshCw className="h-4 w-4" />,
-      path: "/post-launch",
+      path: "/post-launch-optimization",
       isComplete: currentPhase === "executive",
       isActive: currentPhase === "post-launch"
     },
     {
       id: "executive",
-      title: "Executive Dashboard",
-      description: "Cross-phase summary",
+      title: "Review Recommendations",
+      description: "Complete lifecycle view with export-ready reports",
       icon: <BarChart3 className="h-4 w-4" />,
       path: "/executive-summary",
       isComplete: false,

@@ -167,37 +167,47 @@ export function CollapsibleSidebar({
   const workflowSteps: WorkflowStep[] = [
     {
       phase: 1,
+      title: "Upload SKUs & Concepts",
+      icon: <Store className="h-4 w-4" />,
+      path: "/sku-management",
+      isActive: location === "/sku-management",
+      isCompleted: false,
+      isExternal: false,
+      description: "Upload products and early ideas"
+    },
+    {
+      phase: 2,
       title: "Pre-Launch Validation",
       icon: <TestTube className="h-4 w-4" />,
       path: "https://survfast.xyz/",
       isActive: false,
-      isCompleted: true,
+      isCompleted: false,
       isExternal: true,
-      description: "Market research & concept testing"
+      description: "Evaluate appeal and pricing before launch"
     },
     {
-      phase: 2,
-      title: "Launch Execution",
+      phase: 3,
+      title: "Monitor Performance",
       icon: <Rocket className="h-4 w-4" />,
       path: "/launch-execution",
       isActive: location === "/launch-execution",
       isCompleted: false,
       isExternal: false,
-      description: "Real-time launch monitoring"
-    },
-    {
-      phase: 3,
-      title: "Post-Launch Optimization",
-      icon: <RefreshCw className="h-4 w-4" />,
-      path: "/post-launch",
-      isActive: location === "/post-launch",
-      isCompleted: false,
-      isExternal: false,
-      description: "Performance optimization"
+      description: "Real-time SKU performance tracking"
     },
     {
       phase: 4,
-      title: "Executive Summary",
+      title: "Trigger Feedback & Optimization",
+      icon: <RefreshCw className="h-4 w-4" />,
+      path: "/post-launch-optimization",
+      isActive: location === "/post-launch-optimization",
+      isCompleted: false,
+      isExternal: false,
+      description: "Automated triggers and feedback collection"
+    },
+    {
+      phase: 5,
+      title: "Review Recommendations",
       icon: <BarChart3 className="h-4 w-4" />,
       path: "/executive-summary",
       isActive: location === "/executive-summary",
