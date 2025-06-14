@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { CollapsibleSidebar } from "@/components/layout/CollapsibleSidebar";
+import { WorkflowHeader } from "@/components/workflow/WorkflowHeader";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { SKU } from "@/lib/types";
 import { queryClient, apiRequest } from "@/lib/queryClient";
@@ -164,6 +165,14 @@ export default function SKUManagement() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
+        {/* Workflow Header */}
+        <WorkflowHeader 
+          currentPhase="upload"
+          completedSteps={0}
+          totalSteps={5}
+          skuName="Product Portfolio"
+        />
+        
         <div className="flex-1 overflow-auto">
           <div className="container mx-auto px-4 lg:px-6 py-4 lg:py-6 space-y-4 lg:space-y-6 max-w-7xl">
             {/* Page Header */}

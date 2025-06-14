@@ -100,6 +100,7 @@ SKU Insights is a comprehensive Consumer Packaged Goods (CPG) product launch man
   - Added responsive behavior: step titles on XL+ screens, step numbers on smaller screens
   - Compressed current step description section with smaller text and padding
   - Minimized arrow spacing between workflow steps for better space utilization
+  - Added WorkflowHeader to SKU Management page with "Return to Dashboard" button and full workflow navigation
 - June 14, 2025: Stripe Payment Integration and Credits System Implementation
   - Added credits tracking system to user schema with credits, totalCreditsEarned, and lastPaymentDate fields
   - Created creditTransactions table for detailed transaction logging

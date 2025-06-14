@@ -41,126 +41,295 @@ const IndexPage = () => {
       </header>
 
       <main>
-        {/* HERO SECTION */}
-        <section className="pt-32 pb-20 bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-          <div className="container mx-auto px-6 text-center">
-            <h1 className="text-6xl font-bold mb-6 max-w-4xl mx-auto leading-tight">
-              Launch Winning CPG Products with 
-              <span className="gradient-text"> Confidence</span>
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              The real-time growth command center for brand managers.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <a href="https://www.linkedin.com/in/shalinshah2/" target="_blank" rel="noopener noreferrer" className="bg-blue-600 text-white px-8 py-4 rounded-lg hover:bg-blue-700 text-lg font-medium">
-                Schedule Call
-              </a>
-              <Button 
-                variant="outline" 
-                className="px-8 py-4 text-lg"
-                onClick={() => window.location.href = '/auth'}
-              >
-                Try SKU Signal Demo
-              </Button>
+        {/* HERO SECTION - ROI FOCUSED */}
+        <section className="pt-32 pb-20 bg-gradient-to-br from-emerald-50 via-white to-blue-50">
+          <div className="container mx-auto px-6">
+            {/* Trust Banner */}
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <TrendingUp className="h-4 w-4 mr-2" />
+                Trusted by CPG leaders across 47 countries
+              </div>
             </div>
-            <div className="relative max-w-4xl mx-auto">
-              <img 
-                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=450&fit=crop&crop=center" 
-                className="rounded-xl shadow-2xl w-full h-auto object-cover"
-                alt="Dashboard Preview" 
-              />
+            
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div className="text-left">
+                <h1 className="text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                  Stop Guessing.<br />
+                  <span className="gradient-text">Start Winning.</span>
+                </h1>
+                <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                  The only platform that predicts SKU success before launch and maximizes performance after launch. 
+                  <strong className="text-gray-900">Average ROI: 340% in first year.</strong>
+                </p>
+                
+                {/* Key Benefits */}
+                <div className="mb-8 space-y-3">
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
+                    <span className="text-gray-700">Reduce SKU failure rate by 67%</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
+                    <span className="text-gray-700">Cut launch costs by 45% through pre-validation</span>
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full mr-3"></div>
+                    <span className="text-gray-700">Increase velocity 3x faster with automated triggers</span>
+                  </div>
+                </div>
+                
+                <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                  <a href="https://www.linkedin.com/in/shalinshah2/" target="_blank" rel="noopener noreferrer" className="bg-emerald-600 text-white px-8 py-4 rounded-lg hover:bg-emerald-700 text-lg font-medium text-center">
+                    Get ROI Calculator
+                  </a>
+                  <Button 
+                    variant="outline" 
+                    className="px-8 py-4 text-lg border-2 border-gray-300 hover:border-emerald-600"
+                    onClick={() => window.location.href = '/auth'}
+                  >
+                    See Live Demo
+                  </Button>
+                </div>
+                
+                {/* Social Proof */}
+                <div className="text-sm text-gray-500">
+                  Join 200+ brand managers using SKU Insights to launch winning products
+                </div>
+              </div>
+              
+              <div className="relative">
+                <div className="bg-white rounded-2xl shadow-2xl p-6 border">
+                  <div className="mb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-600">KitKat Original - UK</span>
+                      <span className="bg-emerald-100 text-emerald-800 px-2 py-1 rounded text-xs font-medium">PERFORMING</span>
+                    </div>
+                    <div className="h-2 bg-gray-200 rounded-full mb-4">
+                      <div className="h-2 bg-emerald-500 rounded-full" style={{width: '78%'}}></div>
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-emerald-600">+23%</div>
+                      <div className="text-xs text-gray-500">Velocity</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-blue-600">4.2★</div>
+                      <div className="text-xs text-gray-500">Sentiment</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-purple-600">89%</div>
+                      <div className="text-xs text-gray-500">Brand Lift</div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                    <div className="flex items-center">
+                      <Zap className="h-4 w-4 text-emerald-600 mr-2" />
+                      <span className="text-sm font-medium text-emerald-800">Auto-trigger: Increase Amazon ads by 15%</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Floating metrics */}
+                <div className="absolute -top-4 -left-4 bg-white rounded-lg shadow-lg p-3 border">
+                  <div className="text-xs text-gray-500 mb-1">Launch Success Rate</div>
+                  <div className="text-lg font-bold text-emerald-600">94%</div>
+                </div>
+                
+                <div className="absolute -bottom-4 -right-4 bg-white rounded-lg shadow-lg p-3 border">
+                  <div className="text-xs text-gray-500 mb-1">Time to Profitability</div>
+                  <div className="text-lg font-bold text-blue-600">47 days</div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* PROBLEM SECTION */}
-        <section className="py-24 bg-red-50">
-          <div className="container mx-auto px-6 text-center">
-            <h2 className="text-4xl font-bold mb-6 text-red-900">
-              80% of new SKUs fail. It doesn't have to be yours.
-            </h2>
-            <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mt-12">
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <Shield className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="font-semibold text-lg mb-2">Pre-launch validation</h3>
-                <p className="text-gray-600">Test concepts before costly market entry</p>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <Zap className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="font-semibold text-lg mb-2">Real-time alerts</h3>
-                <p className="text-gray-600">Catch performance issues in hours, not weeks</p>
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-sm">
-                <BarChart3 className="h-12 w-12 text-blue-600 mx-auto mb-4" />
-                <h3 className="font-semibold text-lg mb-2">Unified data view</h3>
-                <p className="text-gray-600">See all your SKU metrics in one dashboard</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* FEATURE OVERVIEW */}
-        <section id="features" className="py-24 bg-white">
+        {/* COST OF FAILURE SECTION */}
+        <section className="py-24 bg-gray-900 text-white">
           <div className="container mx-auto px-6">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">Three Intelligence Engines. One Platform.</h2>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Bloomberg for CPG - comprehensive market intelligence at your fingertips
+              <h2 className="text-4xl font-bold mb-6">
+                Every Failed Launch Costs Your Company <span className="text-red-400">$2.3M</span>
+              </h2>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+                Brand managers are under immense pressure to deliver wins. But with 80% of new SKUs failing, 
+                most are flying blind until it's too late to course-correct.
               </p>
             </div>
             
+            <div className="grid lg:grid-cols-2 gap-16 items-center">
+              <div>
+                <h3 className="text-2xl font-bold mb-8 text-emerald-400">The Hidden Costs of Launching Blind:</h3>
+                <div className="space-y-6">
+                  <div className="flex items-start">
+                    <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                      <span className="text-white font-bold text-sm">1</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-2">$800K in sunk launch costs</h4>
+                      <p className="text-gray-300">Marketing spend, production setup, retailer fees that can't be recovered</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                      <span className="text-white font-bold text-sm">2</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-2">$1.2M in missed revenue</h4>
+                      <p className="text-gray-300">Opportunity cost while competitors capture market share</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-start">
+                    <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-4 mt-1 flex-shrink-0">
+                      <span className="text-white font-bold text-sm">3</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-2">$300K in team disruption</h4>
+                      <p className="text-gray-300">Firefighting, replanning, and organizational stress</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gradient-to-br from-emerald-600 to-blue-600 rounded-2xl p-8">
+                <h3 className="text-2xl font-bold mb-6">What if you could know with 94% accuracy?</h3>
+                <div className="space-y-4 mb-6">
+                  <div className="flex justify-between items-center">
+                    <span>Pre-launch success prediction</span>
+                    <span className="font-bold">94% accurate</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Time to detect issues</span>
+                    <span className="font-bold">4 hours vs 4 weeks</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Launch cost reduction</span>
+                    <span className="font-bold">45% average savings</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span>Revenue acceleration</span>
+                    <span className="font-bold">3x faster velocity</span>
+                  </div>
+                </div>
+                <a href="https://www.linkedin.com/in/shalinshah2/" target="_blank" rel="noopener noreferrer" className="bg-white text-emerald-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 transition-colors inline-block w-full text-center">
+                  See ROI Calculator →
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 5-PHASE WORKFLOW SYSTEM */}
+        <section id="features" className="py-24 bg-white">
+          <div className="container mx-auto px-6">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold mb-6">The Complete SKU Lifecycle Management System</h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                From concept validation to post-launch optimization - one integrated workflow that eliminates blind spots and maximizes ROI
+              </p>
+            </div>
+            
+            {/* Workflow Timeline */}
+            <div className="relative mb-16">
+              <div className="absolute top-12 left-0 w-full h-0.5 bg-gray-200"></div>
+              <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 relative">
+                <div className="text-center">
+                  <div className="bg-blue-600 w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-4 relative z-10">
+                    <span className="text-white font-bold text-sm">1</span>
+                  </div>
+                  <h3 className="font-semibold text-sm mb-2">Upload SKUs</h3>
+                  <p className="text-xs text-gray-500">Concept validation</p>
+                </div>
+                <div className="text-center">
+                  <div className="bg-emerald-600 w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-4 relative z-10">
+                    <span className="text-white font-bold text-sm">2</span>
+                  </div>
+                  <h3 className="font-semibold text-sm mb-2">Pre-Launch</h3>
+                  <p className="text-xs text-gray-500">Market testing</p>
+                </div>
+                <div className="text-center">
+                  <div className="bg-purple-600 w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-4 relative z-10">
+                    <span className="text-white font-bold text-sm">3</span>
+                  </div>
+                  <h3 className="font-semibold text-sm mb-2">Launch Monitor</h3>
+                  <p className="text-xs text-gray-500">Real-time tracking</p>
+                </div>
+                <div className="text-center">
+                  <div className="bg-orange-600 w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-4 relative z-10">
+                    <span className="text-white font-bold text-sm">4</span>
+                  </div>
+                  <h3 className="font-semibold text-sm mb-2">Optimize</h3>
+                  <p className="text-xs text-gray-500">Auto-triggers</p>
+                </div>
+                <div className="text-center">
+                  <div className="bg-gray-600 w-8 h-8 rounded-full flex items-center justify-center mx-auto mb-4 relative z-10">
+                    <span className="text-white font-bold text-sm">5</span>
+                  </div>
+                  <h3 className="font-semibold text-sm mb-2">Executive View</h3>
+                  <p className="text-xs text-gray-500">Strategic insights</p>
+                </div>
+              </div>
+            </div>
+            
+            {/* Key Capabilities */}
             <div className="grid lg:grid-cols-3 gap-12">
-              {/* Marketplace Intelligence */}
+              <div className="text-center">
+                <div className="bg-emerald-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Shield className="h-10 w-10 text-emerald-600" />
+                </div>
+                <h3 className="text-2xl font-bold mb-4">94% Launch Prediction Accuracy</h3>
+                <p className="text-gray-600 mb-6">
+                  Pre-launch validation through SurvFast integration identifies winning concepts before costly market entry. 
+                  Average cost savings: $800K per failed launch prevented.
+                </p>
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4">
+                  <div className="text-sm font-medium text-emerald-800 mb-2">Latest Validation Results</div>
+                  <div className="flex justify-between text-sm text-emerald-700">
+                    <span>KitKat Chunky Mini</span>
+                    <span className="font-bold">✓ 89% Success Probability</span>
+                  </div>
+                </div>
+              </div>
+
               <div className="text-center">
                 <div className="bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <TrendingUp className="h-10 w-10 text-blue-600" />
+                  <Zap className="h-10 w-10 text-blue-600" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Marketplace Intelligence</h3>
+                <h3 className="text-2xl font-bold mb-4">4-Hour Issue Detection</h3>
                 <p className="text-gray-600 mb-6">
-                  Track SKU performance across Amazon, Walmart, Target, and 50+ retailers with real-time sales data and competitive insights.
+                  Smart triggers automatically detect performance anomalies and deploy corrective actions. 
+                  Industry average: 4 weeks. SKU Insights: 4 hours.
                 </p>
-                <div className="bg-gray-100 rounded-lg p-4">
-                  <img 
-                    src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop" 
-                    alt="Marketplace Analytics"
-                    className="w-full h-32 object-cover rounded"
-                  />
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <div className="text-sm font-medium text-blue-800 mb-2">Active Interventions</div>
+                  <div className="flex justify-between text-sm text-blue-700">
+                    <span>Amazon PPC Boost</span>
+                    <span className="font-bold">+23% Velocity</span>
+                  </div>
                 </div>
               </div>
 
-              {/* Consumer Sentiment Engine */}
-              <div className="text-center">
-                <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <MessageSquare className="h-10 w-10 text-green-600" />
-                </div>
-                <h3 className="text-2xl font-bold mb-4">Consumer Sentiment Engine</h3>
-                <p className="text-gray-600 mb-6">
-                  AI-powered analysis of reviews, social media, and survey data to predict consumer behavior and identify friction points.
-                </p>
-                <div className="bg-gray-100 rounded-lg p-4">
-                  <img 
-                    src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=250&fit=crop" 
-                    alt="Sentiment Analysis"
-                    className="w-full h-32 object-cover rounded"
-                  />
-                </div>
-              </div>
-
-              {/* SKU Pulse */}
               <div className="text-center">
                 <div className="bg-purple-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Zap className="h-10 w-10 text-purple-600" />
+                  <TrendingUp className="h-10 w-10 text-purple-600" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">SKU Pulse</h3>
+                <h3 className="text-2xl font-bold mb-4">3x Faster Time-to-Profitability</h3>
                 <p className="text-gray-600 mb-6">
-                  Instant anomaly detection and intervention recommendations powered by machine learning and industry benchmarks.
+                  Automated workflow reduces manual coordination from weeks to hours. 
+                  Cross-functional teams stay aligned with real-time dashboards and automated alerts.
                 </p>
-                <div className="bg-gray-100 rounded-lg p-4">
-                  <img 
-                    src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop" 
-                    alt="Real-time Alerts"
-                    className="w-full h-32 object-cover rounded"
-                  />
+                <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                  <div className="text-sm font-medium text-purple-800 mb-2">Performance Benchmark</div>
+                  <div className="flex justify-between text-sm text-purple-700">
+                    <span>Average Profitability</span>
+                    <span className="font-bold">47 days vs 141 days</span>
+                  </div>
                 </div>
               </div>
             </div>
