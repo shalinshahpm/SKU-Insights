@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { MainLayout } from "@/components/layout/MainLayout";
+import { WorkflowHeader } from "@/components/workflow/WorkflowHeader";
 import { WorkflowDashboard } from "@/components/workflow/WorkflowDashboard";
 import { SKUFilter } from "@/components/dashboard/SKUFilter";
 import { MetricCard } from "@/components/dashboard/MetricCard";
@@ -167,11 +167,20 @@ export default function Dashboard() {
   };
 
   return (
-    <MainLayout>
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <div className="flex-1">
-          {/* Title and description are already in MainLayout */}
-        </div>
+    <div className="min-h-screen bg-background">
+      <WorkflowHeader 
+        currentPhase="launch"
+        completedSteps={0}
+        totalSteps={4}
+        skuName={filters.selectedSku === "all" ? "All SKUs" : skus.find(s => s.id.toString() === filters.selectedSku)?.name}
+      />
+      
+      <div className="container mx-auto px-4 py-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div className="flex-1">
+            <h1 className="text-2xl font-bold tracking-tight mb-1">SKU Performance Dashboard</h1>
+            <p className="text-muted-foreground">Monitor your product portfolio and identify optimization opportunities</p>
+          </div>
         
         <div className="mt-4 md:mt-0 flex flex-col sm:flex-row gap-3">
           <div className="flex items-center gap-2 bg-muted/30 p-2 rounded-md">
@@ -323,10 +332,11 @@ export default function Dashboard() {
             variant: "default"
           } : undefined}
         />
-      </div>
+        </div>
 
-      {/* Main Dashboard Content */}
-      <WorkflowDashboard />
-    </MainLayout>
+        {/* Main Dashboard Content */}
+        <WorkflowDashboard />
+      </div>
+    </div>
   );
 }

@@ -12,6 +12,9 @@ import BrandHealth from "@/pages/BrandHealth";
 import InsightsTimeline from "@/pages/InsightsTimeline";
 import UserManagement from "@/pages/UserManagement";
 import AccountSettings from "@/pages/AccountSettings";
+import LaunchExecution from "@/pages/LaunchExecution";
+import PostLaunchOptimization from "@/pages/PostLaunchOptimization";
+import ExecutiveSummary from "@/pages/ExecutiveSummary";
 import AuthPage from "@/pages/auth-page";
 import IndexPage from "@/pages/index-page";
 import { ThemeProvider } from "next-themes";
@@ -25,8 +28,13 @@ function Router() {
       <Route path="/" component={IndexPage} />
       <Route path="/auth" component={AuthPage} />
 
-      {/* Protected routes */}
+      {/* Protected routes - Workflow-based */}
       <ProtectedRoute path="/dashboard" component={Dashboard} />
+      <ProtectedRoute path="/launch-execution" component={LaunchExecution} />
+      <ProtectedRoute path="/post-launch" component={PostLaunchOptimization} />
+      <ProtectedRoute path="/executive-summary" component={ExecutiveSummary} />
+      
+      {/* Protected routes - Feature-based (legacy) */}
       <ProtectedRoute path="/sku-management" component={SKUManagement} />
       <ProtectedRoute path="/behavioral" component={Behavioral} />
       <ProtectedRoute path="/survey-builder" component={SurveyBuilder} />
