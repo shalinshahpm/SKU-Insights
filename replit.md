@@ -94,6 +94,14 @@ SKU Insights is a comprehensive Consumer Packaged Goods (CPG) product launch man
 
 ## Recent Changes
 
+- June 14, 2025: Navigation simplification and reorganization
+  - Grouped navigation into logical sections: Overview, Analytics, Management, Settings
+  - Moved "Insights Timeline" to Overview section for better information hierarchy
+  - Combined analytics features (Behavioral Intelligence + Brand Health) under Analytics
+  - Consolidated management features (SKU Management + Survey Builder + User Management)
+  - Simplified Settings to focus on Account Settings only
+  - Updated filter system from "Market" to "Retailer" with multi-select functionality
+  - Added explanatory tooltips for Brand Lift Score, Purchase Intent, and Net Sentiment metrics
 - January 14, 2025: Complete landing page redesign with new marketing sections
   - Hero: "Launch Winning CPG Products with Confidence"
   - Problem section highlighting 80% SKU failure rate

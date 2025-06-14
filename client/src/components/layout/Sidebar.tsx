@@ -11,7 +11,9 @@ import {
   Settings,
   X,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  BarChart3,
+  Cog
 } from "lucide-react";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { User, SidebarItem, SidebarSectionProps } from "@/lib/types";
