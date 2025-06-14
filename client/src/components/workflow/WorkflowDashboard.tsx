@@ -181,7 +181,12 @@ export function WorkflowDashboard() {
   return (
     <div className="space-y-6">
       {/* Workflow Header */}
-      <WorkflowHeader />
+      <WorkflowHeader 
+        currentPhase="launch"
+        completedSteps={1}
+        totalSteps={4}
+        skuName="KitKat Original"
+      />
 
       {/* SKU Selection */}
       <Card>
