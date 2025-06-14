@@ -17,7 +17,10 @@ import {
   Eye,
   Wrench,
   Rocket,
-  RefreshCw
+  RefreshCw,
+  Menu,
+  TestTube,
+  CheckCircle
 } from "lucide-react";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { User, SidebarItem, SidebarSectionProps } from "@/lib/types";
@@ -74,13 +77,17 @@ interface SidebarProps {
   isMobile?: boolean;
   isOpen?: boolean;
   onClose?: () => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: () => void;
 }
 
 export function Sidebar({ 
   user = defaultUser, 
   isMobile = false, 
   isOpen = true, 
-  onClose 
+  onClose,
+  isCollapsed = false,
+  onToggleCollapse
 }: SidebarProps) {
   const [location] = useLocation();
 

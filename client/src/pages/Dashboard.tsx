@@ -7,7 +7,7 @@ import { MetricCard } from "@/components/dashboard/MetricCard";
 import { BehavioralIntelligence } from "@/components/dashboard/BehavioralIntelligence";
 import { SurveyTrigger } from "@/components/dashboard/SurveyTrigger";
 import { InsightsTimeline } from "@/components/dashboard/InsightsTimeline";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { CollapsibleSidebar } from "@/components/layout/CollapsibleSidebar";
 import { useToast } from "@/hooks/use-toast";
 import { 
   LineChart, 
@@ -29,6 +29,7 @@ export default function Dashboard() {
   const [, navigate] = useLocation();
   const [showFilters, setShowFilters] = useState(false);
   const [timeRange, setTimeRange] = useState("7days");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [filters, setFilters] = useState({
     selectedSku: "all",
     selectedRetailers: [] as string[],
@@ -124,7 +125,10 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <Sidebar />
+      <CollapsibleSidebar 
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+      />
       
       <div className="flex-1 flex flex-col">
         <WorkflowHeader 
