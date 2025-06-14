@@ -13,7 +13,9 @@ import {
   ChevronDown,
   ChevronUp,
   BarChart3,
-  Cog
+  Cog,
+  Eye,
+  Wrench
 } from "lucide-react";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { User, SidebarItem, SidebarSectionProps } from "@/lib/types";
@@ -167,8 +169,8 @@ export function Sidebar({
         
         <div className="flex-1 overflow-y-auto scrollbar-hide">
           <SidebarSection title="Overview" items={overviewItems} />
-          <SidebarSection title="Analytics" items={analyticsItems} />
-          <SidebarSection title="Management" items={managementItems} />
+          <SidebarSection title="📊 Analytics & Monitoring" items={analyticsItems} />
+          <SidebarSection title="⚙️ Management & Actions" items={managementItems} />
           <SidebarSection title="Settings" items={settingsItems} />
         </div>
         

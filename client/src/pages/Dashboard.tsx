@@ -246,6 +246,9 @@ export default function Dashboard() {
           iconTextColor="text-primary"
           detailsLink="/brand-health"
           tooltip="Measures the percentage increase in brand awareness attributed to marketing campaigns. Higher scores indicate stronger campaign effectiveness and brand recognition."
+          performanceLevel={brandHealthData.brandLiftScore >= 75 ? "excellent" : brandHealthData.brandLiftScore >= 65 ? "good" : brandHealthData.brandLiftScore >= 50 ? "average" : "poor"}
+          benchmark="Industry avg: 65.2"
+          actionHint={brandHealthData.brandLiftScore >= 75 ? "Maintain current strategy" : brandHealthData.brandLiftScore >= 65 ? "Consider A/B testing new campaigns" : "Review campaign targeting and messaging"}
         />
         
         <MetricCard
