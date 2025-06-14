@@ -215,6 +215,7 @@ export default function Dashboard() {
           iconBgColor="bg-primary/10"
           iconTextColor="text-primary"
           detailsLink="/brand-health"
+          tooltip="Measures the percentage increase in brand awareness attributed to marketing campaigns. Higher scores indicate stronger campaign effectiveness and brand recognition."
         />
         
         <MetricCard
@@ -225,6 +226,7 @@ export default function Dashboard() {
           iconBgColor="bg-secondary/10"
           iconTextColor="text-secondary"
           detailsLink="/brand-health"
+          tooltip="The percentage of consumers who indicate they are likely to purchase your product in the next 6 months. Based on survey responses and behavioral data analysis."
         />
         
         <MetricCard
@@ -235,6 +237,7 @@ export default function Dashboard() {
           iconBgColor="bg-accent/10"
           iconTextColor="text-accent"
           detailsLink="/brand-health"
+          tooltip="Net difference between positive and negative mentions across social media, reviews, and surveys. Positive scores indicate favorable consumer perception."
         />
         
         <MetricCard
