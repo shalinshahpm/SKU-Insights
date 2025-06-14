@@ -146,6 +146,11 @@ export type MetricCardProps = {
   performanceLevel?: "excellent" | "good" | "average" | "poor";
   benchmark?: string;
   actionHint?: string;
+  quickAction?: {
+    label: string;
+    action: () => void;
+    variant?: "default" | "destructive" | "outline" | "secondary";
+  };
 }
 
 export type BehavioralTableData = {

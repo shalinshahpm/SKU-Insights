@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/hooks/use-auth";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export function MainLayout({
 }: MainLayoutProps) {
   const isMobile = useIsMobile();
   const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
+  const { user } = useAuth();
 
   // Update sidebar state when screen size changes
   useEffect(() => {
@@ -25,6 +27,7 @@ export function MainLayout({
   return (
     <div className="flex h-screen overflow-hidden bg-muted/20">
       <Sidebar 
+        user={user || undefined}
         isMobile={isMobile} 
         isOpen={sidebarOpen} 
         onClose={() => setSidebarOpen(false)} 

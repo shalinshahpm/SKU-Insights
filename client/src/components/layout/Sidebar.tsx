@@ -82,56 +82,189 @@ export function Sidebar({
 }: SidebarProps) {
   const [location] = useLocation();
 
-  const overviewItems: SidebarItem[] = [
-    {
-      title: "Dashboard",
-      icon: <LayoutDashboard className="mr-3 h-5 w-5" />,
-      path: "/dashboard",
-      isActive: location === "/dashboard"
-    },
-    {
-      title: "Insights Timeline",
-      icon: <Clock className="mr-3 h-5 w-5" />,
-      path: "/insights-timeline",
-      isActive: location === "/insights-timeline"
-    }
-  ];
+  // Role-based navigation configuration
+  const getRoleBasedNavigation = (userRole: string) => {
+    const baseOverview = [
+      {
+        title: "Dashboard",
+        icon: <LayoutDashboard className="mr-3 h-5 w-5" />,
+        path: "/dashboard",
+        isActive: location === "/dashboard"
+      }
+    ];
 
-  const analyticsItems: SidebarItem[] = [
-    {
-      title: "Behavioral Intelligence",
-      icon: <Activity className="mr-3 h-5 w-5" />,
-      path: "/behavioral",
-      isActive: location === "/behavioral"
-    },
-    {
-      title: "Brand Health",
-      icon: <Heart className="mr-3 h-5 w-5" />,
-      path: "/brand-health",
-      isActive: location === "/brand-health"
-    }
-  ];
+    switch (userRole) {
+      case "Brand Manager":
+        return {
+          overview: [
+            ...baseOverview,
+            {
+              title: "Campaign Timeline",
+              icon: <Clock className="mr-3 h-5 w-5" />,
+              path: "/insights-timeline",
+              isActive: location === "/insights-timeline"
+            }
+          ],
+          analytics: [
+            {
+              title: "Brand Health",
+              icon: <Heart className="mr-3 h-5 w-5" />,
+              path: "/brand-health",
+              isActive: location === "/brand-health"
+            },
+            {
+              title: "Performance Insights",
+              icon: <Activity className="mr-3 h-5 w-5" />,
+              path: "/behavioral",
+              isActive: location === "/behavioral"
+            }
+          ],
+          management: [
+            {
+              title: "SKU Portfolio",
+              icon: <Store className="mr-3 h-5 w-5" />,
+              path: "/sku-management",
+              isActive: location === "/sku-management"
+            },
+            {
+              title: "Survey Builder",
+              icon: <FileText className="mr-3 h-5 w-5" />,
+              path: "/survey-builder",
+              isActive: location === "/survey-builder"
+            }
+          ]
+        };
+      
+      case "Regional Insights Lead":
+        return {
+          overview: [
+            ...baseOverview,
+            {
+              title: "Regional Timeline",
+              icon: <Clock className="mr-3 h-5 w-5" />,
+              path: "/insights-timeline",
+              isActive: location === "/insights-timeline"
+            }
+          ],
+          analytics: [
+            {
+              title: "Regional Performance",
+              icon: <Activity className="mr-3 h-5 w-5" />,
+              path: "/behavioral",
+              isActive: location === "/behavioral"
+            },
+            {
+              title: "Market Analysis",
+              icon: <Heart className="mr-3 h-5 w-5" />,
+              path: "/brand-health",
+              isActive: location === "/brand-health"
+            }
+          ],
+          management: [
+            {
+              title: "Research & Surveys",
+              icon: <FileText className="mr-3 h-5 w-5" />,
+              path: "/survey-builder",
+              isActive: location === "/survey-builder"
+            },
+            {
+              title: "Team Management",
+              icon: <UserCog className="mr-3 h-5 w-5" />,
+              path: "/user-management",
+              isActive: location === "/user-management"
+            }
+          ]
+        };
 
-  const managementItems: SidebarItem[] = [
-    {
-      title: "SKU Management",
-      icon: <Store className="mr-3 h-5 w-5" />,
-      path: "/sku-management",
-      isActive: location === "/sku-management"
-    },
-    {
-      title: "Survey Builder",
-      icon: <FileText className="mr-3 h-5 w-5" />,
-      path: "/survey-builder",
-      isActive: location === "/survey-builder"
-    },
-    {
-      title: "User Management",
-      icon: <UserCog className="mr-3 h-5 w-5" />,
-      path: "/user-management",
-      isActive: location === "/user-management"
+      case "Global Marketing Operations":
+        return {
+          overview: [
+            ...baseOverview,
+            {
+              title: "Global Timeline",
+              icon: <Clock className="mr-3 h-5 w-5" />,
+              path: "/insights-timeline",
+              isActive: location === "/insights-timeline"
+            }
+          ],
+          analytics: [
+            {
+              title: "Global Performance",
+              icon: <Activity className="mr-3 h-5 w-5" />,
+              path: "/behavioral",
+              isActive: location === "/behavioral"
+            },
+            {
+              title: "Brand Health",
+              icon: <Heart className="mr-3 h-5 w-5" />,
+              path: "/brand-health",
+              isActive: location === "/brand-health"
+            }
+          ],
+          management: [
+            {
+              title: "SKU Operations",
+              icon: <Store className="mr-3 h-5 w-5" />,
+              path: "/sku-management",
+              isActive: location === "/sku-management"
+            },
+            {
+              title: "Survey Operations",
+              icon: <FileText className="mr-3 h-5 w-5" />,
+              path: "/survey-builder",
+              isActive: location === "/survey-builder"
+            },
+            {
+              title: "User Management",
+              icon: <UserCog className="mr-3 h-5 w-5" />,
+              path: "/user-management",
+              isActive: location === "/user-management"
+            }
+          ]
+        };
+
+      default:
+        return {
+          overview: baseOverview,
+          analytics: [
+            {
+              title: "Behavioral Intelligence",
+              icon: <Activity className="mr-3 h-5 w-5" />,
+              path: "/behavioral",
+              isActive: location === "/behavioral"
+            },
+            {
+              title: "Brand Health",
+              icon: <Heart className="mr-3 h-5 w-5" />,
+              path: "/brand-health",
+              isActive: location === "/brand-health"
+            }
+          ],
+          management: [
+            {
+              title: "SKU Management",
+              icon: <Store className="mr-3 h-5 w-5" />,
+              path: "/sku-management",
+              isActive: location === "/sku-management"
+            },
+            {
+              title: "Survey Builder",
+              icon: <FileText className="mr-3 h-5 w-5" />,
+              path: "/survey-builder",
+              isActive: location === "/survey-builder"
+            },
+            {
+              title: "User Management",
+              icon: <UserCog className="mr-3 h-5 w-5" />,
+              path: "/user-management",
+              isActive: location === "/user-management"
+            }
+          ]
+        };
     }
-  ];
+  };
+
+  const navigation = getRoleBasedNavigation(user?.role || "");
 
   const settingsItems: SidebarItem[] = [
     {
@@ -168,9 +301,9 @@ export function Sidebar({
         </div>
         
         <div className="flex-1 overflow-y-auto scrollbar-hide">
-          <SidebarSection title="Overview" items={overviewItems} />
-          <SidebarSection title="📊 Analytics & Monitoring" items={analyticsItems} />
-          <SidebarSection title="⚙️ Management & Actions" items={managementItems} />
+          <SidebarSection title="Overview" items={navigation.overview} />
+          <SidebarSection title="📊 Analytics & Monitoring" items={navigation.analytics} />
+          <SidebarSection title="⚙️ Management & Actions" items={navigation.management} />
           <SidebarSection title="Settings" items={settingsItems} />
         </div>
         
