@@ -46,8 +46,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
-import { PlusCircle, MoreVertical, Store, Trash } from "lucide-react";
+import { PlusCircle, MoreVertical, Store, Trash, Upload, FileUp, Download } from "lucide-react";
 import { z } from "zod";
+import { SKUUploader } from "@/components/workflow/SKUUploader";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -170,15 +171,43 @@ export default function SKUManagement() {
       pageTitle="SKU Management"
       pageDescription="Manage all your tracked SKUs across regions and markets"
     >
-      <div className="flex justify-end mb-6">
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button className="flex items-center gap-2">
-              <PlusCircle className="h-4 w-4" />
-              Add New SKU
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
+      {/* SKU Upload Section */}
+      <Card className="mb-6">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Upload className="h-5 w-5" />
+            SKU Upload Center
+          </CardTitle>
+          <CardDescription>
+            Upload multiple SKUs at once or add individual products to your portfolio
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <SKUUploader />
+        </CardContent>
+      </Card>
+
+      <div className="flex justify-between items-center mb-6">
+        <div>
+          <h2 className="text-lg font-semibold">Existing SKUs</h2>
+          <p className="text-sm text-muted-foreground">Manage your product portfolio</p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" className="flex items-center gap-2">
+            <Download className="h-4 w-4" />
+            Export All
+          </Button>
+        </div>
+      </div>
+
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2">
+                <PlusCircle className="h-4 w-4" />
+                Add New SKU
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
             <DialogHeader>
               <DialogTitle>Add New SKU</DialogTitle>
               <DialogDescription>
@@ -283,8 +312,7 @@ export default function SKUManagement() {
               </form>
             </Form>
           </DialogContent>
-        </Dialog>
-      </div>
+      </Dialog>
 
       {/* SKU List */}
       <Card>
