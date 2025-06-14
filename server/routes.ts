@@ -20,7 +20,7 @@ import {
 } from "@shared/schema";
 import type {
   BehavioralMetric,
-  Survey,
+
   TimelineEvent,
   AnomalySetting,
   QuestionTemplate,
@@ -647,7 +647,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/surveys", async (req: Request, res: Response) => {
     try {
-      const surveyData = insertSurveySchema.parse(req.body);
+      const surveyData = insertValidationSurveySchema.parse(req.body);
       const survey = await storage.createSurvey(surveyData);
       res.status(201).json(survey);
     } catch (error) {
