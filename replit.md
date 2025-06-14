@@ -2,7 +2,7 @@
 
 ## Overview
 
-SKU Pulse is a comprehensive Consumer Packaged Goods (CPG) product launch management platform built for brand managers, regional insights teams, and global marketing teams. The system provides real-time behavioral analytics, survey management, brand health monitoring, and insights timeline tracking to support successful product launches.
+SKU Insights is a comprehensive Consumer Packaged Goods (CPG) product launch management platform built for brand managers, regional insights teams, and global marketing teams. The system provides real-time behavioral analytics, survey management, brand health monitoring, and insights timeline tracking to support successful product launches.
 
 ## System Architecture
 
@@ -91,6 +91,19 @@ SKU Pulse is a comprehensive Consumer Packaged Goods (CPG) product launch manage
 - **Modules**: nodejs-20, web, postgresql-16
 - **Deployment**: Autoscale deployment target
 - **Workflows**: Parallel execution of package installation and server startup
+
+## Recent Changes
+
+- January 14, 2025: Complete landing page redesign with new marketing sections
+  - Hero: "Launch Winning CPG Products with Confidence"
+  - Problem section highlighting 80% SKU failure rate
+  - Three Intelligence Engines: Marketplace Intelligence, Consumer Sentiment Engine, SKU Pulse
+  - Market stats section positioning as "Bloomberg for CPG"
+  - Audience targeting tiles for Brand, Insights, and Commercial teams
+  - Enhanced testimonials and CTA footer with multiple action buttons
+- January 14, 2025: Company rebranding from "SKU Pulse" to "SKU Insights" across all pages
+- January 14, 2025: Updated all CTA buttons to redirect to LinkedIn profile
+- January 14, 2025: Fixed navigation flows and DOM nesting issues
 
 ## Changelog
 

@@ -144,7 +144,7 @@ export function Sidebar({
             <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
               <Activity className="h-4 w-4 text-white" />
             </div>
-            <span className="text-lg font-semibold">SKU Pulse</span>
+            <span className="text-lg font-semibold">SKU Insights</span>
           </div>
           {isMobile && (
             <button 

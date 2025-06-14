@@ -70,7 +70,7 @@ const AuthPage = () => {
           <h1 className="text-4xl font-bold mb-6">SKU Insights</h1>
           <h2 className="text-2xl font-semibold mb-4">Intelligence for CPG Commercial Leaders</h2>
           <p className="text-lg opacity-90 mb-8">
-            Command launch performance before the market does. SKU Pulse empowers commercial leaders
+            Command launch performance before the market does. SKU Insights empowers commercial leaders
             to identify launch risks and capitalize on demand signals in real time.
           </p>
           <div className="space-y-6">
@@ -113,7 +113,7 @@ const AuthPage = () => {
         </div>
         
         <div className="text-sm opacity-80">
-          © 2025 SKU Pulse. All rights reserved.
+          © 2025 SKU Insights. All rights reserved.
         </div>
       </div>
       
@@ -121,7 +121,7 @@ const AuthPage = () => {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold mb-2 text-gray-900">Welcome to SKU Pulse</h1>
+            <h1 className="text-3xl font-bold mb-2 text-gray-900">Welcome to SKU Insights</h1>
             <p className="text-gray-600">Sign in to access your dashboard</p>
           </div>
           
@@ -193,7 +193,7 @@ const AuthPage = () => {
                   <CardHeader>
                     <CardTitle>Create Account</CardTitle>
                     <CardDescription>
-                      Register for a new account to access SKU Pulse
+                      Register for a new account to access SKU Insights
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
