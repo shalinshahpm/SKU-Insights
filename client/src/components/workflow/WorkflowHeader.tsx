@@ -105,65 +105,68 @@ export function WorkflowHeader({
 
   return (
     <div className="bg-background border-b border-border">
-      <div className="container mx-auto px-4 py-3">
+      <div className="container mx-auto px-4 py-2">
         {/* Header Info */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center gap-3">
             <Button 
               variant="outline" 
               size="sm"
               onClick={() => navigate("/dashboard")}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1 text-xs px-2 py-1 h-7"
             >
-              <Home className="h-4 w-4" />
-              Return to Dashboard
+              <Home className="h-3 w-3" />
+              Dashboard
             </Button>
             <div>
-              <h2 className="text-lg font-semibold">Product Lifecycle Workflow</h2>
-              <p className="text-sm text-muted-foreground">
+              <h2 className="text-base font-semibold">Product Lifecycle Workflow</h2>
+              <p className="text-xs text-muted-foreground">
                 Managing: <span className="font-medium">{skuName}</span>
               </p>
             </div>
           </div>
           <div className="text-right">
-            <div className="text-sm font-medium">
-              {completedSteps} of {totalSteps} steps complete
+            <div className="text-xs font-medium">
+              {completedSteps} of {totalSteps} complete
             </div>
-            <Progress value={progressPercentage} className="w-32 h-2 mt-1" />
+            <Progress value={progressPercentage} className="w-24 h-1.5 mt-1" />
           </div>
         </div>
 
         {/* Workflow Steps */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-1">
           {workflowSteps.map((step, index) => (
             <div key={step.id} className="flex items-center">
               {/* Step Button */}
               <Button
                 variant={step.isActive ? "default" : step.isComplete ? "secondary" : "outline"}
                 className={`
-                  flex items-center gap-2 px-4 py-2 h-auto
+                  flex items-center gap-1 px-2 py-1 h-8 text-xs
                   ${step.isActive ? "bg-primary text-primary-foreground" : ""}
                   ${step.isComplete ? "bg-green-50 text-green-700 border-green-200" : ""}
                   hover:scale-105 transition-transform
                 `}
                 onClick={() => handleStepClick(step)}
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   {step.isComplete ? (
-                    <CheckCircle className="h-4 w-4" />
+                    <CheckCircle className="h-3 w-3" />
                   ) : step.isActive ? (
-                    <Circle className="h-4 w-4 fill-current" />
+                    <Circle className="h-3 w-3 fill-current" />
                   ) : (
-                    <Circle className="h-4 w-4" />
+                    <Circle className="h-3 w-3" />
                   )}
                   
                   <div className="flex items-center gap-1">
-                    {step.icon}
-                    <span className="hidden sm:inline text-sm font-medium">
+                    {step.icon && <span className="[&>svg]:h-3 [&>svg]:w-3">{step.icon}</span>}
+                    <span className="hidden xl:inline font-medium truncate max-w-24">
                       {step.title}
                     </span>
+                    <span className="xl:hidden font-medium">
+                      {index + 1}
+                    </span>
                     {step.isExternal && (
-                      <ExternalLink className="h-3 w-3 opacity-60" />
+                      <ExternalLink className="h-2 w-2 opacity-60" />
                     )}
                   </div>
                 </div>
@@ -171,17 +174,17 @@ export function WorkflowHeader({
 
               {/* Arrow between steps */}
               {index < workflowSteps.length - 1 && (
-                <ArrowRight className="mx-3 h-4 w-4 text-muted-foreground" />
+                <ArrowRight className="mx-1 h-3 w-3 text-muted-foreground" />
               )}
             </div>
           ))}
         </div>
 
         {/* Current Step Description */}
-        <div className="mt-3 p-3 bg-muted/30 rounded-lg">
+        <div className="mt-2 p-2 bg-muted/30 rounded-lg">
           <div className="flex items-center gap-2">
             {workflowSteps.find(s => s.isActive)?.icon}
-            <span className="font-medium text-sm">
+            <span className="font-medium text-xs">
               Current Phase: {workflowSteps.find(s => s.isActive)?.title}
             </span>
           </div>
