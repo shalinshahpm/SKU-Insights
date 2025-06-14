@@ -260,6 +260,9 @@ export default function Dashboard() {
           iconTextColor="text-secondary"
           detailsLink="/brand-health"
           tooltip="The percentage of consumers who indicate they are likely to purchase your product in the next 6 months. Based on survey responses and behavioral data analysis."
+          performanceLevel={brandHealthData.purchaseIntent >= 70 ? "excellent" : brandHealthData.purchaseIntent >= 60 ? "good" : brandHealthData.purchaseIntent >= 45 ? "average" : "poor"}
+          benchmark="Category avg: 58.4%"
+          actionHint={brandHealthData.purchaseIntent >= 70 ? "Excellent conversion potential" : brandHealthData.purchaseIntent >= 60 ? "Launch targeted promotions" : "Focus on product benefits messaging"}
         />
         
         <MetricCard
@@ -271,6 +274,9 @@ export default function Dashboard() {
           iconTextColor="text-accent"
           detailsLink="/brand-health"
           tooltip="Net difference between positive and negative mentions across social media, reviews, and surveys. Positive scores indicate favorable consumer perception."
+          performanceLevel={brandHealthData.netSentiment >= 40 ? "excellent" : brandHealthData.netSentiment >= 25 ? "good" : brandHealthData.netSentiment >= 10 ? "average" : "poor"}
+          benchmark="Market avg: +28"
+          actionHint={brandHealthData.netSentiment >= 40 ? "Strong brand perception" : brandHealthData.netSentiment >= 25 ? "Monitor and maintain positivity" : "Address negative feedback sources"}
         />
         
         <MetricCard
@@ -281,6 +287,9 @@ export default function Dashboard() {
           iconBgColor="bg-success/10"
           iconTextColor="text-success"
           detailsLink="/survey-builder"
+          performanceLevel={brandHealthData.activeSurveys >= 4 ? "excellent" : brandHealthData.activeSurveys >= 3 ? "good" : brandHealthData.activeSurveys >= 2 ? "average" : "poor"}
+          benchmark="Target: 4-5 active"
+          actionHint={brandHealthData.activeSurveys >= 4 ? "Good survey coverage" : "Launch additional surveys for better insights"}
         />
       </div>
 

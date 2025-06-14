@@ -94,10 +94,13 @@ SKU Insights is a comprehensive Consumer Packaged Goods (CPG) product launch man
 
 ## Recent Changes
 
-- June 14, 2025: Dashboard UX improvements and navigation simplification
+- June 14, 2025: Dashboard UX improvements and content hierarchy fixes
   - Removed dual dashboard views (Workflow vs Analytics) to eliminate decision paralysis
   - Created single focused dashboard with primary action section and collapsible filters
   - Added clear filter explanation and always-visible reset button
+  - Enhanced navigation with visual distinctions: "📊 Analytics & Monitoring" vs "⚙️ Management & Actions"
+  - Added performance indicators to metric cards (excellent/good/average/poor) with color coding
+  - Implemented contextual guidance with benchmarks and actionable hints for each metric
   - Grouped navigation into logical sections: Overview, Analytics, Management, Settings
   - Moved "Insights Timeline" to Overview section for better information hierarchy
   - Combined analytics features (Behavioral Intelligence + Brand Health) under Analytics
