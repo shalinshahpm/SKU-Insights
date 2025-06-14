@@ -1,19 +1,23 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { WorkflowDashboard } from "@/components/workflow/WorkflowDashboard";
 import { SKUFilter } from "@/components/dashboard/SKUFilter";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { BehavioralIntelligence } from "@/components/dashboard/BehavioralIntelligence";
 import { SurveyTrigger } from "@/components/dashboard/SurveyTrigger";
 import { InsightsTimeline } from "@/components/dashboard/InsightsTimeline";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   LineChart, 
   ShoppingCart, 
   SmilePlus, 
   FileText,
   Download,
-  Calendar
+  Calendar,
+  Workflow,
+  BarChart3
 } from "lucide-react";
 import { FilterOptions, SKU, BehavioralMetricsData, BehavioralMetricsResponse, TimelineEvent, BrandHealthMetricsData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -24,6 +28,7 @@ import { useLocation } from "wouter";
 export default function Dashboard() {
   const { toast } = useToast();
   const [, navigate] = useLocation();
+  const [activeView, setActiveView] = useState("workflow");
   const [timeRange, setTimeRange] = useState("7days");
   const [filters, setFilters] = useState({
     selectedSku: "all",
@@ -243,31 +248,51 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <BehavioralIntelligence
-          behavioralData={behavioralMetrics}
-          behavioralSummary={behavioralResponse?.summary}
-          onViewAllMetrics={handleViewAllMetrics}
-          onInvestigate={handleInvestigateMetric}
-        />
+      {/* Dashboard View Selector */}
+      <Tabs value={activeView} onValueChange={setActiveView} className="space-y-6">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="workflow" className="flex items-center gap-2">
+            <Workflow className="h-4 w-4" />
+            Workflow Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Analytics View
+          </TabsTrigger>
+        </TabsList>
 
-        <div className="space-y-6">
-          <SurveyTrigger
-            anomalyData={anomalySKU && anomalyData ? {
-              sku: anomalySKU,
-              metric: anomalyData,
-              detectedTime: "30 min ago"
-            } : undefined}
-            onLaunchSurvey={handleLaunchSurvey}
-          />
-          
-          <InsightsTimeline
-            events={timelineEvents}
-            newCount={12}
-            onViewAll={handleViewAllTimeline}
-          />
-        </div>
-      </div>
+        <TabsContent value="workflow">
+          <WorkflowDashboard />
+        </TabsContent>
+
+        <TabsContent value="analytics">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <BehavioralIntelligence
+              behavioralData={behavioralMetrics}
+              behavioralSummary={behavioralResponse?.summary}
+              onViewAllMetrics={handleViewAllMetrics}
+              onInvestigate={handleInvestigateMetric}
+            />
+
+            <div className="space-y-6">
+              <SurveyTrigger
+                anomalyData={anomalySKU && anomalyData ? {
+                  sku: anomalySKU,
+                  metric: anomalyData,
+                  detectedTime: "30 min ago"
+                } : undefined}
+                onLaunchSurvey={handleLaunchSurvey}
+              />
+              
+              <InsightsTimeline
+                events={timelineEvents}
+                newCount={12}
+                onViewAll={handleViewAllTimeline}
+              />
+            </div>
+          </div>
+        </TabsContent>
+      </Tabs>
     </MainLayout>
   );
 }
