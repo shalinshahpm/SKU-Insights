@@ -8,16 +8,14 @@ import { BehavioralIntelligence } from "@/components/dashboard/BehavioralIntelli
 import { SurveyTrigger } from "@/components/dashboard/SurveyTrigger";
 import { InsightsTimeline } from "@/components/dashboard/InsightsTimeline";
 import { useToast } from "@/hooks/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   LineChart, 
   ShoppingCart, 
   SmilePlus, 
   FileText,
   Download,
-  Calendar,
-  Workflow,
-  BarChart3
+  Filter,
+  Plus
 } from "lucide-react";
 import { FilterOptions, SKU, BehavioralMetricsData, BehavioralMetricsResponse, TimelineEvent, BrandHealthMetricsData } from "@/lib/types";
 import { Button } from "@/components/ui/button";
@@ -28,7 +26,7 @@ import { useLocation } from "wouter";
 export default function Dashboard() {
   const { toast } = useToast();
   const [, navigate] = useLocation();
-  const [activeView, setActiveView] = useState("workflow");
+  const [showFilters, setShowFilters] = useState(false);
   const [timeRange, setTimeRange] = useState("7days");
   const [filters, setFilters] = useState({
     selectedSku: "all",
@@ -201,11 +199,43 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <SKUFilter 
-        filterOptions={filterOptions}
-        onApplyFilters={handleApplyFilters}
-      />
+      {/* Primary Action Section */}
+      <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-lg p-6 mb-6">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+          <div className="mb-4 md:mb-0">
+            <h2 className="text-xl font-semibold mb-1">SKU Performance Overview</h2>
+            <p className="text-muted-foreground">Monitor your product portfolio and identify optimization opportunities</p>
+          </div>
+          <div className="flex gap-3">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowFilters(!showFilters)}
+              className="flex items-center gap-2"
+            >
+              <Filter className="h-4 w-4" />
+              {showFilters ? "Hide Filters" : "Filter Data"}
+            </Button>
+            <Button onClick={() => navigate("/sku-management")}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add SKU
+            </Button>
+          </div>
+        </div>
+        
+        {/* Collapsible Filters */}
+        {showFilters && (
+          <div className="mt-6 pt-6 border-t border-border/50">
+            <div className="bg-white/50 rounded-lg p-4">
+              <SKUFilter
+                filterOptions={filterOptions}
+                onApplyFilters={handleApplyFilters}
+              />
+            </div>
+          </div>
+        )}
+      </div>
 
+      {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         <MetricCard
           title="Brand Lift Score"
@@ -251,51 +281,8 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Dashboard View Selector */}
-      <Tabs value={activeView} onValueChange={setActiveView} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="workflow" className="flex items-center gap-2">
-            <Workflow className="h-4 w-4" />
-            Workflow Dashboard
-          </TabsTrigger>
-          <TabsTrigger value="analytics" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
-            Analytics View
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="workflow">
-          <WorkflowDashboard />
-        </TabsContent>
-
-        <TabsContent value="analytics">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <BehavioralIntelligence
-              behavioralData={behavioralMetrics}
-              behavioralSummary={behavioralResponse?.summary}
-              onViewAllMetrics={handleViewAllMetrics}
-              onInvestigate={handleInvestigateMetric}
-            />
-
-            <div className="space-y-6">
-              <SurveyTrigger
-                anomalyData={anomalySKU && anomalyData ? {
-                  sku: anomalySKU,
-                  metric: anomalyData,
-                  detectedTime: "30 min ago"
-                } : undefined}
-                onLaunchSurvey={handleLaunchSurvey}
-              />
-              
-              <InsightsTimeline
-                events={timelineEvents}
-                newCount={12}
-                onViewAll={handleViewAllTimeline}
-              />
-            </div>
-          </div>
-        </TabsContent>
-      </Tabs>
+      {/* Main Dashboard Content */}
+      <WorkflowDashboard />
     </MainLayout>
   );
 }

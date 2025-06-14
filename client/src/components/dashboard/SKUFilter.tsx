@@ -40,6 +40,7 @@ export function SKUFilter({ filterOptions, onApplyFilters }: SKUFilterProps) {
   const [selectedSku, setSelectedSku] = useState("all");
   const [selectedRetailers, setSelectedRetailers] = useState<string[]>([]);
   const [selectedRegion, setSelectedRegion] = useState("all");
+  const [hasInitialized, setHasInitialized] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Auto-apply filters when selection changes
