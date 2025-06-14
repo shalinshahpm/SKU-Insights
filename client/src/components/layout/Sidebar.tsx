@@ -15,7 +15,9 @@ import {
   BarChart3,
   Cog,
   Eye,
-  Wrench
+  Wrench,
+  Rocket,
+  RefreshCw
 } from "lucide-react";
 import { UserAvatar } from "@/components/ui/UserAvatar";
 import { User, SidebarItem, SidebarSectionProps } from "@/lib/types";
@@ -105,6 +107,26 @@ export function Sidebar({
               isActive: location === "/insights-timeline"
             }
           ],
+          workflow: [
+            {
+              title: "Launch Execution",
+              icon: <Rocket className="mr-3 h-5 w-5" />,
+              path: "/launch-execution",
+              isActive: location === "/launch-execution"
+            },
+            {
+              title: "Post-Launch Optimization",
+              icon: <RefreshCw className="mr-3 h-5 w-5" />,
+              path: "/post-launch",
+              isActive: location === "/post-launch"
+            },
+            {
+              title: "Executive Summary",
+              icon: <BarChart3 className="mr-3 h-5 w-5" />,
+              path: "/executive-summary",
+              isActive: location === "/executive-summary"
+            }
+          ],
           analytics: [
             {
               title: "Brand Health",
@@ -146,6 +168,26 @@ export function Sidebar({
               isActive: location === "/insights-timeline"
             }
           ],
+          workflow: [
+            {
+              title: "Launch Execution",
+              icon: <Rocket className="mr-3 h-5 w-5" />,
+              path: "/launch-execution",
+              isActive: location === "/launch-execution"
+            },
+            {
+              title: "Post-Launch Optimization",
+              icon: <RefreshCw className="mr-3 h-5 w-5" />,
+              path: "/post-launch",
+              isActive: location === "/post-launch"
+            },
+            {
+              title: "Executive Summary",
+              icon: <BarChart3 className="mr-3 h-5 w-5" />,
+              path: "/executive-summary",
+              isActive: location === "/executive-summary"
+            }
+          ],
           analytics: [
             {
               title: "Regional Performance",
@@ -185,6 +227,26 @@ export function Sidebar({
               icon: <Clock className="mr-3 h-5 w-5" />,
               path: "/insights-timeline",
               isActive: location === "/insights-timeline"
+            }
+          ],
+          workflow: [
+            {
+              title: "Launch Execution",
+              icon: <Rocket className="mr-3 h-5 w-5" />,
+              path: "/launch-execution",
+              isActive: location === "/launch-execution"
+            },
+            {
+              title: "Post-Launch Optimization",
+              icon: <RefreshCw className="mr-3 h-5 w-5" />,
+              path: "/post-launch",
+              isActive: location === "/post-launch"
+            },
+            {
+              title: "Executive Summary",
+              icon: <BarChart3 className="mr-3 h-5 w-5" />,
+              path: "/executive-summary",
+              isActive: location === "/executive-summary"
             }
           ],
           analytics: [
@@ -302,6 +364,9 @@ export function Sidebar({
         
         <div className="flex-1 overflow-y-auto scrollbar-hide">
           <SidebarSection title="Overview" items={navigation.overview} />
+          {navigation.workflow && (
+            <SidebarSection title="🚀 Product Lifecycle" items={navigation.workflow} />
+          )}
           <SidebarSection title="📊 Analytics & Monitoring" items={navigation.analytics} />
           <SidebarSection title="⚙️ Management & Actions" items={navigation.management} />
           <SidebarSection title="Settings" items={settingsItems} />

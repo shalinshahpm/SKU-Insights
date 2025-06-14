@@ -9,7 +9,8 @@ import {
   TestTube,
   Rocket,
   RefreshCw,
-  BarChart3
+  BarChart3,
+  Home
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -98,11 +99,22 @@ export function WorkflowHeader({
       <div className="container mx-auto px-4 py-3">
         {/* Header Info */}
         <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-lg font-semibold">Product Lifecycle Workflow</h2>
-            <p className="text-sm text-muted-foreground">
-              Managing: <span className="font-medium">{skuName}</span>
-            </p>
+          <div className="flex items-center gap-4">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => navigate("/dashboard")}
+              className="flex items-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Return to Dashboard
+            </Button>
+            <div>
+              <h2 className="text-lg font-semibold">Product Lifecycle Workflow</h2>
+              <p className="text-sm text-muted-foreground">
+                Managing: <span className="font-medium">{skuName}</span>
+              </p>
+            </div>
           </div>
           <div className="text-right">
             <div className="text-sm font-medium">
