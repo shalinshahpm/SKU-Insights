@@ -133,6 +133,7 @@ export class MemStorage implements IStorage {
   private socialListeningData: Map<number, SocialListeningData>;
   private launchInterventions: Map<number, LaunchIntervention>;
   private appliedInterventions: Map<number, AppliedIntervention>;
+  private creditTransactions: Map<number, CreditTransaction>;
   
   private currentUserId: number;
   private currentSkuId: number;
@@ -149,6 +150,7 @@ export class MemStorage implements IStorage {
   private currentSocialListeningDataId: number;
   private currentLaunchInterventionId: number;
   private currentAppliedInterventionId: number;
+  private currentCreditTransactionId: number;
 
   constructor() {
     this.users = new Map();
@@ -166,6 +168,7 @@ export class MemStorage implements IStorage {
     this.socialListeningData = new Map();
     this.launchInterventions = new Map();
     this.appliedInterventions = new Map();
+    this.creditTransactions = new Map();
     
     this.currentUserId = 1;
     this.currentSkuId = 1;
@@ -182,6 +185,7 @@ export class MemStorage implements IStorage {
     this.currentSocialListeningDataId = 1;
     this.currentLaunchInterventionId = 1;
     this.currentAppliedInterventionId = 1;
+    this.currentCreditTransactionId = 1;
     
     // Initialize with some data
     this.initializeData();
@@ -269,6 +273,28 @@ export class MemStorage implements IStorage {
       fullName: "Alex Chen",
       role: "global_marketing",
       avatar: null
+    });
+
+    // Initialize with credits for demo purposes
+    this.users.set(1, {
+      ...this.users.get(1)!,
+      credits: 500,
+      totalCreditsEarned: 1000,
+      lastPaymentDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) // 7 days ago
+    });
+
+    this.users.set(2, {
+      ...this.users.get(2)!,
+      credits: 250,
+      totalCreditsEarned: 500,
+      lastPaymentDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000) // 14 days ago
+    });
+
+    this.users.set(3, {
+      ...this.users.get(3)!,
+      credits: 750,
+      totalCreditsEarned: 1500,
+      lastPaymentDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000) // 3 days ago
     });
 
     // Create default SKUs
@@ -1591,6 +1617,54 @@ export class MemStorage implements IStorage {
     }
     
     return updatedIntervention;
+  }
+
+  // Credits tracking methods
+  async updateUserCredits(userId: number, amount: number, type: "purchase" | "usage" | "refund"): Promise<User> {
+    const user = this.users.get(userId);
+    if (!user) {
+      throw new Error(`User with id ${userId} not found`);
+    }
+
+    let updatedUser: User;
+    if (type === "purchase") {
+      updatedUser = {
+        ...user,
+        credits: (user.credits || 0) + amount,
+        totalCreditsEarned: (user.totalCreditsEarned || 0) + amount,
+        lastPaymentDate: new Date()
+      };
+    } else if (type === "usage") {
+      updatedUser = {
+        ...user,
+        credits: Math.max(0, (user.credits || 0) - amount)
+      };
+    } else { // refund
+      updatedUser = {
+        ...user,
+        credits: (user.credits || 0) + amount
+      };
+    }
+
+    this.users.set(userId, updatedUser);
+    return updatedUser;
+  }
+
+  async createCreditTransaction(transaction: InsertCreditTransaction): Promise<CreditTransaction> {
+    const newTransaction: CreditTransaction = {
+      id: this.currentCreditTransactionId++,
+      ...transaction,
+      timestamp: new Date()
+    };
+    
+    this.creditTransactions.set(newTransaction.id, newTransaction);
+    return newTransaction;
+  }
+
+  async getCreditTransactionsByUserId(userId: number): Promise<CreditTransaction[]> {
+    return Array.from(this.creditTransactions.values())
+      .filter(transaction => transaction.userId === userId)
+      .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
   }
 }
 
