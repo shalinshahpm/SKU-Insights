@@ -1,7 +1,7 @@
 import {
   type User, type InsertUser, type SKU, type InsertSKU,
   type BehavioralMetric, type InsertBehavioralMetric,
-  type Survey, type InsertSurvey, 
+  type ValidationSurvey, type InsertValidationSurvey, 
   type BrandHealthMetric, type InsertBrandHealthMetric,
   type TimelineEvent, type InsertTimelineEvent,
   type AnomalySetting, type InsertAnomalySetting,
