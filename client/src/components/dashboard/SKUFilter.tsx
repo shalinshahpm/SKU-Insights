@@ -16,11 +16,14 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { 
   ChevronDown, 
   ChevronUp, 
   Filter, 
-  RotateCcw 
+  RotateCcw,
+  Check
 } from "lucide-react";
 import { FilterOptions } from "@/lib/types";
 
@@ -28,14 +31,14 @@ interface SKUFilterProps {
   filterOptions: FilterOptions;
   onApplyFilters: (filters: {
     selectedSku: string;
-    selectedMarket: string;
+    selectedRetailers: string[];
     selectedRegion: string;
   }) => void;
 }
 
 export function SKUFilter({ filterOptions, onApplyFilters }: SKUFilterProps) {
   const [selectedSku, setSelectedSku] = useState("all");
-  const [selectedMarket, setSelectedMarket] = useState("all");
+  const [selectedRetailers, setSelectedRetailers] = useState<string[]>([]);
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -43,10 +46,10 @@ export function SKUFilter({ filterOptions, onApplyFilters }: SKUFilterProps) {
   useEffect(() => {
     onApplyFilters({
       selectedSku,
-      selectedMarket,
+      selectedRetailers,
       selectedRegion,
     });
-  }, [selectedSku, selectedMarket, selectedRegion, onApplyFilters]);
+  }, [selectedSku, selectedRetailers, selectedRegion, onApplyFilters]);
 
   // Get display name for SKU
   const getSkuDisplayName = () => {
@@ -55,10 +58,19 @@ export function SKUFilter({ filterOptions, onApplyFilters }: SKUFilterProps) {
     return sku ? sku.label : selectedSku;
   };
 
+  // Handle retailer selection
+  const handleRetailerToggle = (retailer: string) => {
+    setSelectedRetailers(prev => 
+      prev.includes(retailer)
+        ? prev.filter(r => r !== retailer)
+        : [...prev, retailer]
+    );
+  };
+
   // Count active filters
   const activeFilterCount = [
     selectedSku !== "all", 
-    selectedMarket !== "all", 
+    selectedRetailers.length > 0, 
     selectedRegion !== "all"
   ].filter(Boolean).length;
 
@@ -85,9 +97,9 @@ export function SKUFilter({ filterOptions, onApplyFilters }: SKUFilterProps) {
                   SKU: {getSkuDisplayName()}
                 </span>
               )}
-              {selectedMarket !== "all" && (
+              {selectedRetailers.length > 0 && (
                 <span className="px-2 py-0.5 bg-muted/30 rounded text-xs">
-                  Market: {selectedMarket}
+                  Retailers: {selectedRetailers.join(', ')}
                 </span>
               )}
               {selectedRegion !== "all" && (
@@ -130,22 +142,44 @@ export function SKUFilter({ filterOptions, onApplyFilters }: SKUFilterProps) {
             </div>
 
             <div className="flex-1">
-              <Label htmlFor="market-select" className="block text-sm font-medium mb-1">
-                Market
+              <Label htmlFor="retailer-select" className="block text-sm font-medium mb-1">
+                Retailer
               </Label>
-              <Select value={selectedMarket} onValueChange={setSelectedMarket}>
-                <SelectTrigger id="market-select" className="w-full">
-                  <SelectValue placeholder="All Markets" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Markets</SelectItem>
-                  {filterOptions.markets.map((option) => (
-                    <SelectItem key={option.value} value={option.value || "unknown"}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    className="w-full justify-between"
+                  >
+                    {selectedRetailers.length === 0
+                      ? "All Retailers"
+                      : selectedRetailers.length === 1
+                      ? selectedRetailers[0]
+                      : `${selectedRetailers.length} retailers selected`}
+                    <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-full p-0">
+                  <div className="p-3 space-y-2">
+                    {filterOptions.markets.map((retailer) => (
+                      <div key={retailer.value} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={retailer.value}
+                          checked={selectedRetailers.includes(retailer.value || "")}
+                          onCheckedChange={() => handleRetailerToggle(retailer.value || "")}
+                        />
+                        <Label
+                          htmlFor={retailer.value}
+                          className="text-sm font-normal cursor-pointer"
+                        >
+                          {retailer.label}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="flex-1">
@@ -173,7 +207,7 @@ export function SKUFilter({ filterOptions, onApplyFilters }: SKUFilterProps) {
                   className="w-full md:w-auto"
                   onClick={() => {
                     setSelectedSku("all");
-                    setSelectedMarket("all");
+                    setSelectedRetailers([]);
                     setSelectedRegion("all");
                   }}
                   variant="outline"

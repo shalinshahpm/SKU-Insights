@@ -32,7 +32,7 @@ export default function Dashboard() {
   const [timeRange, setTimeRange] = useState("7days");
   const [filters, setFilters] = useState({
     selectedSku: "all",
-    selectedMarket: "all",
+    selectedRetailers: [] as string[],
     selectedRegion: "all"
   });
 
