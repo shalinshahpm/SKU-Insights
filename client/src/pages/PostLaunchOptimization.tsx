@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { WorkflowHeader } from "@/components/workflow/WorkflowHeader";
+import { CollapsibleSidebar } from "@/components/layout/CollapsibleSidebar";
 import { SKU } from "@/lib/types";
 import {
   Card,
@@ -41,6 +42,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 export default function PostLaunchOptimization() {
   const [selectedSku, setSelectedSku] = useState("all");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const { data: skus = [] } = useQuery<SKU[]>({ 
     queryKey: ["/api/skus"] 
@@ -188,42 +190,51 @@ export default function PostLaunchOptimization() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <WorkflowHeader 
-        currentPhase="post-launch"
-        completedSteps={3}
-        totalSteps={5}
-        skuName="KitKat Original"
+    <div className="min-h-screen bg-background flex">
+      {/* Left Sidebar */}
+      <CollapsibleSidebar 
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
-      <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Page Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Trigger Feedback & Optimization</h1>
-            <p className="text-muted-foreground">
-              Collect targeted feedback and take rapid actions based on live data
-            </p>
-          </div>
-          
-          <Select value={selectedSku} onValueChange={setSelectedSku}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Select SKU" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All SKUs</SelectItem>
-              {skus.map((sku) => (
-                <SelectItem key={sku.id} value={sku.id.toString()}>
-                  {sku.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <WorkflowHeader 
+          currentPhase="post-launch"
+          completedSteps={3}
+          totalSteps={5}
+          skuName="KitKat Original"
+        />
 
-        {/* Key Metrics Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
+        <div className="flex-1 overflow-auto">
+          <div className="container mx-auto px-4 lg:px-6 py-4 lg:py-6 space-y-4 lg:space-y-6 max-w-7xl">
+            {/* Page Header */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+              <div>
+                <h1 className="text-xl lg:text-2xl font-bold">Trigger Feedback & Optimization</h1>
+                <p className="text-sm lg:text-base text-muted-foreground">
+                  Collect targeted feedback and take rapid actions based on live data
+                </p>
+              </div>
+              
+              <Select value={selectedSku} onValueChange={setSelectedSku}>
+                <SelectTrigger className="w-full lg:w-48">
+                  <SelectValue placeholder="Select SKU" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All SKUs</SelectItem>
+                  {skus.map((sku) => (
+                    <SelectItem key={sku.id} value={sku.id.toString()}>
+                      {sku.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Key Metrics Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+              <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium flex items-center gap-2">
                 <Target className="h-4 w-4 text-blue-500" />
@@ -276,13 +287,13 @@ export default function PostLaunchOptimization() {
           </Card>
         </div>
 
-        <Tabs defaultValue="triggers" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="triggers">Smart Triggers</TabsTrigger>
-            <TabsTrigger value="surveys">Follow-up Surveys</TabsTrigger>
-            <TabsTrigger value="sentiment">Sentiment Analysis</TabsTrigger>
-            <TabsTrigger value="adjustments">Product Adjustments</TabsTrigger>
-          </TabsList>
+            <Tabs defaultValue="triggers" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 gap-1">
+                <TabsTrigger value="triggers" className="text-xs lg:text-sm">Smart Triggers</TabsTrigger>
+                <TabsTrigger value="surveys" className="text-xs lg:text-sm">Follow-up Surveys</TabsTrigger>
+                <TabsTrigger value="sentiment" className="text-xs lg:text-sm">Sentiment Analysis</TabsTrigger>
+                <TabsTrigger value="adjustments" className="text-xs lg:text-sm">Product Adjustments</TabsTrigger>
+              </TabsList>
           
           <TabsContent value="triggers" className="space-y-4">
             <Card>
@@ -470,7 +481,9 @@ export default function PostLaunchOptimization() {
               </CardContent>
             </Card>
           </TabsContent>
-        </Tabs>
+            </Tabs>
+          </div>
+        </div>
       </div>
     </div>
   );
