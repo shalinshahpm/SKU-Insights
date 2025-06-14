@@ -103,6 +103,7 @@ export default function BrandHealth() {
   });
   const [timeRange, setTimeRange] = useState("quarter");
   const [compareRegion, setCompareRegion] = useState<string | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Fetch SKUs
   const { data: skus = [] } = useQuery<SKU[]>({
@@ -657,6 +658,7 @@ export default function BrandHealth() {
             </div>
           </CardContent>
         </Card>
+      </div>
           </div>
         </div>
       </div>
