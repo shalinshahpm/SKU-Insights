@@ -106,6 +106,7 @@ export default function SurveyBuilder() {
   const [activeTab, setActiveTab] = useState("active");
   const [editingSurvey, setEditingSurvey] = useState<Survey | null>(null);
   const [questions, setQuestions] = useState<any[]>([]);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   // Fetch SKUs
   const { data: skus = [] } = useQuery<SKU[]>({
@@ -260,10 +261,24 @@ export default function SurveyBuilder() {
   };
 
   return (
-    <MainLayout
-      pageTitle="Survey Builder"
-      pageDescription="Create and manage surveys to gather consumer insights"
-    >
+    <div className="min-h-screen bg-background flex">
+      {/* Left Sidebar */}
+      <CollapsibleSidebar 
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+      />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 overflow-auto">
+          <div className="container mx-auto px-4 lg:px-6 py-4 lg:py-6 space-y-4 lg:space-y-6 max-w-7xl">
+            {/* Page Header */}
+            <div className="flex flex-col gap-2">
+              <h1 className="text-xl lg:text-2xl font-bold">Survey Builder</h1>
+              <p className="text-sm lg:text-base text-muted-foreground">
+                Create and manage surveys to gather consumer insights
+              </p>
+            </div>
       <div className="flex justify-end mb-6">
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
@@ -714,7 +729,10 @@ export default function SurveyBuilder() {
           </div>
         </CardFooter>
       </Card>
-    </MainLayout>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 

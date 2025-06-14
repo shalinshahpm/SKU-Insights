@@ -205,10 +205,24 @@ export default function BrandHealth() {
   };
 
   return (
-    <MainLayout
-      pageTitle="Brand Health Dashboard"
-      pageDescription="Monitor brand performance metrics and consumer sentiment"
-    >
+    <div className="min-h-screen bg-background flex">
+      {/* Left Sidebar */}
+      <CollapsibleSidebar 
+        isCollapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+      />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 overflow-auto">
+          <div className="container mx-auto px-4 lg:px-6 py-4 lg:py-6 space-y-4 lg:space-y-6 max-w-7xl">
+            {/* Page Header */}
+            <div className="flex flex-col gap-2">
+              <h1 className="text-xl lg:text-2xl font-bold">Brand Health Dashboard</h1>
+              <p className="text-sm lg:text-base text-muted-foreground">
+                Monitor brand performance metrics and consumer sentiment
+              </p>
+            </div>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
         <div className="flex-1">
           {/* Title and description already in MainLayout */}
@@ -643,7 +657,9 @@ export default function BrandHealth() {
             </div>
           </CardContent>
         </Card>
+          </div>
+        </div>
       </div>
-    </MainLayout>
+    </div>
   );
 }
