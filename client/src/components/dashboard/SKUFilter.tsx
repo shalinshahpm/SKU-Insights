@@ -202,23 +202,22 @@ export function SKUFilter({ filterOptions, onApplyFilters }: SKUFilterProps) {
               </Select>
             </div>
 
-            {activeFilterCount > 0 && (
-              <div className="md:ml-2">
-                <Button 
-                  className="w-full md:w-auto"
-                  onClick={() => {
-                    setSelectedSku("all");
-                    setSelectedRetailers([]);
-                    setSelectedRegion("all");
-                  }}
-                  variant="outline"
-                  size="sm"
-                >
-                  <RotateCcw className="h-3 w-3 mr-1" />
-                  Reset Filters
-                </Button>
-              </div>
-            )}
+            <div className="md:ml-2">
+              <Button 
+                className="w-full md:w-auto"
+                onClick={() => {
+                  setSelectedSku("all");
+                  setSelectedRetailers([]);
+                  setSelectedRegion("all");
+                }}
+                variant="outline"
+                size="sm"
+                disabled={activeFilterCount === 0}
+              >
+                <RotateCcw className="h-3 w-3 mr-1" />
+                Reset Filters
+              </Button>
+            </div>
           </div>
         </CardContent>
       )}
