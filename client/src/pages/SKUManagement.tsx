@@ -46,7 +46,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
-import { PlusCircle, MoreVertical, Store, Trash, Upload, FileUp, Download } from "lucide-react";
+import { PlusCircle, MoreVertical, Store, Trash, Upload, Download } from "lucide-react";
 import { z } from "zod";
 import { SKUUploader } from "@/components/workflow/SKUUploader";
 import { useForm } from "react-hook-form";
@@ -60,44 +60,34 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-const regions = ["UK", "US", "India", "Brazil", "Germany", "France", "Japan", "China", "Australia"];
-const markets = ["Amazon", "Walmart", "Carrefour", "Target", "Tesco", "Alibaba"];
-
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "SKU name must be at least 2 characters.",
-  }),
-  brand: z.string().min(2, {
-    message: "Brand name must be at least 2 characters.",
-  }),
-  region: z.string().min(1, {
-    message: "Please select a region.",
-  }),
-  market: z.string().min(1, {
-    message: "Please select a market.",
-  }),
+  name: z.string().min(1, "SKU name is required"),
+  brand: z.string().min(1, "Brand is required"),
+  category: z.string().min(1, "Category is required"),
+  region: z.string().min(1, "Region is required"),
+  market: z.string().min(1, "Market is required"),
 });
 
 export default function SKUManagement() {
-  const { toast } = useToast();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedSKU, setSelectedSKU] = useState<SKU | null>(null);
+  const { toast } = useToast();
 
-  // Fetch SKUs from API
-  const { data: skus = [], isLoading } = useQuery<SKU[]>({
-    queryKey: ["/api/skus"],
-  });
-
-  // Form for adding new SKU
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      brand: "Nestlé",
+      brand: "",
+      category: "",
       region: "",
       market: "",
     },
+  });
+
+  // Fetch SKUs
+  const { data: skus = [], isLoading } = useQuery<SKU[]>({
+    queryKey: ["/api/skus"],
   });
 
   // Add SKU mutation
@@ -148,18 +138,15 @@ export default function SKUManagement() {
     },
   });
 
-  // Handle form submission for adding new SKU
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     addSKUMutation.mutate(values);
   };
 
-  // Handle delete SKU
   const handleDeleteSKU = (sku: SKU) => {
     setSelectedSKU(sku);
     setDeleteDialogOpen(true);
   };
 
-  // Confirm delete SKU
   const confirmDeleteSKU = () => {
     if (selectedSKU) {
       deleteSKUMutation.mutate(selectedSKU.id);
@@ -172,20 +159,9 @@ export default function SKUManagement() {
       pageDescription="Manage all your tracked SKUs across regions and markets"
     >
       {/* SKU Upload Section */}
-      <Card className="mb-6">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Upload className="h-5 w-5" />
-            SKU Upload Center
-          </CardTitle>
-          <CardDescription>
-            Upload multiple SKUs at once or add individual products to your portfolio
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SKUUploader />
-        </CardContent>
-      </Card>
+      <div className="mb-6">
+        <SKUUploader />
+      </div>
 
       <div className="flex justify-between items-center mb-6">
         <div>
@@ -197,10 +173,7 @@ export default function SKUManagement() {
             <Download className="h-4 w-4" />
             Export All
           </Button>
-        </div>
-      </div>
-
-      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <Button className="flex items-center gap-2">
                 <PlusCircle className="h-4 w-4" />
@@ -208,111 +181,123 @@ export default function SKUManagement() {
               </Button>
             </DialogTrigger>
             <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New SKU</DialogTitle>
-              <DialogDescription>
-                Add a new SKU to track across markets and regions.
-              </DialogDescription>
-            </DialogHeader>
+              <DialogHeader>
+                <DialogTitle>Add New SKU</DialogTitle>
+                <DialogDescription>
+                  Add a new SKU to track across markets and regions.
+                </DialogDescription>
+              </DialogHeader>
 
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>SKU Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="KitKat Original" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="brand"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Brand</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Nestlé" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="region"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Region</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>SKU Name</FormLabel>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a region" />
-                          </SelectTrigger>
+                          <Input placeholder="KitKat Original" {...field} />
                         </FormControl>
-                        <SelectContent>
-                          {regions.map((region) => (
-                            <SelectItem key={region} value={region}>
-                              {region}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="market"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Market</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
+                  <FormField
+                    control={form.control}
+                    name="brand"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Brand</FormLabel>
                         <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a market" />
-                          </SelectTrigger>
+                          <Input placeholder="Nestlé" {...field} />
                         </FormControl>
-                        <SelectContent>
-                          {markets.map((market) => (
-                            <SelectItem key={market} value={market}>
-                              {market}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <DialogFooter>
-                  <Button 
-                    type="submit" 
-                    disabled={addSKUMutation.isPending}
-                  >
-                    {addSKUMutation.isPending ? "Adding..." : "Add SKU"}
-                  </Button>
-                </DialogFooter>
-              </form>
-            </Form>
-          </DialogContent>
-      </Dialog>
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Chocolate" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="region"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Region</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a region" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="North America">North America</SelectItem>
+                            <SelectItem value="Europe">Europe</SelectItem>
+                            <SelectItem value="Asia Pacific">Asia Pacific</SelectItem>
+                            <SelectItem value="Latin America">Latin America</SelectItem>
+                            <SelectItem value="Middle East & Africa">Middle East & Africa</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="market"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Market</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a market" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="USA">USA</SelectItem>
+                            <SelectItem value="Canada">Canada</SelectItem>
+                            <SelectItem value="UK">UK</SelectItem>
+                            <SelectItem value="Germany">Germany</SelectItem>
+                            <SelectItem value="France">France</SelectItem>
+                            <SelectItem value="Japan">Japan</SelectItem>
+                            <SelectItem value="Australia">Australia</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <DialogFooter>
+                    <Button 
+                      type="submit" 
+                      disabled={addSKUMutation.isPending}
+                    >
+                      {addSKUMutation.isPending ? "Adding..." : "Add SKU"}
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </div>
 
       {/* SKU List */}
       <Card>
@@ -347,15 +332,9 @@ export default function SKUManagement() {
                   <TableRow>
                     <TableCell colSpan={6} className="text-center py-8">
                       <div className="flex flex-col items-center justify-center text-muted-foreground">
-                        <Store className="h-12 w-12 mb-2 opacity-30" />
-                        <p>No SKUs found</p>
-                        <Button
-                          variant="link"
-                          onClick={() => setIsAddDialogOpen(true)}
-                          className="mt-2"
-                        >
-                          Add your first SKU
-                        </Button>
+                        <Store className="h-12 w-12 mb-4 opacity-50" />
+                        <p className="text-lg font-medium">No SKUs found</p>
+                        <p className="text-sm">Add your first SKU to get started with tracking</p>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -367,20 +346,18 @@ export default function SKUManagement() {
                       <TableCell>{sku.region}</TableCell>
                       <TableCell>{sku.market}</TableCell>
                       <TableCell>
-                        {format(new Date(sku.createdAt), "MMM dd, yyyy")}
+                        {sku.createdAt ? format(new Date(sku.createdAt), "MMM d, yyyy") : "N/A"}
                       </TableCell>
                       <TableCell className="text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm">
+                            <Button variant="ghost" className="h-8 w-8 p-0">
+                              <span className="sr-only">Open menu</span>
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              className="text-destructive"
-                              onClick={() => handleDeleteSKU(sku)}
-                            >
+                            <DropdownMenuItem onClick={() => handleDeleteSKU(sku)}>
                               <Trash className="mr-2 h-4 w-4" />
                               Delete
                             </DropdownMenuItem>
@@ -394,11 +371,13 @@ export default function SKUManagement() {
             </Table>
           )}
         </CardContent>
-        <CardFooter className="flex justify-between border-t p-4">
-          <div className="text-sm text-muted-foreground">
-            {skus.length} SKUs total
-          </div>
-        </CardFooter>
+        {skus.length > 0 && (
+          <CardFooter>
+            <div className="text-xs text-muted-foreground">
+              Showing {skus.length} SKU{skus.length !== 1 ? "s" : ""}
+            </div>
+          </CardFooter>
+        )}
       </Card>
 
       {/* Delete Confirmation Dialog */}

@@ -335,19 +335,24 @@ export function WorkflowDashboard() {
         </Tabs>
       ) : (
         <div className="space-y-6">
-          {/* SKU Upload Prompt */}
+          {/* Empty State */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Upload className="h-5 w-5" />
-                Get Started
+                No SKU Selected
               </CardTitle>
               <CardDescription>
-                Upload your SKU data to begin using the workflow-based dashboard
+                Select a SKU from the dropdown above to view workflow analysis and recommendations.
+                To add new SKUs, visit the SKU Management page.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <SKUUploader />
+              <div className="text-center py-8 text-gray-500">
+                <Upload className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>Choose a SKU to get started</p>
+                <p className="text-sm">Or navigate to SKU Management to upload new products</p>
+              </div>
             </CardContent>
           </Card>
         </div>
