@@ -48,7 +48,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { UserCog, PlusCircle, MoreHorizontal, UserPlus, Search } from "lucide-react";
+import { UserCog, PlusCircle, MoreHorizontal, UserPlus, Search, CreditCard, DollarSign, History, ExternalLink } from "lucide-react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";

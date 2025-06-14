@@ -10,6 +10,9 @@ export const users = pgTable("users", {
   fullName: text("full_name").notNull(),
   role: text("role").notNull(), // "brand_manager", "regional_insights", "global_marketing"
   avatar: text("avatar"),
+  credits: integer("credits").default(0),
+  totalCreditsEarned: integer("total_credits_earned").default(0),
+  lastPaymentDate: timestamp("last_payment_date"),
 });
 
 export const insertUserSchema = createInsertSchema(users).pick({
@@ -337,6 +340,25 @@ export const insertAppliedInterventionSchema = createInsertSchema(appliedInterve
   results: true,
 });
 
+// Credits tracking table
+export const creditTransactions = pgTable("credit_transactions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  amount: integer("amount").notNull(),
+  type: text("type").notNull(), // "purchase", "usage", "refund"
+  description: text("description").notNull(),
+  stripePaymentId: text("stripe_payment_id"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertCreditTransactionSchema = createInsertSchema(creditTransactions).pick({
+  userId: true,
+  amount: true,
+  type: true,
+  description: true,
+  stripePaymentId: true,
+});
+
 // Export types
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -381,6 +403,9 @@ export type InsertLaunchIntervention = z.infer<typeof insertLaunchInterventionSc
 
 export type AppliedIntervention = typeof appliedInterventions.$inferSelect;
 export type InsertAppliedIntervention = z.infer<typeof insertAppliedInterventionSchema>;
+
+export type CreditTransaction = typeof creditTransactions.$inferSelect;
+export type InsertCreditTransaction = z.infer<typeof insertCreditTransactionSchema>;
 
 export type Upload = typeof uploads.$inferSelect;
 export type InsertUpload = z.infer<typeof insertUploadSchema>;
