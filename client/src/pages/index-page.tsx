@@ -11,7 +11,8 @@ import {
   Briefcase,
   Download,
   Calendar,
-  Play
+  Play,
+  Star
 } from 'lucide-react';
 
 const IndexPage = () => {
@@ -337,132 +338,223 @@ const IndexPage = () => {
         </section>
 
         {/* MARKET STATS */}
-        <section className="py-20 bg-gradient-to-r from-blue-600 to-indigo-700 text-white">
-          <div className="container mx-auto px-6 text-center">
-            <h2 className="text-3xl font-bold mb-12">The CPG Launch Challenge</h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              <div>
-                <div className="text-5xl font-bold mb-2">4M</div>
-                <p className="text-blue-100">New SKUs launched globally per year</p>
+        <section className="py-24 bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-700 text-white relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+          </div>
+          <div className="container mx-auto px-6 relative">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">The CPG Launch Challenge</h2>
+              <p className="text-xl text-blue-100 max-w-3xl mx-auto">
+                Behind every successful product launch lies a complex web of market dynamics, consumer behavior, and operational execution
+              </p>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-8 mb-16">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300 group">
+                <div className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent group-hover:scale-105 transition-transform">4M</div>
+                <p className="text-blue-100 text-lg font-medium">New SKUs launched globally per year</p>
+                <p className="text-blue-200 text-sm mt-2">Each competing for consumer attention</p>
               </div>
-              <div>
-                <div className="text-5xl font-bold mb-2">$2B</div>
-                <p className="text-blue-100">Invested in R&D annually</p>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300 group">
+                <div className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-green-300 to-emerald-300 bg-clip-text text-transparent group-hover:scale-105 transition-transform">$2B</div>
+                <p className="text-blue-100 text-lg font-medium">Invested in R&D annually</p>
+                <p className="text-blue-200 text-sm mt-2">Innovation requires significant upfront capital</p>
               </div>
-              <div>
-                <div className="text-5xl font-bold mb-2">80%</div>
-                <p className="text-blue-100">Failure rate within first year</p>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all duration-300 group">
+                <div className="text-6xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-red-300 to-pink-300 bg-clip-text text-transparent group-hover:scale-105 transition-transform">80%</div>
+                <p className="text-blue-100 text-lg font-medium">Failure rate within first year</p>
+                <p className="text-blue-200 text-sm mt-2">Most launches don't meet expectations</p>
               </div>
             </div>
-            <div className="mt-12 bg-white/10 rounded-lg p-6 max-w-2xl mx-auto">
-              <p className="text-xl italic">
-                "Bloomberg for CPG" - The definitive platform for consumer goods intelligence
+            
+            <div className="bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-sm rounded-2xl p-8 max-w-4xl mx-auto border border-white/30">
+              <div className="flex items-center justify-center mb-4">
+                <TrendingUp className="h-8 w-8 text-yellow-300 mr-3" />
+                <span className="text-2xl font-bold text-yellow-300">"Bloomberg for CPG"</span>
+              </div>
+              <p className="text-xl text-center text-blue-100 italic">
+                The definitive intelligence platform for consumer goods success
               </p>
             </div>
           </div>
         </section>
 
         {/* AUDIENCE TARGETING */}
-        <section id="audiences" className="py-24 bg-gray-50">
-          <div className="container mx-auto px-6">
+        <section id="audiences" className="py-24 bg-gradient-to-br from-gray-50 to-gray-100 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-50/30 to-transparent"></div>
+          <div className="container mx-auto px-6 relative">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">Built for High-Performance Teams</h2>
-              <p className="text-xl text-gray-600">Tailored workflows for every role in your launch process</p>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                Built for High-Performance Teams
+              </h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Tailored workflows for every role in your launch process, designed to accelerate decision-making and improve outcomes
+              </p>
             </div>
             
             <div className="grid lg:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <Target className="h-8 w-8 text-blue-600" />
+              <div className="group relative bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200/50 hover:-translate-y-2">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative">
+                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                    <Target className="h-10 w-10 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-6 text-gray-900">Brand Teams</h3>
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Track brand health metrics across markets</span>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Monitor competitive positioning in real-time</span>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Optimize marketing spend with AI insights</span>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Deploy intervention playbooks automatically</span>
+                    </div>
+                  </div>
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 group-hover:bg-blue-700 transition-colors" onClick={() => window.location.href = '/auth'}>
+                    Explore Brand Dashboard
+                  </Button>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Brand Teams</h3>
-                <ul className="text-gray-600 space-y-3">
-                  <li>• Track brand health metrics</li>
-                  <li>• Monitor competitive positioning</li>
-                  <li>• Optimize marketing spend</li>
-                  <li>• Launch intervention playbooks</li>
-                </ul>
-                <Button className="mt-6 w-full" onClick={() => window.location.href = '/auth'}>
-                  Explore Brand Dashboard
-                </Button>
               </div>
 
-              <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <BarChart3 className="h-8 w-8 text-green-600" />
+              <div className="group relative bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200/50 hover:-translate-y-2">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative">
+                  <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                    <BarChart3 className="h-10 w-10 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-6 text-gray-900">Insights Teams</h3>
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Consumer sentiment analysis with AI</span>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Market research automation at scale</span>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Predictive modeling for launch success</span>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Custom survey deployment and analysis</span>
+                    </div>
+                  </div>
+                  <Button className="w-full bg-emerald-600 hover:bg-emerald-700 group-hover:bg-emerald-700 transition-colors" onClick={() => window.location.href = '/auth'}>
+                    View Analytics Suite
+                  </Button>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Insights Teams</h3>
-                <ul className="text-gray-600 space-y-3">
-                  <li>• Consumer sentiment analysis</li>
-                  <li>• Market research automation</li>
-                  <li>• Predictive modeling</li>
-                  <li>• Custom survey deployment</li>
-                </ul>
-                <Button className="mt-6 w-full" onClick={() => window.location.href = '/auth'}>
-                  View Analytics Suite
-                </Button>
               </div>
 
-              <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mb-6">
-                  <Briefcase className="h-8 w-8 text-purple-600" />
+              <div className="group relative bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200/50 hover:-translate-y-2">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="relative">
+                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 w-20 h-20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg">
+                    <Briefcase className="h-10 w-10 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-6 text-gray-900">Commercial Teams</h3>
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Sales performance tracking by channel</span>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Retailer relationship insights and alerts</span>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Revenue optimization recommendations</span>
+                    </div>
+                    <div className="flex items-start">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
+                      <span className="text-gray-600">Account-specific performance dashboards</span>
+                    </div>
+                  </div>
+                  <Button className="w-full bg-purple-600 hover:bg-purple-700 group-hover:bg-purple-700 transition-colors" onClick={() => window.location.href = '/auth'}>
+                    Access Sales Hub
+                  </Button>
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Commercial Teams</h3>
-                <ul className="text-gray-600 space-y-3">
-                  <li>• Sales performance tracking</li>
-                  <li>• Retailer relationship insights</li>
-                  <li>• Revenue optimization</li>
-                  <li>• Account-specific dashboards</li>
-                </ul>
-                <Button className="mt-6 w-full" onClick={() => window.location.href = '/auth'}>
-                  Access Sales Hub
-                </Button>
               </div>
             </div>
           </div>
         </section>
 
         {/* TESTIMONIALS & LOGOS */}
-        <section id="testimonials" className="py-24 bg-white">
-          <div className="container mx-auto px-6">
+        <section id="testimonials" className="py-24 bg-white relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-transparent to-purple-50/30"></div>
+          <div className="container mx-auto px-6 relative">
             <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold mb-6">Trusted by Industry Leaders</h2>
-              <div className="flex justify-center gap-12 items-center flex-wrap opacity-60">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Coca-Cola_logo.svg" className="h-8" alt="Coca-Cola" />
-                <img src="https://upload.wikimedia.org/wikipedia/en/8/8a/Pepsi_logo_2014.svg" className="h-8" alt="Pepsi" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Unilever_Logo.svg" className="h-8" alt="Unilever" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Nestle_textlogo.svg" className="h-8" alt="Nestle" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Procter_%26_Gamble_logo.svg" className="h-8" alt="P&G" />
+              <h2 className="text-4xl md:text-5xl font-bold mb-8 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                Trusted by Industry Leaders
+              </h2>
+              
+              {/* Company Logos */}
+              <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-6 border border-gray-200/50 shadow-lg mb-16">
+                <p className="text-gray-500 mb-6 text-lg">Trusted by teams at leading CPG companies</p>
+                <div className="flex justify-center gap-8 md:gap-12 items-center flex-wrap">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/1/13/Coca-Cola_logo.svg" className="h-8 opacity-60 hover:opacity-80 transition-opacity" alt="Coca-Cola" />
+                  <img src="https://upload.wikimedia.org/wikipedia/en/8/8a/Pepsi_logo_2014.svg" className="h-8 opacity-60 hover:opacity-80 transition-opacity" alt="Pepsi" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/e/e5/Unilever_Logo.svg" className="h-8 opacity-60 hover:opacity-80 transition-opacity" alt="Unilever" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Nestle_textlogo.svg" className="h-8 opacity-60 hover:opacity-80 transition-opacity" alt="Nestle" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Procter_%26_Gamble_logo.svg" className="h-8 opacity-60 hover:opacity-80 transition-opacity" alt="P&G" />
+                </div>
               </div>
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-12">
-              <div className="bg-blue-50 rounded-xl p-8">
+            <div className="grid lg:grid-cols-2 gap-8">
+              <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200/50 hover:-translate-y-1">
                 <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                    <Users className="h-6 w-6 text-blue-600" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <Users className="h-7 w-7 text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold">Sarah Chen</p>
-                    <p className="text-sm text-gray-600">VP of Global Marketing, Fortune 500 CPG</p>
+                    <p className="font-bold text-gray-900">Sarah Chen</p>
+                    <p className="text-sm text-gray-600">VP of Global Marketing</p>
+                    <p className="text-sm text-blue-600 font-medium">Fortune 500 CPG</p>
                   </div>
                 </div>
-                <blockquote className="text-lg italic text-gray-700">
+                <div className="mb-4">
+                  <div className="flex mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                </div>
+                <blockquote className="text-lg italic text-gray-700 leading-relaxed">
                   "SKU Insights detected a trending issue 3 weeks before our traditional analytics would have caught it. We pivoted our launch strategy and saved $2.3M in marketing spend."
                 </blockquote>
               </div>
 
-              <div className="bg-green-50 rounded-xl p-8">
+              <div className="group bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200/50 hover:-translate-y-1">
                 <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                    <TrendingUp className="h-6 w-6 text-green-600" />
+                  <div className="w-14 h-14 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center mr-4 shadow-lg group-hover:scale-110 transition-transform">
+                    <TrendingUp className="h-7 w-7 text-white" />
                   </div>
                   <div>
-                    <p className="font-semibold">Marcus Rodriguez</p>
-                    <p className="text-sm text-gray-600">Brand Director, Global Food Company</p>
+                    <p className="font-bold text-gray-900">Marcus Rodriguez</p>
+                    <p className="text-sm text-gray-600">Brand Director</p>
+                    <p className="text-sm text-emerald-600 font-medium">Global Food Company</p>
                   </div>
                 </div>
-                <blockquote className="text-lg italic text-gray-700">
+                <div className="mb-4">
+                  <div className="flex mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                    ))}
+                  </div>
+                </div>
+                <blockquote className="text-lg italic text-gray-700 leading-relaxed">
                   "The consumer sentiment engine is game-changing. We now launch with confidence knowing exactly what drives purchase intent in each market."
                 </blockquote>
               </div>
