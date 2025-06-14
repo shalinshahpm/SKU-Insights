@@ -20,17 +20,24 @@ export const insertUserSchema = createInsertSchema(users).pick({
   avatar: true,
 });
 
-// SKU model
+// SKU model - Enhanced for workflow
 export const skus = pgTable("skus", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
   brand: text("brand").notNull(),
   region: text("region").notNull(),
   market: text("market").notNull(),
+  category: text("category").notNull(),
+  format: text("format"), // "bottle", "can", "pouch", etc.
+  price: real("price"),
   launchDate: timestamp("launch_date"),
   isNewLaunch: boolean("is_new_launch").default(false),
-  category: text("category"),
+  velocity: real("velocity").default(0), // Sales velocity metric
+  sentimentScore: real("sentiment_score").default(0), // -1 to 1
+  reviewDelta: real("review_delta").default(0), // Change in reviews
+  launchReadinessScore: real("launch_readiness_score").default(0), // 0-100
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  userId: integer("user_id").notNull(),
 });
 
 export const insertSkuSchema = createInsertSchema(skus).pick({
@@ -38,9 +45,79 @@ export const insertSkuSchema = createInsertSchema(skus).pick({
   brand: true,
   region: true,
   market: true,
+  category: true,
+  format: true,
+  price: true,
   launchDate: true,
   isNewLaunch: true,
-  category: true,
+  userId: true,
+});
+
+// File uploads model
+export const uploads = pgTable("uploads", {
+  id: serial("id").primaryKey(),
+  fileName: text("file_name").notNull(),
+  userId: integer("user_id").notNull(),
+  fileType: text("file_type").notNull(), // "csv", "excel"
+  status: text("status").notNull().default("processing"), // "processing", "completed", "error"
+  recordsProcessed: integer("records_processed").default(0),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertUploadSchema = createInsertSchema(uploads).pick({
+  fileName: true,
+  userId: true,
+  fileType: true,
+  status: true,
+  recordsProcessed: true,
+});
+
+// Actions model for tracking interventions
+export const actions = pgTable("actions", {
+  id: serial("id").primaryKey(),
+  skuId: integer("sku_id").notNull(),
+  type: text("type").notNull(), // "price_adjustment", "pause_sku", "increase_marketing", etc.
+  description: text("description").notNull(),
+  triggerReason: text("trigger_reason"), // What insight triggered this action
+  outcome: text("outcome"), // Result of the action
+  impactScore: real("impact_score"), // Measured impact (positive/negative)
+  status: text("status").notNull().default("pending"), // "pending", "executed", "completed"
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  executedAt: timestamp("executed_at"),
+  userId: integer("user_id").notNull(),
+});
+
+export const insertActionSchema = createInsertSchema(actions).pick({
+  skuId: true,
+  type: true,
+  description: true,
+  triggerReason: true,
+  userId: true,
+});
+
+// Pre-launch validation surveys
+export const validationSurveys = pgTable("validation_surveys", {
+  id: serial("id").primaryKey(),
+  skuId: integer("sku_id").notNull(),
+  conceptText: text("concept_text").notNull(),
+  audience: text("audience").notNull(), // "general", "target_demographic", etc.
+  surveyType: text("survey_type").notNull(), // "concept_test", "price_test", "competitive_test"
+  status: text("status").notNull().default("draft"), // "draft", "live", "completed"
+  results: json("results"), // Survey results from external service
+  completionRate: real("completion_rate"),
+  insights: text("insights"), // AI-generated insights from results
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  launchedAt: timestamp("launched_at"),
+  completedAt: timestamp("completed_at"),
+  userId: integer("user_id").notNull(),
+});
+
+export const insertValidationSurveySchema = createInsertSchema(validationSurveys).pick({
+  skuId: true,
+  conceptText: true,
+  audience: true,
+  surveyType: true,
+  userId: true,
 });
 
 // Behavioral metrics model
@@ -65,29 +142,7 @@ export const insertBehavioralMetricSchema = createInsertSchema(behavioralMetrics
   status: true,
 });
 
-// Survey model
-export const surveys = pgTable("surveys", {
-  id: serial("id").primaryKey(),
-  skuId: integer("sku_id").notNull(),
-  title: text("title").notNull(),
-  type: text("type").notNull(), // "awareness", "message_recall", "purchase_intent", "friction_point"
-  audience: text("audience").notNull(),
-  status: text("status").notNull(), // "draft", "active", "completed"
-  sampleSize: integer("sample_size").notNull(),
-  questions: json("questions").notNull(), // Array of question objects
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  completedAt: timestamp("completed_at"),
-});
-
-export const insertSurveySchema = createInsertSchema(surveys).pick({
-  skuId: true,
-  title: true,
-  type: true,
-  audience: true,
-  status: true,
-  sampleSize: true,
-  questions: true,
-});
+// Legacy surveys table - will be replaced by new workflow surveys above
 
 // Brand health metrics model
 export const brandHealthMetrics = pgTable("brand_health_metrics", {
@@ -292,8 +347,7 @@ export type InsertSKU = z.infer<typeof insertSkuSchema>;
 export type BehavioralMetric = typeof behavioralMetrics.$inferSelect;
 export type InsertBehavioralMetric = z.infer<typeof insertBehavioralMetricSchema>;
 
-export type Survey = typeof surveys.$inferSelect;
-export type InsertSurvey = z.infer<typeof insertSurveySchema>;
+// Legacy survey types - using validation surveys instead
 
 export type BrandHealthMetric = typeof brandHealthMetrics.$inferSelect;
 export type InsertBrandHealthMetric = z.infer<typeof insertBrandHealthMetricSchema>;
@@ -327,3 +381,12 @@ export type InsertLaunchIntervention = z.infer<typeof insertLaunchInterventionSc
 
 export type AppliedIntervention = typeof appliedInterventions.$inferSelect;
 export type InsertAppliedIntervention = z.infer<typeof insertAppliedInterventionSchema>;
+
+export type Upload = typeof uploads.$inferSelect;
+export type InsertUpload = z.infer<typeof insertUploadSchema>;
+
+export type Action = typeof actions.$inferSelect;
+export type InsertAction = z.infer<typeof insertActionSchema>;
+
+export type ValidationSurvey = typeof validationSurveys.$inferSelect;
+export type InsertValidationSurvey = z.infer<typeof insertValidationSurveySchema>;

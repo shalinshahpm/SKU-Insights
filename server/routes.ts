@@ -5,7 +5,7 @@ import {
   insertUserSchema, 
   insertSkuSchema, 
   insertBehavioralMetricSchema,
-  insertSurveySchema, 
+  insertValidationSurveySchema, 
   insertBrandHealthMetricSchema, 
   insertTimelineEventSchema,
   insertAnomalySettingSchema,
