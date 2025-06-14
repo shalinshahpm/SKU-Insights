@@ -249,6 +249,15 @@ export default function Dashboard() {
           performanceLevel={brandHealthData.brandLiftScore >= 75 ? "excellent" : brandHealthData.brandLiftScore >= 65 ? "good" : brandHealthData.brandLiftScore >= 50 ? "average" : "poor"}
           benchmark="Industry avg: 65.2"
           actionHint={brandHealthData.brandLiftScore >= 75 ? "Maintain current strategy" : brandHealthData.brandLiftScore >= 65 ? "Consider A/B testing new campaigns" : "Review campaign targeting and messaging"}
+          quickAction={brandHealthData.brandLiftScore < 65 ? {
+            label: "Launch Brand Survey",
+            action: () => handleLaunchSurvey({
+              skuId: defaultSkuId || 1,
+              audience: "target_consumers",
+              surveyType: "awareness"
+            }),
+            variant: "default"
+          } : undefined}
         />
         
         <MetricCard
@@ -263,6 +272,15 @@ export default function Dashboard() {
           performanceLevel={brandHealthData.purchaseIntent >= 70 ? "excellent" : brandHealthData.purchaseIntent >= 60 ? "good" : brandHealthData.purchaseIntent >= 45 ? "average" : "poor"}
           benchmark="Category avg: 58.4%"
           actionHint={brandHealthData.purchaseIntent >= 70 ? "Excellent conversion potential" : brandHealthData.purchaseIntent >= 60 ? "Launch targeted promotions" : "Focus on product benefits messaging"}
+          quickAction={brandHealthData.purchaseIntent < 60 ? {
+            label: "Survey Purchase Barriers",
+            action: () => handleLaunchSurvey({
+              skuId: defaultSkuId || 1,
+              audience: "potential_customers",
+              surveyType: "purchase_intent"
+            }),
+            variant: "secondary"
+          } : undefined}
         />
         
         <MetricCard
@@ -277,6 +295,15 @@ export default function Dashboard() {
           performanceLevel={brandHealthData.netSentiment >= 40 ? "excellent" : brandHealthData.netSentiment >= 25 ? "good" : brandHealthData.netSentiment >= 10 ? "average" : "poor"}
           benchmark="Market avg: +28"
           actionHint={brandHealthData.netSentiment >= 40 ? "Strong brand perception" : brandHealthData.netSentiment >= 25 ? "Monitor and maintain positivity" : "Address negative feedback sources"}
+          quickAction={brandHealthData.netSentiment < 25 ? {
+            label: "Investigate Sentiment",
+            action: () => handleLaunchSurvey({
+              skuId: defaultSkuId || 1,
+              audience: "recent_customers",
+              surveyType: "friction_point"
+            }),
+            variant: "outline"
+          } : undefined}
         />
         
         <MetricCard
@@ -290,6 +317,11 @@ export default function Dashboard() {
           performanceLevel={brandHealthData.activeSurveys >= 4 ? "excellent" : brandHealthData.activeSurveys >= 3 ? "good" : brandHealthData.activeSurveys >= 2 ? "average" : "poor"}
           benchmark="Target: 4-5 active"
           actionHint={brandHealthData.activeSurveys >= 4 ? "Good survey coverage" : "Launch additional surveys for better insights"}
+          quickAction={brandHealthData.activeSurveys < 3 ? {
+            label: "Create Survey",
+            action: () => navigate("/survey-builder"),
+            variant: "default"
+          } : undefined}
         />
       </div>
 

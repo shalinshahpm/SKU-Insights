@@ -1,4 +1,5 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ArrowUp, ArrowDown, ExternalLink, Info } from "lucide-react";
 import { Link } from "wouter";
@@ -17,6 +18,7 @@ export function MetricCard({
   performanceLevel,
   benchmark,
   actionHint,
+  quickAction,
 }: MetricCardProps) {
   const getChangeColor = (change?: number) => {
     if (!change) return "text-muted-foreground";
@@ -154,12 +156,24 @@ export function MetricCard({
               </div>
             )}
           </div>
-          <Link href={detailsLink}>
-            <div className="text-sm font-medium text-primary hover:text-primary transition-colors cursor-pointer flex items-center group-hover:underline ml-3">
-              View details
-              <ExternalLink className="ml-1.5 h-3 w-3 opacity-60" />
-            </div>
-          </Link>
+          <div className="flex items-center gap-2">
+            {quickAction && (
+              <Button
+                size="sm"
+                variant={quickAction.variant || "default"}
+                onClick={quickAction.action}
+                className="text-xs h-7 px-2"
+              >
+                {quickAction.label}
+              </Button>
+            )}
+            <Link href={detailsLink}>
+              <div className="text-sm font-medium text-primary hover:text-primary transition-colors cursor-pointer flex items-center group-hover:underline">
+                View details
+                <ExternalLink className="ml-1.5 h-3 w-3 opacity-60" />
+              </div>
+            </Link>
+          </div>
         </div>
       </CardFooter>
     </Card>
