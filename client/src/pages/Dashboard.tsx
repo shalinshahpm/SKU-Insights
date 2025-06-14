@@ -100,7 +100,7 @@ export default function Dashboard() {
 
   const handleApplyFilters = (newFilters: {
     selectedSku: string;
-    selectedMarket: string;
+    selectedRetailers: string[];
     selectedRegion: string;
   }) => {
     setFilters(newFilters);

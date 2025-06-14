@@ -142,6 +142,7 @@ export type MetricCardProps = {
   iconTextColor: string;
   detailsLink?: string;
   subtext?: string;
+  tooltip?: string;
 }
 
 export type BehavioralTableData = {

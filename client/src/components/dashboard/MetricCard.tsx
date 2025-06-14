@@ -1,5 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { ArrowUp, ArrowDown, ExternalLink } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ArrowUp, ArrowDown, ExternalLink, Info } from "lucide-react";
 import { Link } from "wouter";
 import { MetricCardProps } from "@/lib/types";
 
@@ -12,6 +13,7 @@ export function MetricCard({
   iconTextColor,
   detailsLink = "#",
   subtext,
+  tooltip,
 }: MetricCardProps) {
   const getChangeColor = (change?: number) => {
     if (!change) return "text-muted-foreground";
@@ -46,9 +48,23 @@ export function MetricCard({
             </div>
             <div className="ml-4 w-0 flex-1">
               <div className="flex flex-col">
-                <h3 className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                  {title}
-                </h3>
+                <div className="flex items-center gap-1">
+                  <h3 className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                    {title}
+                  </h3>
+                  {tooltip && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-3 w-3 text-muted-foreground hover:text-foreground cursor-help" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="max-w-xs">{tooltip}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
                 <div className="flex items-baseline mt-1">
                   <div className="text-2xl font-bold">
                     {value}
