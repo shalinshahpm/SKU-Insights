@@ -292,6 +292,83 @@ export default function UserManagement() {
         </Dialog>
       </div>
 
+      {/* Credits & Billing Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <CreditCard className="h-5 w-5" />
+              Credits Balance
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-primary mb-2">
+              {users.find(u => u.username === 'brand_manager')?.credits || 0}
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Credits available for platform usage
+            </p>
+            <Button 
+              onClick={() => window.open('https://buy.stripe.com/fZufZhgBNg0ce7V6Wn7Vm04', '_blank')}
+              className="w-full"
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Purchase Credits ($500)
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <DollarSign className="h-5 w-5" />
+              Total Purchased
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-green-600 mb-2">
+              {users.find(u => u.username === 'brand_manager')?.totalCreditsEarned || 0}
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Total credits purchased to date
+            </p>
+            <div className="text-xs text-muted-foreground">
+              Last payment: {users.find(u => u.username === 'brand_manager')?.lastPaymentDate 
+                ? new Date(users.find(u => u.username === 'brand_manager')?.lastPaymentDate!).toLocaleDateString()
+                : 'No payments yet'}
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <History className="h-4 w-4" />
+              Usage History
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center text-sm">
+                <span>Survey Creation</span>
+                <span className="text-muted-foreground">-5 credits</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span>Behavioral Analysis</span>
+                <span className="text-muted-foreground">-10 credits</span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span>Brand Health Report</span>
+                <span className="text-muted-foreground">-15 credits</span>
+              </div>
+              <Button variant="outline" size="sm" className="w-full mt-2">
+                View Full History
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">

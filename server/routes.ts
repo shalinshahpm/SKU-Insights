@@ -1228,6 +1228,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Credits tracking endpoints
+  app.get("/api/users/:id/credits", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+      
+      const user = await storage.getUser(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json({
+        credits: user.credits || 0,
+        totalCreditsEarned: user.totalCreditsEarned || 0,
+        lastPaymentDate: user.lastPaymentDate
+      });
+    } catch (error) {
+      console.error("Error fetching user credits:", error);
+      res.status(500).json({ message: "Failed to fetch user credits" });
+    }
+  });
+
+  app.post("/api/users/:id/credits", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+
+      const creditSchema = z.object({
+        amount: z.number().min(1),
+        type: z.enum(["purchase", "usage", "refund"]),
+        description: z.string(),
+        stripePaymentId: z.string().optional()
+      });
+
+      const result = creditSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid credit data", errors: result.error.format() });
+      }
+
+      const updatedUser = await storage.updateUserCredits(id, result.data.amount, result.data.type);
+      
+      // Log the transaction
+      await storage.createCreditTransaction({
+        userId: id,
+        amount: result.data.amount,
+        type: result.data.type,
+        description: result.data.description,
+        stripePaymentId: result.data.stripePaymentId
+      });
+
+      res.json(updatedUser);
+    } catch (error) {
+      console.error("Error updating user credits:", error);
+      res.status(500).json({ message: "Failed to update user credits" });
+    }
+  });
+
+  app.get("/api/users/:id/credit-transactions", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid ID" });
+      }
+
+      const transactions = await storage.getCreditTransactionsByUserId(id);
+      res.json(transactions);
+    } catch (error) {
+      console.error("Error fetching credit transactions:", error);
+      res.status(500).json({ message: "Failed to fetch credit transactions" });
+    }
+  });
+
   // Enhanced Launch Radar endpoint - For comprehensive new product launch monitoring
   app.get("/api/launch-radar", async (req: Request, res: Response) => {
     try {

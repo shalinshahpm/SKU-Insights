@@ -12,7 +12,8 @@ import {
   type MicroSurveyResponse, type InsertMicroSurveyResponse,
   type SocialListeningData, type InsertSocialListeningData,
   type LaunchIntervention, type InsertLaunchIntervention,
-  type AppliedIntervention, type InsertAppliedIntervention
+  type AppliedIntervention, type InsertAppliedIntervention,
+  type CreditTransaction, type InsertCreditTransaction
 } from "@shared/schema";
 
 export interface IStorage {
@@ -109,6 +110,11 @@ export interface IStorage {
   getAppliedInterventionsBySkuId(skuId: number): Promise<AppliedIntervention[]>;
   createAppliedIntervention(intervention: InsertAppliedIntervention): Promise<AppliedIntervention>;
   updateAppliedInterventionStatus(id: number, status: string): Promise<AppliedIntervention>;
+
+  // Credits tracking methods
+  updateUserCredits(userId: number, amount: number, type: "purchase" | "usage" | "refund"): Promise<User>;
+  createCreditTransaction(transaction: InsertCreditTransaction): Promise<CreditTransaction>;
+  getCreditTransactionsByUserId(userId: number): Promise<CreditTransaction[]>;
 }
 
 export class MemStorage implements IStorage {

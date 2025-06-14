@@ -94,6 +94,14 @@ SKU Insights is a comprehensive Consumer Packaged Goods (CPG) product launch man
 
 ## Recent Changes
 
+- June 14, 2025: Stripe Payment Integration and Credits System Implementation
+  - Added credits tracking system to user schema with credits, totalCreditsEarned, and lastPaymentDate fields
+  - Created creditTransactions table for detailed transaction logging
+  - Integrated Stripe payment link ($500) into User Management page with dedicated credits dashboard
+  - Added API endpoints for credits management: /api/users/:id/credits, /api/users/:id/credit-transactions
+  - Credits section displays current balance, total purchased, and usage history
+  - Direct link to Stripe payment page for purchasing additional credits
+  - Database schema updated and pushed successfully
 - June 14, 2025: Advanced UX Improvements Implementation
   - Added guided onboarding flow with welcome banner for first-time users
   - Implemented contextual tooltips explaining key concepts throughout platform
