@@ -81,7 +81,7 @@ const IndexPage = () => {
                 
                 <div className="flex flex-col sm:flex-row gap-4 mb-8">
                   <a href="https://www.linkedin.com/in/shalinshah2/" target="_blank" rel="noopener noreferrer" className="bg-emerald-600 text-white px-8 py-4 rounded-lg hover:bg-emerald-700 text-lg font-medium text-center">
-                    Get ROI Calculator
+                    Schedule a Call
                   </a>
                   <Button 
                     variant="outline" 
@@ -470,18 +470,18 @@ const IndexPage = () => {
           </div>
         </section>
 
-        {/* ROI CALCULATION CTA */}
+        {/* CONSULTATION CTA */}
         <section className="py-24 bg-gradient-to-br from-emerald-600 to-blue-600 text-white">
           <div className="container mx-auto px-6">
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="text-4xl font-bold mb-6">Calculate Your ROI in 2 Minutes</h2>
+                <h2 className="text-4xl font-bold mb-6">See Your Potential Savings</h2>
                 <p className="text-xl text-emerald-100 mb-8">
-                  See exactly how much SKU Insights can save your company in failed launch costs and accelerate time-to-profitability.
+                  Discover exactly how SKU Insights can reduce your failed launch costs and accelerate time-to-profitability.
                 </p>
                 
                 <div className="bg-white/10 rounded-lg p-6 mb-8">
-                  <h3 className="text-lg font-semibold mb-4">Typical ROI Within 12 Months:</h3>
+                  <h3 className="text-lg font-semibold mb-4">Typical Savings Within 12 Months:</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between">
                       <span>Avoided failed launch costs</span>
@@ -509,7 +509,7 @@ const IndexPage = () => {
                   rel="noopener noreferrer" 
                   className="bg-white text-emerald-600 px-8 py-4 rounded-lg hover:bg-gray-100 text-lg font-medium inline-flex items-center gap-2 mr-4"
                 >
-                  Get Custom ROI Report
+                  Schedule a Call
                 </a>
                 
                 <Button 
@@ -540,9 +540,9 @@ const IndexPage = () => {
                       <div className="w-6 h-6 bg-emerald-400 rounded-full flex items-center justify-center mr-3">
                         <span className="text-emerald-900 text-sm font-bold">2</span>
                       </div>
-                      <span className="font-semibold">Custom ROI Analysis</span>
+                      <span className="font-semibold">Custom Analysis</span>
                     </div>
-                    <p className="text-sm text-emerald-100 ml-9">Calculate specific savings for your portfolio</p>
+                    <p className="text-sm text-emerald-100 ml-9">Review specific savings for your portfolio</p>
                   </div>
                   
                   <div className="bg-white/20 rounded-lg p-4">
@@ -579,7 +579,7 @@ const IndexPage = () => {
                 rel="noopener noreferrer" 
                 className="bg-emerald-600 text-white px-8 py-4 rounded-lg hover:bg-emerald-700 text-lg font-medium"
               >
-                Schedule ROI Call
+                Schedule a Call
               </a>
               
               <Button 
@@ -587,7 +587,7 @@ const IndexPage = () => {
                 onClick={() => window.location.href = '/auth'}
               >
                 <Play className="h-5 w-5 mr-2" />
-                Try SKU Signal Demo
+                Try Live Demo
               </Button>
             </div>
           </div>

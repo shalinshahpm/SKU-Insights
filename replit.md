@@ -94,14 +94,15 @@ SKU Insights is a comprehensive Consumer Packaged Goods (CPG) product launch man
 
 ## Recent Changes
 
-- June 14, 2025: Landing Page Sales-Focused Restructure
+- June 14, 2025: Landing Page Sales-Focused Restructure and CTA Consistency
   - Completely restructured hero section with ROI-focused messaging: "Stop Guessing. Start Winning."
   - Added quantifiable business benefits: 67% failure rate reduction, 45% cost savings, 3x faster velocity
   - Replaced generic problem section with concrete cost breakdown: $2.3M per failed launch
   - Restructured features around 5-phase workflow system instead of technical capabilities
-  - Created ROI calculator section with specific savings ranges: $2.8M - $7.1M potential annual savings
-  - Enhanced CTAs with clear next steps: discovery call, ROI analysis, live demo progression
-  - Focused on business outcomes rather than platform features throughout entire landing experience
+  - Updated consultation section with specific savings ranges: $2.8M - $7.1M potential annual savings
+  - Standardized all CTAs to "Schedule a Call" linking to LinkedIn profile (removed ROI calculator references)
+  - Enhanced messaging focused on business outcomes rather than platform features throughout entire landing experience
+  - Consistent button text: "Schedule a Call" (primary) and "Try Live Demo" (secondary) across all sections
 - June 14, 2025: Dashboard Layout Optimization for Standard Laptop Screens
   - Optimized WorkflowHeader component to fit 5 workflow steps within standard laptop screen without scrolling
   - Reduced header padding, button sizes, and spacing for more compact layout
